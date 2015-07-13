@@ -1,0 +1,10 @@
+.class
+.git
+target
+.project
+.classpath
+bin
+/doc
+build/
+.settings/
+
