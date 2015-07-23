@@ -202,33 +202,33 @@ select da.NameM area,pc.送往地点 station,COUNT(*) outCalls,isnull(SUM(case when 
 	group by da.NameM,pc.送往地点
 drop table #pc
 --医院转诊明细
-select CONVERT(varchar(20),e.受理时刻,120) date,pc.姓名 patientName,pc.年龄 age,pc.性别 gender,pc.医生诊断 diagnose,pc.出诊地址 outCallAddress,pc.科室 sendClass 
+select CONVERT(varchar(20),e.受理时刻,120) dates,pc.姓名 patientName,pc.年龄 age,pc.性别 gender,pc.医生诊断 diagnose,pc.出诊地址 outCallAddress,pc.科室 sendClass 
 	from AuSp120.tb_EventV e left outer join AuSp120.tb_TaskV t on t.事件编码=e.事件编码
 	left outer join AuSp120.tb_Station s on t.分站编码=s.分站编码
 	left outer join AuSp120.tb_PatientCase pc  on t.任务序号=pc.任务序号 and pc.任务编码=t.任务编码
-	where e.事件性质编码=1 and t.分站编码 is not null and e.事件类型编码=2 and e.受理时刻 between '2014-01-01 00:00:00' and '2015-11-01 00:00:00'
+	where e.事件性质编码=1 and t.分站编码 is not null and pc.任务编码 is not null and e.事件类型编码=2 and e.受理时刻 between '2014-01-01 00:00:00' and '2015-11-01 00:00:00'
 --院内转运统计
 select distinct pc.任务编码,pc.任务序号,pc.里程,pc.出诊地址,pc.送往地点 into #pc from AuSp120.tb_PatientCase pc
-select pc.送往地点 station,COUNT(*) outCalls,isnull(SUM(pc.里程),0) distance,isnull(sum(DATEDIFF(Second,t.出车时刻,t.到达医院时刻)),0) time
+select s.分站名称 station,COUNT(*) outCalls,isnull(SUM(pc.里程),0) distance,isnull(sum(DATEDIFF(Second,t.出车时刻,t.到达医院时刻)),0) time
 	from AuSp120.tb_EventV e left outer join AuSp120.tb_TaskV t on t.事件编码=e.事件编码
 	left outer join AuSp120.tb_AcceptDescriptV a on a.事件编码=t.事件编码 and a.受理序号=t.受理序号
 	left outer join AuSp120.tb_Station s on t.分站编码=s.分站编码
 	left outer join #pc pc on t.任务序号=pc.任务序号 and pc.任务编码=t.任务编码
 	where e.事件性质编码=1 and t.分站编码 is not null and e.事件类型编码=3 and e.受理时刻 between '2014-01-01 00:00:00' and '2015-11-01 00:00:00'
-	group by pc.送往地点
+	group by s.分站名称
 drop table #pc
 --院内转诊明细
 select CONVERT(varchar(20),e.受理时刻,120) date,pc.姓名 patientName,pc.年龄 age,pc.性别 gender,pc.医生诊断 diagnose,pc.出诊地址 outCallAddress,pc.科室 sendClass 
 	from AuSp120.tb_EventV e left outer join AuSp120.tb_TaskV t on t.事件编码=e.事件编码
 	left outer join AuSp120.tb_Station s on t.分站编码=s.分站编码
 	left outer join AuSp120.tb_PatientCase pc  on t.任务序号=pc.任务序号 and pc.任务编码=t.任务编码
-	where e.事件性质编码=1 and t.分站编码 is not null and e.事件类型编码=3 and e.受理时刻 between '2014-01-01 00:00:00' and '2015-11-01 00:00:00'
+	where e.事件性质编码=1 and t.分站编码 is not null and pc.任务编码 is not null and e.事件类型编码=3 and e.受理时刻 between '2014-01-01 00:00:00' and '2015-11-01 00:00:00'
 --本院内出诊明细
 select CONVERT(varchar(20),e.受理时刻,120) date,pc.姓名 patientName,pc.年龄 age,pc.性别 gender,pc.医生诊断 diagnose,pc.出诊地址 outCallAddress,pc.科室 sendClass
 	from AuSp120.tb_TaskV t  
 	left outer join AuSp120.tb_PatientCase pc on t.任务序号=pc.任务序号 and pc.任务编码=t.任务编码
 	left outer join AuSp120.tb_EventV e on e.事件编码=t.事件编码
-	where e.事件性质编码=1 and t.分站编码='001' and e.受理时刻 between '2014-01-01 00:00:00' and '2015-11-01 00:00:00'
+	where e.事件性质编码=1 and t.分站编码='001' and pc.任务编码 is not null and e.受理时刻 between '2014-01-01 00:00:00' and '2015-11-01 00:00:00'
 --三无明细查询
 select cr.任务编码,cr.任务序号,cr.病历序号,SUM(cr.收费金额) cost into #temp1 from AuSp120.tb_ChargeRecord cr
 	group by cr.任务编码,cr.任务序号,cr.病历序号
@@ -262,13 +262,14 @@ select  DATEPART(HOUR,e.受理时刻) span,COUNT(*) times,SUM(case when t.结果编码=4
 	where e.事件性质编码=1 and e.受理时刻 between '2014-01-01 00:00:00' and '2015-11-01 00:00:00'
 	group by DATEPART(HOUR,e.受理时刻)
 	order by DATEPART(HOUR,e.受理时刻)
---疾病类型统计
+--疾病科别统计
 select dc.NameM name,isnull(COUNT(*),0) times,'' rate
 	from AuSp120.tb_PatientCase pc  left outer join AuSp120.tb_TaskV t on  t.任务编码=pc.任务编码 and t.任务序号=pc.任务序号
 	left outer join AuSp120.tb_EventV e on t.事件编码=e.事件编码
-	left outer join AuSp120.tb_DDiseaseClass dc on dc.Code=pc.分类统计编码
-	where e.事件性质编码=1 and e.受理时刻 between '2014-01-01 00:00:00' and '2015-11-01 00:00:00'
+	left outer join AuSp120.tb_DDiseaseClass dc on dc.Code=pc.疾病科别编码
+	where e.事件性质编码=1 and pc.疾病科别编码 is not null  and e.受理时刻 between '2014-01-01 00:00:00' and '2015-11-01 00:00:00'
 	group by dc.NameM
+	
 --病因统计
 select dr.NameM name,isnull(COUNT(*),0) times,'' rate
 	from AuSp120.tb_PatientCase pc  left outer join AuSp120.tb_TaskV t on  t.任务编码=pc.任务编码 and t.任务序号=pc.任务序号
@@ -431,8 +432,7 @@ select case when CAST(pc.年龄 as float) between 0 and 10 then '0~10岁'
 	when CAST(pc.年龄 as float) between 80 and 90 then '80~90岁'
 	else '90~' end
 	
-select CAST(pc.年龄 as float) from AuSp120.tb_PatientCase pc 
-where ISNUMERIC(pc.年龄)=1 and CAST(pc.年龄 as float)>10
+
 
 select * from AuSp120.tb_DTaskResult ac
 select * from AuSp120.tb_AcceptDescript a where a.分诊调度医院 like '%分水%'
@@ -443,6 +443,7 @@ select * from AuSp120.tb_PatientCase pc
 select * from AuSp120.tb_EventV e where e.事故种类编码<>0
 select * from AuSp120.tb_DOutCome
 select * from AuSp120.tb_DResult
+select * from AuSp120.tb_MrUser
 
 
 

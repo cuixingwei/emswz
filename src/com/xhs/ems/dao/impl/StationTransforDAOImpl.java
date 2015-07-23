@@ -17,6 +17,7 @@ import org.springframework.stereotype.Repository;
 import com.xhs.ems.bean.StationTransfor;
 import com.xhs.ems.bean.easyui.Grid;
 import com.xhs.ems.bean.easyui.Parameter;
+import com.xhs.ems.common.CommonUtil;
 import com.xhs.ems.dao.StationTransforDAO;
 
 /**
@@ -66,6 +67,9 @@ public class StationTransforDAOImpl implements StationTransforDAO {
 					}
 				});
 		logger.info("一共有" + results.size() + "条数据");
+		for(StationTransfor result : results){
+			result.setTime(CommonUtil.formatSecond(result.getTime()));
+		}
 		Grid grid = new Grid();
 		if ((int) parameter.getPage() > 0) {
 			int page = (int) parameter.getPage();

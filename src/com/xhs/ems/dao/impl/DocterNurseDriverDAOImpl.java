@@ -17,6 +17,7 @@ import org.springframework.stereotype.Repository;
 import com.xhs.ems.bean.DocterNurseDriver;
 import com.xhs.ems.bean.easyui.Grid;
 import com.xhs.ems.bean.easyui.Parameter;
+import com.xhs.ems.common.CommonUtil;
 import com.xhs.ems.dao.DocterNurseDriverDAO;
 
 /**
@@ -147,6 +148,10 @@ public class DocterNurseDriverDAOImpl implements DocterNurseDriverDAO {
 						}
 					});
 			logger.info("一共有" + results.size() + "条数据");
+			for(DocterNurseDriver result : results){
+				result.setAverageResponseTime(CommonUtil.formatSecond(result.getAverageResponseTime()));
+				result.setOutCallTimeTotal(CommonUtil.formatSecond(result.getOutCallTimeTotal()));
+			}
 			if ((int) parameter.getPage() > 0) {
 				int page = (int) parameter.getPage();
 				int rows = (int) parameter.getRows();

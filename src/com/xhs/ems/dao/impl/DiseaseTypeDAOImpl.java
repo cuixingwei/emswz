@@ -41,8 +41,8 @@ public class DiseaseTypeDAOImpl implements DiseaseTypeDAO {
 		String sql = "select dc.NameM name,isnull(COUNT(*),0) times,'' rate	"
 				+ "from AuSp120.tb_PatientCase pc  left outer join AuSp120.tb_TaskV t on  t.任务编码=pc.任务编码 and t.任务序号=pc.任务序号	"
 				+ "left outer join AuSp120.tb_EventV e on t.事件编码=e.事件编码	"
-				+ "left outer join AuSp120.tb_DDiseaseClass dc on dc.Code=pc.分类统计编码	"
-				+ "where e.事件性质编码=1 and e.受理时刻 between :startTime and :endTime	group by dc.NameM ";
+				+ "left outer join AuSp120.tb_DDiseaseClass dc on dc.Code=pc.疾病科别编码	"
+				+ "where e.事件性质编码=1 and pc.疾病科别编码 is not null and e.受理时刻 between :startTime and :endTime	group by dc.NameM ";
 		Map<String, String> paramMap = new HashMap<String, String>();
 		paramMap.put("startTime", parameter.getStartTime());
 		paramMap.put("endTime", parameter.getEndTime());
