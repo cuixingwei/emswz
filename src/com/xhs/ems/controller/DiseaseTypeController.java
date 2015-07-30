@@ -45,8 +45,8 @@ public class DiseaseTypeController {
 		logger.info("导出疾病类型统计数据到excel");
 		response.setContentType("application/msexcel;charset=UTF-8");
 
-		String title = "疾病类型统计";
-		String[] headers = new String[] { "疾病类型", "次数", "占比" };
+		String title = "疾病科别统计";
+		String[] headers = new String[] { "疾病科别", "次数", "占比" };
 		String[] fields = new String[] { "name", "times", "rate" };
 		int spanCount = 1; // 需要合并的列数。从第1列开始到指定列。
 		TableData td = ExcelUtils.createTableData(

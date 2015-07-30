@@ -64,7 +64,7 @@
 						align : 'center'
 					}, {
 						field : 'distance',
-						title : '里程耗时',
+						title : '里程',
 						resizable : true,
 						width : "18%",
 						align : 'center',

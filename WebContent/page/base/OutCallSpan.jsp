@@ -64,7 +64,7 @@
 						align : 'center'
 					}, {
 						field : 'outCallTotal',
-						title : '平均耗时合计',
+						title : '出诊耗时合计',
 						resizable : true,
 						width : "18%",
 						align : 'center',

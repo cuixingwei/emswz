@@ -72,6 +72,78 @@ public class Parameter {
 	 * 医生护士工作统计（1代表医生，2代表护士,3代表司机）
 	 */
 	private String doctorOrNurseOrDriver;
+	/**
+	 * 通讯录查询（电话）
+	 */
+	private String phone;
+	/**
+	 * 急救站晚出诊统计(出诊时长最小值)
+	 */
+	private String outCarTimesMin;
+	/**
+	 * 急救站晚出诊统计(出诊时长最大值)
+	 */
+	private String outCarTimesMax;
+	/**
+	 * 响铃到接听大于X秒（超时时长）
+	 */
+	private String overtimes;
+	/**
+	 * 中止任务信息（空跑时间）
+	 */
+	private String emptyRunTime;
+	/**
+	 * 事件详情查询（受理表的ID）
+	 */
+	private String id;
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getEmptyRunTime() {
+		return emptyRunTime;
+	}
+
+	public void setEmptyRunTime(String emptyRunTime) {
+		this.emptyRunTime = emptyRunTime;
+	}
+
+	public String getOvertimes() {
+		return overtimes;
+	}
+
+	public void setOvertimes(String overtimes) {
+		this.overtimes = overtimes;
+	}
+
+	public String getOutCarTimesMin() {
+		return outCarTimesMin;
+	}
+
+	public void setOutCarTimesMin(String outCarTimesMin) {
+		this.outCarTimesMin = outCarTimesMin;
+	}
+
+	public String getOutCarTimesMax() {
+		return outCarTimesMax;
+	}
+
+	public void setOutCarTimesMax(String outCarTimesMax) {
+		this.outCarTimesMax = outCarTimesMax;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
 
 	public String getDoctorOrNurseOrDriver() {
 		return doctorOrNurseOrDriver;
