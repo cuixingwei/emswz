@@ -431,18 +431,44 @@ select case when CAST(pc.年龄 as float) between 0 and 10 then '0~10岁'
 	when CAST(pc.年龄 as float) between 70 and 80 then '70~80岁'
 	when CAST(pc.年龄 as float) between 80 and 90 then '80~90岁'
 	else '90~' end
-	
+--调度员工作统计
+select m.姓名,COUNT(*) 电话总数,sum(case when tr.记录类型编码 in(1,2,3,5,8) then 1 else 0 end) 呼入,
+	sum(case when tr.记录类型编码=6 then 1 else 0 end) 呼出 into #temp1
+	from AuSp120.tb_TeleRecord tr left outer join AuSp120.tb_DTeleRecordType drt on drt.Code=tr.记录类型编码
+	left outer join AuSp120.tb_MrUser m on m.工号=tr.调度员编码 
+	where not (tr.调度员编码='' or tr.调度员编码 is null ) and  m.人员类型=0 and tr.记录类型编码 in(1,2,3,5,6,8) and tr.产生时刻 between '2014-01-01 00:00:00' and '2015-11-01 00:00:00'
+	group by m.姓名	
+select m.姓名,a.类型编码,a.救治人数,a.调度员编码,t.结果编码,a.开始受理时刻,t.事件编码,a.派车时刻,t.任务序号,t.任务编码 into #temp2 from AuSp120.tb_AcceptDescriptV a 
+	left outer join AuSp120.tb_TaskV t on a.受理序号=t.受理序号 and a.事件编码=t.事件编码
+	left outer join AuSp120.tb_EventV e on e.事件编码=t.事件编码
+	left outer join AuSp120.tb_MrUser m on m.工号=a.调度员编码
+	where e.事件性质编码=1 and m.人员类型=0 and a.开始受理时刻 between '2014-01-01 00:00:00' and '2015-11-01 00:00:00'
+select t2.姓名,SUM(t2.救治人数) 分诊数 into #temp5 from #temp2 t2 where t2.类型编码 in (11,12) group by t2.姓名
+select t2.姓名,SUM(case when t2.开始受理时刻 is not null and t2.派车时刻 is not null then 1 else 0 end) 有效派车,
+	SUM(case when t2.结果编码=4 then 1 else 0 end)正常完成,	SUM(case when t2.结果编码=3 then 1 else 0 end) 空车,
+	SUM(case when t2.结果编码=2 then 1 else 0 end) 中止任务,SUM(case when t2.结果编码=5 then 1 else 0 end) 拒绝出车 into #temp3 
+	from #temp2 t2 group by t2.姓名
+select t2.姓名,COUNT(*) 救治人数 into #temp4 from #temp2 t2 
+	left outer join AuSp120.tb_PatientCase pc on pc.任务序号=t2.任务序号 and t2.任务编码=pc.任务编码 group by t2.姓名
+select t1.姓名 dispatcher,t1.电话总数 numbersOfPhone,t1.呼入 inOfPhone,t1.呼出 outOfPhone,isnull(t3.有效派车,0) numbersOfSendCar,
+	isnull(t3.正常完成,0) numbersOfNormalSendCar,isnull(t3.空车,0) emptyCar,isnull(t3.中止任务,0) numbersOfStopTask,
+	isnull(t3.拒绝出车,0) refuseCar,isnull(t4.救治人数,0) takeBacks,isnull(t5.分诊数,0) triageNumber from #temp1 t1 
+	left outer join #temp3 t3 on t1.姓名=t3.姓名 left outer join #temp4 t4 on t1.姓名=t4.姓名 left outer join #temp5 t5 on t5.姓名=t1.姓名
+drop table #temp1,#temp2,#temp3,#temp4,#temp5
 
 
+select * from AuSp120.tb_DTeleRecordResult
+select * from AuSp120.tb_TeleRecord
+select * from AuSp120.tb_DTeleRecordType
 select * from AuSp120.tb_DTaskResult ac
-select * from AuSp120.tb_AcceptDescript a where a.分诊调度医院 like '%分水%'
+select * from AuSp120.tb_AcceptDescript a where a.类型编码 in (11,12)
 select * from AuSp120.tb_TaskV t where t.事件编码='2015061510551801'
 select * from AuSp120.tb_DILLState
-select * from AuSp120.tb_CureMeasure
+select * from AuSp120.tb_DTriageRefuse
 select * from AuSp120.tb_PatientCase pc 
 select * from AuSp120.tb_EventV e where e.事故种类编码<>0
 select * from AuSp120.tb_DOutCome
-select * from AuSp120.tb_DResult
+select * from AuSp120.tb_DAcceptDescriptType
 select * from AuSp120.tb_MrUser
 
 

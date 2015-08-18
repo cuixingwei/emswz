@@ -170,6 +170,19 @@
     	"attributes":
     		{
     			"target":"",
+    			"url":"DispatcherWorkload.jsp"
+    		},
+    	"checked":false,
+    	"iconCls":"ext-icon-world",
+    	"id":"11",
+    	"pid":"1",
+    	"state":"open",
+    	"text":"调度员工作统计"
+    },
+    {
+    	"attributes":
+    		{
+    			"target":"",
     			"url":"StopTask.jsp"
     		},
     	"checked":false,
