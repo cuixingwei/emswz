@@ -104,6 +104,35 @@ select a.ID id,convert(varchar(20),a.开始受理时刻,120) answerAlarmTime,	a.呼救电
 	from #temp1 t	left outer join AuSp120.tb_AcceptDescriptV a on t.eventCode=a.事件编码		
 	where a.开始受理时刻 between '2014-01-01 00:00:00' and '2015-11-01 00:00:00'
 drop table #temp1
+--司机工作统计
+select t.司机 name, COUNT(*) outCalls,
+	SUM(case when t.结果编码=4 then 1 else 0 end) takeBacks,SUM(case when t.结果编码 in (2,3) then 1 else 0 end) emptyCars,
+	SUM(case when pc.转归编码=7 then 1 else 0 end) refuseHospitals,	
+	SUM(case when pc.救治结果编码=2 then 1 else 0 end) spotDeaths,
+	SUM(case when pc.救治结果编码 in (6,7) then 1 else 0 end) afterDeaths,	
+	SUM(case when e.事件类型编码=3 then 1 else 0 end) inHospitalTransports,
+	SUM(case when e.事件类型编码=10 then 1 else 0 end) others,	
+	SUM(case when pc.任务编码 is not null then 1 else 0 end) cureNumbers into #temp1	
+	from AuSp120.tb_TaskV  t	left outer join AuSp120.tb_PatientCase pc on t.任务序号=pc.任务序号 and t.任务编码=pc.任务编码	
+	left outer join AuSp120.tb_EventV e on t.事件编码=e.事件编码	
+	left outer join AuSp120.tb_Station s on  s.分站编码=t.分站编码	
+	where e.事件性质编码=1 and t.司机 is not null and t.司机<>'' and e.受理时刻  between '2014-01-01 00:00:00' and '2015-11-01 00:00:00'	
+	group by t.司机    
+select distinct t.司机 name,pc.任务序号,pc.任务编码,pc.里程,cr.收费金额,	
+	e.受理时刻,t.到达医院时刻,t.到达现场时刻,t.出车时刻 into #temp2	from AuSp120.tb_TaskV  t	
+	left outer join AuSp120.tb_PatientCase pc on t.任务序号=pc.任务序号 and t.任务编码=pc.任务编码	
+	left outer join AuSp120.tb_EventV e on t.事件编码=e.事件编码	
+	left outer join AuSp120.tb_Station s on  s.分站编码=t.分站编码	
+	left outer join AuSp120.tb_ChargeRecord cr on t.任务编码=cr.任务编码 and cr.车辆标识=t.车辆标识  	
+	where e.事件性质编码=1 and t.司机 is not null and t.司机<>'' and e.受理时刻 between '2014-01-01 00:00:00' and '2015-11-01 00:00:00'	  
+select t2.name,SUM(t2.里程) distanceTotal,SUM(t2.收费金额) costToal,	
+	AVG(DATEDIFF(Second,t2.受理时刻,t2.到达现场时刻)) averageResponseTime,	
+	sum(datediff(Second,t2.出车时刻,t2.到达医院时刻)) outCallTimeTotal into #temp3	from #temp2 t2	group by t2.name  
+select t1.name,t1.afterDeaths,t1.cureNumbers,t1.emptyCars,t1.inHospitalTransports,t1.takeBacks,t1.others,
+	t1.outCalls,t1.refuseHospitals,t1.spotDeaths,isnull(t3.averageResponseTime,0) averageResponseTime,
+	isnull(t3.costToal,0) costToal,	t3.distanceTotal,isnull(t3.outCallTimeTotal,0) outCallTimeTotal	from #temp1 t1 
+	left outer join #temp3 t3 on t1.name=t3.name  
+	drop table #temp1,#temp2,#temp3 
 --医生护士司机工作统计
 select s.分站名称 station,pc.随车医生 name, COUNT(*) outCalls,SUM(case when t.结果编码=4 then 1 else 0 end) takeBacks,
 	SUM(case when t.结果编码 in (2,3) then 1 else 0 end) emptyCars,SUM(case when pc.转归编码=7 then 1 else 0 end) refuseHospitals,

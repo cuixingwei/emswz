@@ -57,7 +57,7 @@ public class DriverOutCallDAOImpl implements DriverOutCallDAO {
 		Map<String, String> paramMap = new HashMap<String, String>();
 		paramMap.put("startTime", parameter.getStartTime());
 		paramMap.put("endTime", parameter.getEndTime());
-
+		logger.info(sql);
 		List<DriverOutCall> results = this.npJdbcTemplate.query(sql, paramMap,
 				new RowMapper<DriverOutCall>() {
 					@Override
@@ -73,7 +73,6 @@ public class DriverOutCallDAOImpl implements DriverOutCallDAO {
 								.getString("averageTime"));
 					}
 				});
-		logger.info("一共有" + results.size() + "条数据");
 		Grid grid = new Grid();
 		for (DriverOutCall result : results) {
 			result.setAverageResponseTime(CommonUtil.formatSecond(result

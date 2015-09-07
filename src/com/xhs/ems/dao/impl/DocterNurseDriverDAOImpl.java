@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
@@ -38,7 +39,7 @@ public class DocterNurseDriverDAOImpl implements DocterNurseDriverDAO {
 
 	@Override
 	public Grid getData(Parameter parameter) {
-		String doctorOrNurseOrDriver = parameter.getDoctorOrNurseOrDriver();
+		final String doctorOrNurseOrDriver = parameter.getDoctorOrNurseOrDriver();
 		Grid grid = new Grid();
 		if (null == doctorOrNurseOrDriver) {
 			grid.setTotal(0);
@@ -94,63 +95,61 @@ public class DocterNurseDriverDAOImpl implements DocterNurseDriverDAO {
 						+ "from #temp1 t1 left outer join #temp3 t3 on t1.name=t3.name and t1.station=t3.station  "
 						+ "drop table #temp1,#temp2,#temp3 ";
 			} else if ("3".equals(doctorOrNurseOrDriver)) {
-				sql = "select s.分站名称 station,pc.司机 name, COUNT(*) outCalls,SUM(case when t.结果编码=4 then 1 else 0 end) takeBacks,"
-						+ "	SUM(case when t.结果编码 in (2,3) then 1 else 0 end) emptyCars,SUM(case when pc.转归编码=7 then 1 else 0 end) refuseHospitals,	"
+				sql = "select t.司机 name, COUNT(*) outCalls,	SUM(case when t.结果编码=4 then 1 else 0 end) takeBacks,"
+						+ "SUM(case when t.结果编码 in (2,3) then 1 else 0 end) emptyCars,SUM(case when pc.转归编码=7 then 1 else 0 end) refuseHospitals,	"
 						+ "SUM(case when pc.救治结果编码=2 then 1 else 0 end) spotDeaths,SUM(case when pc.救治结果编码 in (6,7) then 1 else 0 end) afterDeaths,	"
-						+ "SUM(case when e.事件类型编码=3 then 1 else 0 end) inHospitalTransports,"
-						+ "SUM(case when e.事件类型编码=10 then 1 else 0 end) others,	"
-						+ "SUM(case when pc.任务编码 is not null then 1 else 0 end) cureNumbers into #temp1	"
+						+ "SUM(case when e.事件类型编码=3 then 1 else 0 end) inHospitalTransports,	SUM(case when e.事件类型编码=10 then 1 else 0 end) others,	"
+						+ "SUM(case when pc.任务编码 is not null then 1 else 0 end) cureNumbers into #temp1	from AuSp120.tb_TaskV  t	"
+						+ "left outer join AuSp120.tb_PatientCase pc on t.任务序号=pc.任务序号 and t.任务编码=pc.任务编码	"
+						+ "left outer join AuSp120.tb_EventV e on t.事件编码=e.事件编码	left outer join AuSp120.tb_Station s on  s.分站编码=t.分站编码	"
+						+ "where e.事件性质编码=1 and t.司机 is not null and t.司机<>'' and e.受理时刻  between :startTime and :endTime 	group by t.司机  "
+						+ "select distinct t.司机 name,pc.任务序号,pc.任务编码,pc.里程,cr.收费金额,	e.受理时刻,t.到达医院时刻,t.到达现场时刻,t.出车时刻 into #temp2	"
 						+ "from AuSp120.tb_TaskV  t	left outer join AuSp120.tb_PatientCase pc on t.任务序号=pc.任务序号 and t.任务编码=pc.任务编码	"
 						+ "left outer join AuSp120.tb_EventV e on t.事件编码=e.事件编码	left outer join AuSp120.tb_Station s on  s.分站编码=t.分站编码	"
-						+ "where e.事件性质编码=1 and pc.司机 is not null and pc.司机<>'' and e.受理时刻  between :startTime and :endTime	"
-						+ "group by s.分站名称,pc.司机    "
-						+ "select distinct s.分站名称 station,pc.司机 name,pc.任务序号,pc.任务编码,pc.里程,cr.收费金额,	e.受理时刻,t.到达医院时刻,t.到达现场时刻,t.出车时刻 into #temp2	"
-						+ "from AuSp120.tb_TaskV  t	left outer join AuSp120.tb_PatientCase pc on t.任务序号=pc.任务序号 and t.任务编码=pc.任务编码	"
-						+ "left outer join AuSp120.tb_EventV e on t.事件编码=e.事件编码	left outer join AuSp120.tb_Station s on  s.分站编码=t.分站编码	"
-						+ "left outer join AuSp120.tb_ChargeRecord cr on t.任务编码=cr.任务编码 and cr.车辆标识=t.车辆标识  	"
-						+ "where e.事件性质编码=1 and pc.司机 is not null and pc.司机<>'' and e.受理时刻 between :startTime and :endTime	  "
-						+ "select t2.station,t2.name,SUM(t2.里程) distanceTotal,SUM(t2.收费金额) costToal,	"
-						+ "AVG(DATEDIFF(Second,t2.受理时刻,t2.到达现场时刻)) averageResponseTime,	sum(datediff(Second,t2.出车时刻,t2.到达医院时刻)) outCallTimeTotal "
-						+ "into #temp3	from #temp2 t2	group by t2.station,t2.name  "
-						+ "select t1.station,t1.name,t1.afterDeaths,t1.cureNumbers,t1.emptyCars,t1.inHospitalTransports,t1.takeBacks,"
-						+ "t1.others,t1.outCalls,t1.refuseHospitals,t1.spotDeaths,isnull(t3.averageResponseTime,0) averageResponseTime,"
-						+ "isnull(t3.costToal,0) costToal,	t3.distanceTotal,isnull(t3.outCallTimeTotal,0) outCallTimeTotal	"
-						+ "from #temp1 t1 left outer join #temp3 t3 on t1.name=t3.name and t1.station=t3.station  "
-						+ "drop table #temp1,#temp2,#temp3 ";
+						+ "left outer join AuSp120.tb_ChargeRecord cr on t.任务编码=cr.任务编码 and cr.车辆标识=t.车辆标识 	"
+						+ "where e.事件性质编码=1 and t.司机 is not null and t.司机<>'' and e.受理时刻 between :startTime and :endTime  "
+						+ "select t2.name,SUM(t2.里程) distanceTotal,SUM(t2.收费金额) costToal,	AVG(DATEDIFF(Second,t2.受理时刻,t2.到达现场时刻)) averageResponseTime,	sum(datediff(Second,t2.出车时刻,t2.到达医院时刻)) outCallTimeTotal into #temp3	from #temp2 t2	group by t2.name  "
+						+ "select t1.name,t1.afterDeaths,t1.cureNumbers,t1.emptyCars,t1.inHospitalTransports,t1.takeBacks,t1.others,	"
+						+ "t1.outCalls,t1.refuseHospitals,t1.spotDeaths,isnull(t3.averageResponseTime,0) averageResponseTime,	"
+						+ "isnull(t3.costToal,0) costToal,	t3.distanceTotal,isnull(t3.outCallTimeTotal,0) outCallTimeTotal	from #temp1 t1	"
+						+ "left outer join #temp3 t3 on t1.name=t3.name	drop table #temp1,#temp2,#temp3  ";
 			}
 
 			Map<String, String> paramMap = new HashMap<String, String>();
 			paramMap.put("startTime", parameter.getStartTime());
 			paramMap.put("endTime", parameter.getEndTime());
-
+			logger.info(sql);
 			List<DocterNurseDriver> results = this.npJdbcTemplate.query(sql,
 					paramMap, new RowMapper<DocterNurseDriver>() {
 						@Override
 						public DocterNurseDriver mapRow(ResultSet rs, int index)
 								throws SQLException {
-
-							return new DocterNurseDriver(rs
-									.getString("station"),
-									rs.getString("name"), rs
-											.getString("outCalls"), rs
-											.getString("takeBacks"), rs
-											.getString("emptyCars"), rs
-											.getString("refuseHospitals"), rs
-											.getString("spotDeaths"), rs
-											.getString("afterDeaths"), rs
-											.getString("inHospitalTransports"),
-									rs.getString("others"), rs
-											.getString("distanceTotal"), rs
-											.getString("costToal"), rs
-											.getString("averageResponseTime"),
-									rs.getString("outCallTimeTotal"), rs
-											.getString("cureNumbers"));
+							DocterNurseDriver docterNurseDriver = new DocterNurseDriver();
+							if (!StringUtils.equals("3", doctorOrNurseOrDriver)){
+								docterNurseDriver.setStation(rs.getString("station"));
+							}
+							docterNurseDriver.setName(rs.getString("name"));
+							docterNurseDriver.setOutCalls(rs.getString("outCalls"));
+							docterNurseDriver.setTakeBacks(rs.getString("takeBacks"));
+							docterNurseDriver.setEmptyCars(rs.getString("emptyCars"));
+							docterNurseDriver.setRefuseHospitals(rs.getString("refuseHospitals"));
+							docterNurseDriver.setSpotDeaths(rs.getString("spotDeaths"));
+							docterNurseDriver.setAfterDeaths(rs.getString("afterDeaths"));
+							docterNurseDriver.setInHospitalTransports(rs.getString("inHospitalTransports"));
+							docterNurseDriver.setDistanceTotal(rs.getString("distanceTotal"));
+							docterNurseDriver.setCostToal(rs.getString("costToal"));
+							docterNurseDriver.setAverageResponseTime(rs.getString("averageResponseTime"));
+							docterNurseDriver.setOutCallTimeTotal(rs.getString("outCallTimeTotal"));
+							docterNurseDriver.setCureNumbers(rs.getString("cureNumbers"));
+							return docterNurseDriver;
 						}
 					});
 			logger.info("一共有" + results.size() + "条数据");
-			for(DocterNurseDriver result : results){
-				result.setAverageResponseTime(CommonUtil.formatSecond(result.getAverageResponseTime()));
-				result.setOutCallTimeTotal(CommonUtil.formatSecond(result.getOutCallTimeTotal()));
+			for (DocterNurseDriver result : results) {
+				result.setAverageResponseTime(CommonUtil.formatSecond(result
+						.getAverageResponseTime()));
+				result.setOutCallTimeTotal(CommonUtil.formatSecond(result
+						.getOutCallTimeTotal()));
 			}
 			if ((int) parameter.getPage() > 0) {
 				int page = (int) parameter.getPage();

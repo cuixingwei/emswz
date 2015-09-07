@@ -75,7 +75,7 @@
 			$("#cbRemember").attr("checked", false);
 		});
 
-		$("#txtPassword").keypress(function(e) {
+		$("html").keypress(function(e) {
 			var e = e || event;
 			keycode = e.which || e.keyCode;
 			if (keycode == 13) {
