@@ -128,10 +128,7 @@
 									style="width: 150em;" /></td>
 								<td><a href="javascript:void(0);" class="easyui-linkbutton"
 									data-options="iconCls:'ext-icon-zoom',plain:true"
-									onclick="grid.datagrid('load',cxw.serializeObject($('#searchForm')));">查询</a><a
-									href="javascript:void(0);" class="easyui-linkbutton"
-									data-options="iconCls:'ext-icon-zoom_out',plain:true"
-									onclick="$('#searchForm input').val('');grid.datagrid('load',{});">重置查询</a></td>
+									onclick="grid.datagrid('load',cxw.serializeObject($('#searchForm')));">查询</a></td>
 							</tr>
 						</table>
 					</form>

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Repository;
 import com.xhs.ems.bean.EmergencyEvent;
 import com.xhs.ems.bean.easyui.Grid;
 import com.xhs.ems.bean.easyui.Parameter;
+import com.xhs.ems.common.CommonUtil;
 import com.xhs.ems.dao.EmergencyEventDAO;
 
 /**
@@ -90,7 +91,11 @@ public class EmergencyEventDAOImpl implements EmergencyEventDAO {
 										.getString("timeTotal"));
 					}
 				});
-		logger.info("一共有" + results.size() + "条数据");
+		for (EmergencyEvent result : results) {
+			result.setResponseTime(CommonUtil.formatSecond(result
+					.getResponseTime()));
+			result.setTimeTotal(CommonUtil.formatSecond(result.getTimeTotal()));
+		}
 		Grid grid = new Grid();
 		if ((int) parameter.getPage() > 0) {
 			int page = (int) parameter.getPage();

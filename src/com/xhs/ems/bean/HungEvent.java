@@ -33,6 +33,18 @@ public class HungEvent {
 	 * 时长
 	 */
 	private String hungtimes;
+	/**
+	 * 分诊调度医院
+	 */
+	private String station;
+
+	public String getStation() {
+		return station;
+	}
+
+	public void setStation(String station) {
+		this.station = station;
+	}
 
 	public String getEventName() {
 		return eventName;
@@ -92,7 +104,7 @@ public class HungEvent {
 
 	public HungEvent(String eventName, String acceptType, String hungTime,
 			String hungReason, String dispatcher, String endTime,
-			String hungtimes) {
+			String hungtimes, String station) {
 		this.eventName = eventName;
 		this.acceptType = acceptType;
 		this.hungTime = hungTime;
@@ -100,6 +112,8 @@ public class HungEvent {
 		this.dispatcher = dispatcher;
 		this.endTime = endTime;
 		this.hungtimes = hungtimes;
+		this.station = station;
 	}
+
 
 }

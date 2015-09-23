@@ -61,35 +61,41 @@
 						field : 'acceptType',
 						title : '受理类型',
 						resizable : true,
-						width : "14%",
-						align : 'center',
-					}, {
-						field : 'dispatcher',
-						title : '操作人',
-						resizable : true,
-						width : "14%",
-						align : 'center'
-					}, {
-						field : 'hungTime',
-						title : '挂起时刻',
-						resizable : true,
-						width : "14%",
+						width : "12%",
 						align : 'center',
 					}, {
 						field : 'hungReason',
 						title : '挂起原因',
 						resizable : true,
-						width : "14%",
+						width : "12%",
 						align : 'center'
+					}, {
+						field : 'dispatcher',
+						title : '操作人',
+						resizable : true,
+						width : "12%",
+						align : 'center'
+					}, {
+						field : 'hungTime',
+						title : '挂起时刻',
+						resizable : true,
+						width : "11%",
+						align : 'center',
 					}, {
 						field : 'endTime',
 						title : '结束时刻',
 						resizable : true,
-						width : "14%",
+						width : "12%",
 						align : 'center',
 					}, {
 						field : 'hungtimes',
 						title : '时长',
+						resizable : true,
+						width : "10%",
+						align : 'center'
+					}, {
+						field : 'station',
+						title : '分诊调度医院',
 						resizable : true,
 						width : "14%",
 						align : 'center'
@@ -140,10 +146,6 @@
 									class="easyui-linkbutton"
 									data-options="iconCls:'ext-icon-zoom',plain:true"
 									onclick="grid.datagrid('load',cxw.serializeObject($('#searchForm')));">查询</a></td>
-								<td colspan="2">&nbsp;<a href="javascript:void(0);"
-									class="easyui-linkbutton"
-									data-options="iconCls:'ext-icon-zoom_out',plain:true"
-									onclick="$('#searchForm input').val('');grid.datagrid('load',{});">重置查询</a></td>
 							</tr>
 						</table>
 					</form>

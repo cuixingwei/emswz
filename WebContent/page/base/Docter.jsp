@@ -103,13 +103,13 @@
 						field : 'distanceTotal',
 						title : '里程合计',
 						resizable : true,
-						width : "7%",
+						width : "6%",
 						align : 'center'
 					}, {
 						field : 'costToal',
 						title : '收费合计',
 						resizable : true,
-						width : "7%",
+						width : "6%",
 						align : 'center'
 					}, {
 						field : 'averageResponseTime',
@@ -147,7 +147,7 @@
 					}
 				});
 	}
- 
+
 	$(document).ready(function() {
 		init();
 		grid.datagrid('load', cxw.serializeObject($('#searchForm')));
@@ -171,10 +171,6 @@
 									class="easyui-linkbutton"
 									data-options="iconCls:'ext-icon-zoom',plain:true"
 									onclick="grid.datagrid('load',cxw.serializeObject($('#searchForm')));">查询</a></td>
-								<td colspan="2">&nbsp;<a href="javascript:void(0);"
-									class="easyui-linkbutton"
-									data-options="iconCls:'ext-icon-zoom_out',plain:true"
-									onclick="$('#searchForm input').val('');grid.datagrid('load',{});">重置查询</a></td>
 							</tr>
 						</table>
 					</form>

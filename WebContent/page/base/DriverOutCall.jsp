@@ -62,7 +62,7 @@
 						resizable : true,
 						width : "10%",
 						align : 'center'
-					},{
+					}, {
 						field : 'averageResponseTime',
 						title : '平均反应时间',
 						resizable : true,
@@ -121,10 +121,6 @@
 									class="easyui-linkbutton"
 									data-options="iconCls:'ext-icon-zoom',plain:true"
 									onclick="grid.datagrid('load',cxw.serializeObject($('#searchForm')));">查询</a></td>
-								<td colspan="2">&nbsp;<a href="javascript:void(0);"
-									class="easyui-linkbutton"
-									data-options="iconCls:'ext-icon-zoom_out',plain:true"
-									onclick="$('#searchForm input').val('');grid.datagrid('load',{});">重置查询</a></td>
 							</tr>
 						</table>
 					</form>

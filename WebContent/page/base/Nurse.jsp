@@ -39,7 +39,7 @@
 					idField : 'id',
 					pageSize : 20,
 					pageList : [ 10, 20, 30, 40, 50, 100, 200, 300, 400, 500 ],
-					columns : [  [ {
+					columns : [ [ {
 						field : 'station',
 						title : '站点',
 						resizable : true,
@@ -103,13 +103,13 @@
 						field : 'distanceTotal',
 						title : '里程合计',
 						resizable : true,
-						width : "7%",
+						width : "6%",
 						align : 'center'
 					}, {
 						field : 'costToal',
 						title : '收费合计',
 						resizable : true,
-						width : "7%",
+						width : "6%",
 						align : 'center'
 					}, {
 						field : 'averageResponseTime',
@@ -129,7 +129,7 @@
 						resizable : true,
 						width : "8%",
 						align : 'center'
-					} ]  ],
+					} ] ],
 					toolbar : '#toolbar',
 					onBeforeLoad : function(param) {
 						var varify = cxw.checkStartTimeBeforeEndTime(
@@ -171,10 +171,6 @@
 									class="easyui-linkbutton"
 									data-options="iconCls:'ext-icon-zoom',plain:true"
 									onclick="grid.datagrid('load',cxw.serializeObject($('#searchForm')));">查询</a></td>
-								<td colspan="2">&nbsp;<a href="javascript:void(0);"
-									class="easyui-linkbutton"
-									data-options="iconCls:'ext-icon-zoom_out',plain:true"
-									onclick="$('#searchForm input').val('');grid.datagrid('load',{});">重置查询</a></td>
 							</tr>
 						</table>
 					</form>

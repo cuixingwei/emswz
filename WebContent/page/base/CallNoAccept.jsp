@@ -56,7 +56,7 @@
 						resizable : true,
 						width : "33%",
 						align : 'center'
-					}] ],
+					} ] ],
 					toolbar : '#toolbar',
 					onBeforeLoad : function(param) {
 						var varify = cxw.checkStartTimeBeforeEndTime(
@@ -97,10 +97,6 @@
 									class="easyui-linkbutton"
 									data-options="iconCls:'ext-icon-zoom',plain:true"
 									onclick="grid.datagrid('load',cxw.serializeObject($('#searchForm')));">查询</a></td>
-								<td colspan="2">&nbsp;<a href="javascript:void(0);"
-									class="easyui-linkbutton"
-									data-options="iconCls:'ext-icon-zoom_out',plain:true"
-									onclick="$('#searchForm input').val('');grid.datagrid('load',{});">重置查询</a></td>
 							</tr>
 						</table>
 					</form>
