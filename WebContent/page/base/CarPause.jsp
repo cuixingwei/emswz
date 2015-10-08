@@ -73,43 +73,31 @@
 						field : 'carCode',
 						title : '车辆',
 						resizable : true,
-						width : "13%",
+						width : "19%",
 						align : 'center'
 					}, {
 						field : 'driver',
 						title : '司机',
 						resizable : true,
-						width : "13%",
+						width : "19%",
 						align : 'center',
-					}, {
-						field : 'pauseTimes',
-						title : '暂停时长',
-						resizable : true,
-						width : "13%",
-						align : 'center'
 					}, {
 						field : 'pauseTime',
 						title : '暂停时刻',
 						resizable : true,
-						width : "17%",
-						align : 'center'
-					}, {
-						field : 'endTime',
-						title : '结束时刻',
-						resizable : true,
-						width : "17%",
+						width : "19%",
 						align : 'center'
 					}, {
 						field : 'dispatcher',
 						title : '操作人',
 						resizable : true,
-						width : "13%",
+						width : "19%",
 						align : 'center'
 					}, {
 						field : 'pauseReason',
 						title : '暂停原因',
 						resizable : true,
-						width : "13%",
+						width : "19%",
 						align : 'center',
 					} ] ],
 					toolbar : '#toolbar',

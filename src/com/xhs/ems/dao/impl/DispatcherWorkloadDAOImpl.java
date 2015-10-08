@@ -45,7 +45,7 @@ public class DispatcherWorkloadDAOImpl implements DispatcherWorkloadDAO {
 				+ "select t2.姓名,SUM(t2.救治人数) 分诊数 into #temp5 from #temp2 t2 where t2.类型编码 in (11,12) group by t2.姓名    select t2.姓名,"
 				+ "SUM(case when t2.开始受理时刻 is not null and t2.派车时刻 is not null then 1 else 0 end) 有效派车,	SUM(case when t2.结果编码=4 then 1 else 0 end)正常完成,	SUM(case when t2.结果编码=3 then 1 else 0 end) 空车,	"
 				+ "SUM(case when t2.结果编码=2 then 1 else 0 end) 中止任务,SUM(case when t2.结果编码=5 then 1 else 0 end) 拒绝出车 into #temp3  	"
-				+ "from #temp2 t2 group by t2.姓名   select t2.姓名,COUNT(*) 救治人数 into #temp4 from  AuSp120.tb_PatientCase pc "
+				+ "from #temp2 t2 group by t2.姓名   select t2.姓名,SUM(case when pc.转归编码=1 then 1 else 0 end) 救治人数 into #temp4 from  AuSp120.tb_PatientCase pc "
 				+ "	left outer join #temp2 t2  on pc.任务序号=t2.任务序号 and t2.任务编码=pc.任务编码 group by t2.姓名 "
 				+ " select t1.姓名 dispatcher,t1.电话总数 numbersOfPhone,t1.呼入 inOfPhone,t1.呼出 outOfPhone,isnull(t3.有效派车,0) numbersOfSendCar,	"
 				+ "isnull(t3.正常完成,0) numbersOfNormalSendCar,isnull(t3.空车,0) emptyCar,isnull(t3.中止任务,0) numbersOfStopTask,	"

@@ -47,7 +47,7 @@ public class DocterNurseDriverDAOImpl implements DocterNurseDriverDAO {
 		} else {
 			String sql = "";
 			if ("1".equals(doctorOrNurseOrDriver)) {
-				sql = "select s.分站名称 station,pc.随车医生 name, COUNT(*) outCalls,SUM(case when t.结果编码=4 then 1 else 0 end) takeBacks,"
+				sql = "select s.分站名称 station,pc.随车医生 name, COUNT(*) outCalls,SUM(case when pc.转归编码=1 then 1 else 0 end) takeBacks,"
 						+ "	SUM(case when t.结果编码 in (2,3) then 1 else 0 end) emptyCars,SUM(case when pc.转归编码=7 then 1 else 0 end) refuseHospitals,	"
 						+ "SUM(case when pc.救治结果编码=2 then 1 else 0 end) spotDeaths,SUM(case when pc.救治结果编码  in (6,7) then 1 else 0 end) afterDeaths,	"
 						+ "SUM(case when e.事件类型编码=3 then 1 else 0 end) inHospitalTransports,"
@@ -71,7 +71,7 @@ public class DocterNurseDriverDAOImpl implements DocterNurseDriverDAO {
 						+ "from #temp1 t1 left outer join #temp3 t3 on t1.name=t3.name and t1.station=t3.station  "
 						+ "drop table #temp1,#temp2,#temp3 ";
 			} else if ("2".equals(doctorOrNurseOrDriver)) {
-				sql = "select s.分站名称 station,pc.随车护士 name, COUNT(*) outCalls,SUM(case when t.结果编码=4 then 1 else 0 end) takeBacks,"
+				sql = "select s.分站名称 station,pc.随车护士 name, COUNT(*) outCalls,SUM(case when pc.转归编码=1 then 1 else 0 end) takeBacks,"
 						+ "	SUM(case when t.结果编码 in (2,3) then 1 else 0 end) emptyCars,SUM(case when pc.转归编码=7 then 1 else 0 end) refuseHospitals,	"
 						+ "SUM(case when pc.救治结果编码=2 then 1 else 0 end) spotDeaths,SUM(case when pc.救治结果编码  in (6,7) then 1 else 0 end) afterDeaths,	"
 						+ "SUM(case when e.事件类型编码=3 then 1 else 0 end) inHospitalTransports,"
@@ -95,7 +95,7 @@ public class DocterNurseDriverDAOImpl implements DocterNurseDriverDAO {
 						+ "from #temp1 t1 left outer join #temp3 t3 on t1.name=t3.name and t1.station=t3.station  "
 						+ "drop table #temp1,#temp2,#temp3 ";
 			} else if ("3".equals(doctorOrNurseOrDriver)) {
-				sql = "select t.司机 name, COUNT(*) outCalls,	SUM(case when t.结果编码=4 then 1 else 0 end) takeBacks,"
+				sql = "select t.司机 name, COUNT(*) outCalls,	SUM(case when pc.转归编码=1 then 1 else 0 end) takeBacks,"
 						+ "SUM(case when t.结果编码 in (2,3) then 1 else 0 end) emptyCars,SUM(case when pc.转归编码=7 then 1 else 0 end) refuseHospitals,	"
 						+ "SUM(case when pc.救治结果编码=2 then 1 else 0 end) spotDeaths,SUM(case when pc.救治结果编码 in (6,7) then 1 else 0 end) afterDeaths,	"
 						+ "SUM(case when e.事件类型编码=3 then 1 else 0 end) inHospitalTransports,	SUM(case when e.事件类型编码=10 then 1 else 0 end) others,	"

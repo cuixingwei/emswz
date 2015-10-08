@@ -7,10 +7,11 @@ select distinct et.NameM 事件类型 ,pc.任务编码,pc.任务序号,t.事件编码, 里程 into
 	where e.受理时刻 between '2014-01-01 00:00:00' and '2016-05-01 00:00:00'	
 select 事件类型 outCallType,SUM(里程) distance into #temp1 from #dis d group by 事件类型
 select et.NameM outCallType,COUNT(et.NameM) times,
-	SUM(case when t.结果编码=4 then 1 else 0 end) takeBacks,'' takeBackRate
+	SUM(case when pc.转归编码=1 then 1 else 0 end) takeBacks,'' takeBackRate
 	into #temp2
 	from AuSp120.tb_EventV e
-	left outer join AuSp120.tb_TaskV t on t.事件编码=e.事件编码 	
+	left outer join AuSp120.tb_TaskV t on t.事件编码=e.事件编码
+	left outer join AuSp120.tb_PatientCase pc on pc.任务序号=t.任务序号 and pc.任务编码=t.任务编码 	
 	left outer join AuSp120.tb_DEventType et on et.Code=e.事件类型编码
 	where e.事件性质编码=1 and e.受理时刻 between '2014-01-01 00:00:00' and '2016-05-01 00:00:00'
 	group by et.NameM
@@ -134,7 +135,7 @@ select t1.name,t1.afterDeaths,t1.cureNumbers,t1.emptyCars,t1.inHospitalTransport
 	left outer join #temp3 t3 on t1.name=t3.name  
 	drop table #temp1,#temp2,#temp3 
 --医生护士司机工作统计
-select s.分站名称 station,pc.随车医生 name, COUNT(*) outCalls,SUM(case when t.结果编码=4 then 1 else 0 end) takeBacks,
+select s.分站名称 station,pc.随车医生 name, COUNT(*) outCalls,SUM(case when pc.转归编码=1 then 1 else 0 end) takeBacks,
 	SUM(case when t.结果编码 in (2,3) then 1 else 0 end) emptyCars,SUM(case when pc.转归编码=7 then 1 else 0 end) refuseHospitals,
 	SUM(case when pc.救治结果编码=2 then 1 else 0 end) spotDeaths,SUM(case when pc.救治结果编码 in (6,7) then 1 else 0 end) afterDeaths,
 	SUM(case when e.事件类型编码=3 then 1 else 0 end) inHospitalTransports,SUM(case when e.事件类型编码=10 then 1 else 0 end) others,
@@ -293,7 +294,7 @@ drop table #temp1,#temp2
 --区域统计
 select distinct pc.任务序号,pc.任务编码,pc.里程 into #pc
 	from AuSp120.tb_PatientCase pc
-select da.NameM area,COUNT(t.任务编码) outCalls,SUM(case when t.结果编码=4 then 1 else 0 end) takeBacks,isnull(sum(pc.里程),0) distance,
+select da.NameM area,COUNT(t.任务编码) outCalls,SUM(case when pc.转归编码=1 then 1 else 0 end) takeBacks,isnull(sum(pc.里程),0) distance,
 	isnull(SUM(DATEDIFF(Second,t.出车时刻,t.到达医院时刻)),0) outCallTime,isnull(AVG(DATEDIFF(Second,t.出车时刻,t.到达医院时刻)),0) averageTime
 	from AuSp120.tb_AcceptDescriptV a 
 	left outer join AuSp120.tb_TaskV t on a.事件编码=t.事件编码 and a.受理序号=t.受理序号
@@ -498,7 +499,7 @@ select t2.姓名,SUM(case when t2.开始受理时刻 is not null and t2.派车时刻 is not 
 	SUM(case when t2.结果编码=4 then 1 else 0 end)正常完成,	SUM(case when t2.结果编码=3 then 1 else 0 end) 空车,
 	SUM(case when t2.结果编码=2 then 1 else 0 end) 中止任务,SUM(case when t2.结果编码=5 then 1 else 0 end) 拒绝出车 into #temp3 
 	from #temp2 t2 group by t2.姓名
-select t2.姓名,COUNT(*) 救治人数 into #temp4 from  AuSp120.tb_PatientCase pc
+select t2.姓名,SUM(case when pc.转归编码=1 then 1 else 0 end) 救治人数 into #temp4 from  AuSp120.tb_PatientCase pc
 	left outer join #temp2 t2  on pc.任务序号=t2.任务序号 and t2.任务编码=pc.任务编码 group by t2.姓名
 select t1.姓名 dispatcher,t1.电话总数 numbersOfPhone,t1.呼入 inOfPhone,t1.呼出 outOfPhone,isnull(t3.有效派车,0) numbersOfSendCar,
 	isnull(t3.正常完成,0) numbersOfNormalSendCar,isnull(t3.空车,0) emptyCar,isnull(t3.中止任务,0) numbersOfStopTask,

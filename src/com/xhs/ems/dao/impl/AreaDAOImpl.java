@@ -34,9 +34,9 @@ public class AreaDAOImpl implements AreaDAO {
 
 	@Override
 	public Grid getData(Parameter parameter) {
-		String sql = "select distinct pc.任务序号,pc.任务编码,pc.里程 into #pc	"
+		String sql = "select distinct pc.任务序号,pc.任务编码,pc.里程,pc.转归编码  into #pc	"
 				+ "from AuSp120.tb_PatientCase pc select da.NameM area,COUNT(t.任务编码) outCalls,"
-				+ "SUM(case when t.结果编码=4 then 1 else 0 end) takeBacks,isnull(sum(pc.里程),0) distance,	"
+				+ "SUM(case when pc.转归编码=1 then 1 else 0 end) takeBacks,isnull(sum(pc.里程),0) distance,	"
 				+ "isnull(SUM(DATEDIFF(Second,t.出车时刻,t.到达医院时刻)),0) outCallTime,isnull(AVG(DATEDIFF(Second,t.出车时刻,t.到达医院时刻)),0) averageTime	"
 				+ "from AuSp120.tb_AcceptDescriptV a	left outer join AuSp120.tb_TaskV t on a.事件编码=t.事件编码 and a.受理序号=t.受理序号	"
 				+ "left outer join AuSp120.tb_EventV e on t.事件编码=e.事件编码	left outer join AuSp120.tb_DArea da on da.Code=a.区域编码	"

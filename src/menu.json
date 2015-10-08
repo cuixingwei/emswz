@@ -287,32 +287,6 @@
     	"attributes":
     		{
     			"target":"",
-    			"url":"CallSpotType.jsp"
-    		},
-    	"checked":false,
-    	"iconCls":"ext-icon-world",
-    	"id":"19",
-    	"pid":"1",
-    	"state":"open",
-    	"text":"呼救现场地点类型统计"
-    },
-    {
-    	"attributes":
-    		{
-    			"target":"",
-    			"url":"SendSpotType.jsp"
-    		},
-    	"checked":false,
-    	"iconCls":"ext-icon-world",
-    	"id":"110",
-    	"pid":"1",
-    	"state":"open",
-    	"text":"送往地点类型统计"
-    },
-    {
-    	"attributes":
-    		{
-    			"target":"",
     			"url":"AnswerAlarm.jsp"
     		},
     	"checked":false,

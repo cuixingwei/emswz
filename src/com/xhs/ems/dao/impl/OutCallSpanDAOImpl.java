@@ -38,9 +38,10 @@ public class OutCallSpanDAOImpl implements OutCallSpanDAO {
 
 	@Override
 	public Grid getData(Parameter parameter) {
-		String sql = "select  DATEPART(HOUR,e.受理时刻) span,COUNT(*) times,SUM(case when t.结果编码=4 then 1 else 0 end) takeBacks,	"
+		String sql = "select  DATEPART(HOUR,e.受理时刻) span,COUNT(*) times,SUM(case when pc.转归编码=1 then 1 else 0 end) takeBacks,	"
 				+ "isnull(AVG(DATEDIFF(Second,e.受理时刻,t.到达现场时刻)),0) averageResponseTime,isnull(sum(datediff(Second,t.出车时刻,t.到达医院时刻)),0) outCallTotal,	isnull(avg(datediff(Second,t.出车时刻,t.到达医院时刻)),0) averageTime	"
 				+ "from AuSp120.tb_TaskV t left outer join AuSp120.tb_EventV e on e.事件编码=t.事件编码	"
+				+ "left outer join AuSp120.tb_PatientCase pc on t.任务编码=pc.任务编码 and t.任务序号=pc.任务序号 "
 				+ "where e.事件性质编码=1 and e.受理时刻 between :startTime and :endTime	"
 				+ "group by DATEPART(HOUR,e.受理时刻) 	order by DATEPART(HOUR,e.受理时刻) ";
 		Map<String, String> paramMap = new HashMap<String, String>();
