@@ -339,6 +339,45 @@
     	"attributes":
     		{
     			"target":"",
+    			"url":"DriverDetail.jsp"
+    		},
+    	"checked":false,
+    	"iconCls":"ext-icon-world",
+    	"id":"12",
+    	"pid":"1",
+    	"state":"open",
+    	"text":"驾驶员出诊明细表"
+    },
+    {
+    	"attributes":
+    		{
+    			"target":"",
+    			"url":"DoctorNurseDetail.jsp"
+    		},
+    	"checked":false,
+    	"iconCls":"ext-icon-world",
+    	"id":"12",
+    	"pid":"1",
+    	"state":"open",
+    	"text":"医生护士出诊明细表"
+    },
+     {
+    	"attributes":
+    		{
+    			"target":"",
+    			"url":"CenterHospitalOutDetail.jsp"
+    		},
+    	"checked":false,
+    	"iconCls":"ext-icon-world",
+    	"id":"12",
+    	"pid":"1",
+    	"state":"open",
+    	"text":"三峡中心医院出诊明细表"
+    },
+    {
+    	"attributes":
+    		{
+    			"target":"",
     			"url":"DriverOutCall.jsp"
     		},
     	"checked":false,

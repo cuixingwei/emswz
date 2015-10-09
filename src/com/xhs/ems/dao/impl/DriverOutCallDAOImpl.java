@@ -14,6 +14,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.xhs.ems.bean.DriverDoctorNurseDetail;
 import com.xhs.ems.bean.DriverOutCall;
 import com.xhs.ems.bean.easyui.Grid;
 import com.xhs.ems.bean.easyui.Parameter;
@@ -97,5 +98,157 @@ public class DriverOutCallDAOImpl implements DriverOutCallDAO {
 		}
 		return grid;
 
+	}
+
+	@Override
+	public Grid getDriverDetail(Parameter parameter) {
+		String sql = "select convert(varchar(20),e.受理时刻,120) dateTime,pc.姓名 patientName,pc.现场地点 address,pc.出诊地址 outStation,tr.NameM outResult,pc.司机 driver,pc.里程 distance	"
+				+ "from AuSp120.tb_PatientCase pc left outer join AuSp120.tb_TaskV t on t.任务编码=pc.任务编码 and t.任务序号=pc.任务序号	"
+				+ "left outer join AuSp120.tb_EventV e on e.事件编码=t.事件编码	left outer join AuSp120.tb_DTaskResult tr on tr.Code=t.结果编码	"
+				+ "where e.事件性质编码=1 and e.受理时刻 between :startTime and :endTime";
+		Map<String, String> paramMap = new HashMap<String, String>();
+		paramMap.put("startTime", parameter.getStartTime());
+		paramMap.put("endTime", parameter.getEndTime());
+		logger.info(sql);
+		List<DriverDoctorNurseDetail> results = this.npJdbcTemplate.query(sql,
+				paramMap, new RowMapper<DriverDoctorNurseDetail>() {
+					@Override
+					public DriverDoctorNurseDetail mapRow(ResultSet rs,
+							int index) throws SQLException {
+						DriverDoctorNurseDetail detail = new DriverDoctorNurseDetail();
+						detail.setAddress(rs.getString("address"));
+						detail.setDateTime(rs.getString("dateTime"));
+						detail.setDistance(rs.getString("distance"));
+						detail.setDriver(rs.getString("driver"));
+						detail.setOutResult(rs.getString("outResult"));
+						detail.setOutStation(rs.getString("outStation"));
+						detail.setPatientName(rs.getString("patientName"));
+						return detail;
+					}
+				});
+		Grid grid = new Grid();
+		if ((int) parameter.getPage() > 0) {
+			int page = (int) parameter.getPage();
+			int rows = (int) parameter.getRows();
+
+			int fromIndex = (page - 1) * rows;
+			int toIndex = (results.size() <= page * rows && results.size() >= (page - 1)
+					* rows) ? results.size() : page * rows;
+			grid.setRows(results.subList(fromIndex, toIndex));
+			grid.setTotal(results.size());
+
+		} else {
+			grid.setRows(results);
+		}
+		return grid;
+	}
+
+	@Override
+	public Grid getDoctorNurseDetail(Parameter parameter) {
+		String sql = "select convert(varchar(20),e.受理时刻,120) dateTime,pc.姓名 patientName,pc.现场地点 address,pc.出诊地址 outStation,tr.NameM outResult,pc.随车医生 doctor,pc.随车护士 nurse,pc.里程 distance	"
+				+ "from AuSp120.tb_PatientCase pc left outer join AuSp120.tb_TaskV t on t.任务编码=pc.任务编码 and t.任务序号=pc.任务序号	"
+				+ "left outer join AuSp120.tb_EventV e on e.事件编码=t.事件编码	left outer join AuSp120.tb_DTaskResult tr on tr.Code=t.结果编码	"
+				+ "where e.事件性质编码=1 and e.受理时刻 between :startTime and :endTime";
+		Map<String, String> paramMap = new HashMap<String, String>();
+		paramMap.put("startTime", parameter.getStartTime());
+		paramMap.put("endTime", parameter.getEndTime());
+		logger.info(sql);
+		List<DriverDoctorNurseDetail> results = this.npJdbcTemplate.query(sql,
+				paramMap, new RowMapper<DriverDoctorNurseDetail>() {
+					@Override
+					public DriverDoctorNurseDetail mapRow(ResultSet rs,
+							int index) throws SQLException {
+						DriverDoctorNurseDetail detail = new DriverDoctorNurseDetail();
+						detail.setAddress(rs.getString("address"));
+						detail.setDateTime(rs.getString("dateTime"));
+						detail.setDistance(rs.getString("distance"));
+						detail.setNurse(rs.getString("nurse"));
+						detail.setDoctor(rs.getString("doctor"));
+						detail.setOutResult(rs.getString("outResult"));
+						detail.setOutStation(rs.getString("outStation"));
+						detail.setPatientName(rs.getString("patientName"));
+						return detail;
+					}
+				});
+		Grid grid = new Grid();
+		if ((int) parameter.getPage() > 0) {
+			int page = (int) parameter.getPage();
+			int rows = (int) parameter.getRows();
+
+			int fromIndex = (page - 1) * rows;
+			int toIndex = (results.size() <= page * rows && results.size() >= (page - 1)
+					* rows) ? results.size() : page * rows;
+			grid.setRows(results.subList(fromIndex, toIndex));
+			grid.setTotal(results.size());
+
+		} else {
+			grid.setRows(results);
+		}
+		return grid;
+	}
+
+	@Override
+	public Grid getCenterHospitalOutDetail(Parameter parameter) {
+		String sql = "select convert(varchar(20),e.受理时刻,120) dateTime,pc.姓名 patientName,pc.现场地点 address,pc.出诊地址 outStation,"
+				+ "tr.NameM outResult,pc.随车医生 doctor,pc.随车护士 nurse,pc.里程 distance,	pc.司机 driver,pc.性别 sex,pc.年龄 age,"
+				+ "pc.医生诊断 diagnose,pc.送往地点 sendAddress,da.NameM area,dc.NameM diseaseDepartment,dcs.NameM classState,	"
+				+ "dis.NameM diseaseDegree,de.NameM treatmentEffet	from AuSp120.tb_PatientCase pc "
+				+ "left outer join AuSp120.tb_TaskV t on t.任务编码=pc.任务编码 and t.任务序号=pc.任务序号	"
+				+ "left outer join AuSp120.tb_EventV e on e.事件编码=t.事件编码 	"
+				+ "left outer join AuSp120.tb_DTaskResult tr on tr.Code=t.结果编码	"
+				+ "left outer join AuSp120.tb_AcceptDescriptV  a on a.受理序号=t.受理序号 and a.事件编码=t.事件编码	"
+				+ "left outer join AuSp120.tb_DArea da on da.Code=a.区域编码 "
+				+ "left outer join AuSp120.tb_DDiseaseClass dc on dc.Code=pc.疾病科别编码	"
+				+ "left outer join AuSp120.tb_DDiseaseClassState dcs on dcs.Code=pc.分类统计编码	"
+				+ "left outer join AuSp120.tb_DILLState dis on dis.Code=pc.病情编码	"
+				+ "left outer join AuSp120.tb_DEffect de on de.Code=pc.救治效果编码	"
+				+ "where e.事件性质编码=1 and pc.出诊地址 in ('三峡中心医院急救分院','百安分院','江南分院') and e.受理时刻 between  :startTime and :endTime";
+		Map<String, String> paramMap = new HashMap<String, String>();
+		paramMap.put("startTime", parameter.getStartTime());
+		paramMap.put("endTime", parameter.getEndTime());
+		logger.info(sql);
+		List<DriverDoctorNurseDetail> results = this.npJdbcTemplate.query(sql,
+				paramMap, new RowMapper<DriverDoctorNurseDetail>() {
+					@Override
+					public DriverDoctorNurseDetail mapRow(ResultSet rs,
+							int index) throws SQLException {
+						DriverDoctorNurseDetail detail = new DriverDoctorNurseDetail();
+						detail.setAddress(rs.getString("address"));
+						detail.setDateTime(rs.getString("dateTime"));
+						detail.setDistance(rs.getString("distance"));
+						detail.setNurse(rs.getString("nurse"));
+						detail.setDoctor(rs.getString("doctor"));
+						detail.setOutResult(rs.getString("outResult"));
+						detail.setOutStation(rs.getString("outStation"));
+						detail.setPatientName(rs.getString("patientName"));
+						detail.setAge(rs.getString("age"));
+						detail.setArea(rs.getString("area"));
+						detail.setClassState(rs.getString("classState"));
+						detail.setDiagnose(rs.getString("diagnose"));
+						detail.setDiseaseDegree(rs.getString("diseaseDegree"));
+						detail.setDiseaseDepartment(rs
+								.getString("diseaseDepartment"));
+						detail.setDriver(rs.getString("driver"));
+						detail.setSendAddress(rs.getString("sendAddress"));
+						detail.setSex(rs.getString("sex"));
+						detail.setTreatmentEffet(rs.getString("treatmentEffet"));
+						return detail;
+					}
+				});
+		Grid grid = new Grid();
+		if ((int) parameter.getPage() > 0) {
+			int page = (int) parameter.getPage();
+			int rows = (int) parameter.getRows();
+
+			int fromIndex = (page - 1) * rows;
+			int toIndex = (results.size() <= page * rows && results.size() >= (page - 1)
+					* rows) ? results.size() : page * rows;
+			grid.setRows(results.subList(fromIndex, toIndex));
+			grid.setTotal(results.size());
+
+		} else {
+			grid.setRows(results);
+		}
+		return grid;
 	}
 }

@@ -38,6 +38,24 @@ public class DriverOutCallController {
 		return driverOutCallService.getData(parameter);
 	}
 
+	@RequestMapping(value = "/getDriverDetail", method = RequestMethod.POST)
+	public @ResponseBody Grid getDriverDetail(Parameter parameter) {
+		logger.info("司机出诊明细表");
+		return driverOutCallService.getDriverDetail(parameter);
+	}
+
+	@RequestMapping(value = "/getCenterHospitalOutDetail", method = RequestMethod.POST)
+	public @ResponseBody Grid getCenterHospitalOutDetail(Parameter parameter) {
+		logger.info("三峡中心医院出诊明细表");
+		return driverOutCallService.getCenterHospitalOutDetail(parameter);
+	}
+
+	@RequestMapping(value = "/getDoctorNurseDetail", method = RequestMethod.POST)
+	public @ResponseBody Grid getDoctorNurseDetail(Parameter parameter) {
+		logger.info("医生护士出诊明细表");
+		return driverOutCallService.getDoctorNurseDetail(parameter);
+	}
+
 	@RequestMapping(value = "/exportDriverOutCall", method = RequestMethod.GET)
 	public void export(Parameter parameter, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
@@ -50,10 +68,9 @@ public class DriverOutCallController {
 		String[] fields = new String[] { "name", "outCalls", "takeBacks",
 				"distance", "averageResponseTime", "outCallTimeTotal",
 				"averageTime" };
-		int spanCount = 1; // 需要合并的列数。从第1列开始到指定列。
 		TableData td = ExcelUtils.createTableData(
 				driverOutCallService.getData(parameter).getRows(),
-				ExcelUtils.createTableHeader(headers, spanCount), fields);
+				ExcelUtils.createTableHeader(headers), fields);
 		JsGridReportBase report = new JsGridReportBase(request, response);
 
 		HttpSession session = request.getSession();
@@ -66,5 +83,94 @@ public class DriverOutCallController {
 			report.exportToExcel(title, "", td, parameter);
 		}
 
+	}
+
+	@RequestMapping(value = "/exportDriverDetail", method = RequestMethod.GET)
+	public void exportDriverDetail(Parameter parameter,
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		response.setContentType("application/msexcel;charset=UTF-8");
+
+		String title = "驾驶员出诊明细表";
+		String[] headers = new String[] { "时间", "病人姓名", "现场地址", "出诊分站", "出诊结果",
+				"出诊司机", "出诊里程" };
+		String[] fields = new String[] { "dateTime", "patientName", "address",
+				"outStation", "outResult", "driver", "distance" };
+		int spanCount = 1; // 需要合并的列数。从第1列开始到指定列。
+		TableData td = ExcelUtils.createTableData(driverOutCallService
+				.getDriverDetail(parameter).getRows(), ExcelUtils
+				.createTableHeader(headers, spanCount), fields);
+		JsGridReportBase report = new JsGridReportBase(request, response);
+
+		HttpSession session = request.getSession();
+		SessionInfo sessionInfo = (SessionInfo) session
+				.getAttribute("sessionInfo");
+		if (null != sessionInfo) {
+			report.exportToExcel(title, sessionInfo.getUser().getName(), td,
+					parameter);
+		} else {
+			report.exportToExcel(title, "", td, parameter);
+		}
+
+	}
+
+	@RequestMapping(value = "/exportDoctorNurseDetail", method = RequestMethod.GET)
+	public void exportDoctorNurseDetail(Parameter parameter,
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		response.setContentType("application/msexcel;charset=UTF-8");
+
+		String title = "医生护士出诊明细表";
+		String[] headers = new String[] { "时间", "病人姓名", "现场地址", "出诊分站", "出诊结果",
+				"出诊医生", "出诊护士", "出诊里程" };
+		String[] fields = new String[] { "dateTime", "patientName", "address",
+				"outStation", "outResult", "doctor", "nurse", "distance" };
+		int spanCount = 1; // 需要合并的列数。从第1列开始到指定列。
+		TableData td = ExcelUtils.createTableData(driverOutCallService
+				.getDoctorNurseDetail(parameter).getRows(), ExcelUtils
+				.createTableHeader(headers, spanCount), fields);
+		JsGridReportBase report = new JsGridReportBase(request, response);
+
+		HttpSession session = request.getSession();
+		SessionInfo sessionInfo = (SessionInfo) session
+				.getAttribute("sessionInfo");
+		if (null != sessionInfo) {
+			report.exportToExcel(title, sessionInfo.getUser().getName(), td,
+					parameter);
+		} else {
+			report.exportToExcel(title, "", td, parameter);
+		}
+	}
+
+	@RequestMapping(value = "/exportCenterHospitalOutDetail", method = RequestMethod.GET)
+	public void exportCenterHospitalOutDetail(Parameter parameter,
+			HttpServletRequest request, HttpServletResponse response)
+			throws Exception {
+		response.setContentType("application/msexcel;charset=UTF-8");
+
+		String title = "三峡中心医院出诊明细表";
+		String[] headers = new String[] { "时间", "病人姓名", "性别", "年龄", "诊断",
+				"疾病科别", "分类统计", "病情程度", "救治效果", "区域", "现场地址", "出诊分站", "出诊结果",
+				"送达地点", "出诊医生", "出诊护士", "出诊司机", "出诊里程" };
+		String[] fields = new String[] { "dateTime", "patientName", "sex",
+				"age", "diagnose", "diseaseDepartment", "classState",
+				"diseaseDegree", "treatmentEffet", "area", "address",
+				"outStation", "outResult", "sendAddress", "doctor", "nurse",
+				"driver", "distance" };
+		int spanCount = 1; // 需要合并的列数。从第1列开始到指定列。
+		TableData td = ExcelUtils.createTableData(driverOutCallService
+				.getCenterHospitalOutDetail(parameter).getRows(), ExcelUtils
+				.createTableHeader(headers, spanCount), fields);
+		JsGridReportBase report = new JsGridReportBase(request, response);
+
+		HttpSession session = request.getSession();
+		SessionInfo sessionInfo = (SessionInfo) session
+				.getAttribute("sessionInfo");
+		if (null != sessionInfo) {
+			report.exportToExcel(title, sessionInfo.getUser().getName(), td,
+					parameter);
+		} else {
+			report.exportToExcel(title, "", td, parameter);
+		}
 	}
 }

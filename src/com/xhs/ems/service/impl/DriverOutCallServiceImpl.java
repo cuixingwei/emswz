@@ -23,4 +23,19 @@ public class DriverOutCallServiceImpl implements DriverOutCallService {
 		return driverOutCallDAO.getData(parameter);
 	}
 
+	@Override
+	public Grid getDriverDetail(Parameter parameter) {
+		return driverOutCallDAO.getDriverDetail(parameter);
+	}
+
+	@Override
+	public Grid getDoctorNurseDetail(Parameter parameter) {
+		return driverOutCallDAO.getDoctorNurseDetail(parameter);
+	}
+
+	@Override
+	public Grid getCenterHospitalOutDetail(Parameter parameter) {
+		return driverOutCallDAO.getCenterHospitalOutDetail(parameter);
+	}
+
 }
