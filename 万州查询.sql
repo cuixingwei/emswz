@@ -522,7 +522,11 @@ select * from AuSp120.tb_DTriageRefuse
 select * from AuSp120.tb_PatientCase pc 
 select * from AuSp120.tb_EventV e where e. ¬π ÷÷¿‡±‡¬Î<>0
 select * from AuSp120.tb_DOutCome
+<<<<<<< HEAD
 select * from AuSp120.tb_DArea
+=======
+select * from AuSp120.tb_DAcceptDescriptType
+>>>>>>> 0868d3db9dc932e6ec2d8d03f0b31e6d22eb3264
 select * from AuSp120.tb_MrUser
 
 

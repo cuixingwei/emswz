@@ -118,7 +118,7 @@ public class Parameter {
 	 * 送达地点
 	 */
 	private String sendAddress;
-	
+
 	/**
 	 * 区域
 	 */

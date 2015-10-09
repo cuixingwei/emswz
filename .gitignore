@@ -1,7 +1,16 @@
 .class
 .git
 target
+<<<<<<< HEAD
 bin
 /doc
 build/
+=======
+.project
+.classpath
+bin
+/doc
+build/
+.settings/
+>>>>>>> 0868d3db9dc932e6ec2d8d03f0b31e6d22eb3264
 

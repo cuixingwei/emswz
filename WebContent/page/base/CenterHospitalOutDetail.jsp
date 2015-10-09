@@ -44,7 +44,6 @@
 					url : 'getCenterHospitalOutDetail',
 					pagePosition : 'bottom',
 					pagination : true,
-					striped : true,
 					nowrap : false,
 					singleSelect : true,
 					rownumbers : true,
