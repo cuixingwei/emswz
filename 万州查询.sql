@@ -252,7 +252,7 @@ select da.NameM area,pc.送往地点 station,COUNT(*) outCalls,isnull(SUM(case when 
 	group by da.NameM,pc.送往地点
 drop table #pc
 --医院转诊明细
-select CONVERT(varchar(20),e.受理时刻,120) dates,pc.姓名 patientName,pc.年龄 age,pc.性别 gender,pc.医生诊断 diagnose,pc.出诊地址 outCallAddress,pc.科室 sendClass 
+select CONVERT(varchar(20),e.受理时刻,120) dates,pc.姓名 patientName,pc.年龄 age,pc.性别 gender,pc.医生诊断 diagnose,pc.现场地点 outCallAddress,pc.科室 sendClass 
 	from AuSp120.tb_EventV e left outer join AuSp120.tb_TaskV t on t.事件编码=e.事件编码
 	left outer join AuSp120.tb_Station s on t.分站编码=s.分站编码
 	left outer join AuSp120.tb_PatientCase pc  on t.任务序号=pc.任务序号 and pc.任务编码=t.任务编码
@@ -268,13 +268,13 @@ select s.分站名称 station,COUNT(*) outCalls,isnull(SUM(pc.里程),0) distance,isnu
 	group by s.分站名称
 drop table #pc
 --院内转诊明细
-select CONVERT(varchar(20),e.受理时刻,120) date,pc.姓名 patientName,pc.年龄 age,pc.性别 gender,pc.医生诊断 diagnose,pc.出诊地址 outCallAddress,pc.科室 sendClass 
+select CONVERT(varchar(20),e.受理时刻,120) date,pc.姓名 patientName,pc.年龄 age,pc.性别 gender,pc.医生诊断 diagnose,pc.现场地点 outCallAddress,pc.科室 sendClass 
 	from AuSp120.tb_EventV e left outer join AuSp120.tb_TaskV t on t.事件编码=e.事件编码
 	left outer join AuSp120.tb_Station s on t.分站编码=s.分站编码
 	left outer join AuSp120.tb_PatientCase pc  on t.任务序号=pc.任务序号 and pc.任务编码=t.任务编码
 	where e.事件性质编码=1 and t.分站编码 is not null and pc.任务编码 is not null and e.事件类型编码=3 and e.受理时刻 between '2014-01-01 00:00:00' and '2015-11-01 00:00:00'
 --本院内出诊明细
-select CONVERT(varchar(20),e.受理时刻,120) date,pc.姓名 patientName,pc.年龄 age,pc.性别 gender,pc.医生诊断 diagnose,pc.出诊地址 outCallAddress,pc.科室 sendClass
+select CONVERT(varchar(20),e.受理时刻,120) date,pc.姓名 patientName,pc.年龄 age,pc.性别 gender,pc.医生诊断 diagnose,pc.现场地点 outCallAddress,pc.科室 sendClass
 	from AuSp120.tb_TaskV t  
 	left outer join AuSp120.tb_PatientCase pc on t.任务序号=pc.任务序号 and pc.任务编码=t.任务编码
 	left outer join AuSp120.tb_EventV e on e.事件编码=t.事件编码
@@ -522,13 +522,6 @@ select * from AuSp120.tb_DTriageRefuse
 select * from AuSp120.tb_PatientCase pc 
 select * from AuSp120.tb_EventV e where e.事故种类编码<>0
 select * from AuSp120.tb_DOutCome
-<<<<<<< HEAD
-select * from AuSp120.tb_DArea
-=======
-select * from AuSp120.tb_DAcceptDescriptType
->>>>>>> 0868d3db9dc932e6ec2d8d03f0b31e6d22eb3264
-select * from AuSp120.tb_MrUser
-
 
 
 

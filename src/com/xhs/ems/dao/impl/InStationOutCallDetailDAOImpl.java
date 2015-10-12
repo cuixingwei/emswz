@@ -38,7 +38,7 @@ public class InStationOutCallDetailDAOImpl implements InStationOutCallDetailDAO 
 
 	@Override
 	public Grid getData(Parameter parameter) {
-		String sql = "select CONVERT(varchar(20),e.受理时刻,120) date,pc.姓名 patientName,pc.年龄 age,pc.性别 gender,pc.医生诊断 diagnose,pc.出诊地址 outCallAddress,pc.科室 sendClass	"
+		String sql = "select CONVERT(varchar(20),e.受理时刻,120) date,pc.姓名 patientName,pc.年龄 age,pc.性别 gender,pc.医生诊断 diagnose,pc.现场地点 outCallAddress,pc.科室 sendClass	"
 				+ "from AuSp120.tb_TaskV t	left outer join AuSp120.tb_PatientCase pc on t.任务序号=pc.任务序号 and pc.任务编码=t.任务编码	"
 				+ "left outer join AuSp120.tb_EventV e on e.事件编码=t.事件编码	"
 				+ "where e.事件性质编码=1 and t.分站编码='001' and pc.任务编码 is not null and e.受理时刻 between :startTime and :endTime ";
