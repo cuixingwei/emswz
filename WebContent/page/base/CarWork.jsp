@@ -14,8 +14,7 @@
 	var exportData = function() {
 		var url = "exportCarWorkDatas?startTime="
 				+ $('#startTime').datetimebox('getValue') + "&endTime="
-				+ $('#endTime').datetimebox('getValue') + "&station="
-				+ $('#station').combobox('getValue') + "&carCode="
+				+ $('#endTime').datetimebox('getValue') + "&carCode="
 				+ $('#carCode').combobox('getValue');
 		window.location.href = url;
 	};
@@ -28,16 +27,6 @@
 		$('#endTime').datetimebox({
 			value : getCurrentTime()
 		})
-		$('#station').combobox({
-			url : 'getStations',
-			valueField : 'stationCode',
-			textField : 'stationName',
-			method : 'get',
-			onSelect : function(rec) {
-				var url = 'getCars?id=' + rec.stationCode;
-				$('#carCode').combobox('reload', url);
-			}
-		});
 		$('#carCode').combobox({
 			url : 'getCars',
 			valueField : 'carCode',
@@ -56,16 +45,10 @@
 					pageSize : 20,
 					pageList : [ 10, 20, 30, 40, 50, 100, 200, 300, 400, 500 ],
 					columns : [ [ {
-						field : 'station',
-						title : '分站',
-						resizable : true,
-						width : "15%",
-						align : 'center'
-					}, {
 						field : 'carCode',
 						title : '车辆',
 						resizable : true,
-						width : "10%",
+						width : "14%",
 						align : 'center',
 					}, {
 						field : 'outCarNumbers',
@@ -77,19 +60,19 @@
 						field : 'averageOutCarTimes',
 						title : '平均出车时长',
 						resizable : true,
-						width : "15%",
+						width : "16%",
 						align : 'center'
 					}, {
 						field : 'arriveSpotNumbers',
 						title : '到达现场次数',
 						resizable : true,
-						width : "14%",
+						width : "16%",
 						align : 'center'
 					}, {
 						field : 'averageArriveSpotTimes',
 						title : '平均到达现场时长',
 						resizable : true,
-						width : "15%",
+						width : "16%",
 						align : 'center'
 					}, {
 						field : 'pauseNumbers',
@@ -112,7 +95,6 @@
 					},
 					onLoadSuccess : function(data) {
 						parent.$.messager.progress('close');
-						$(this).datagrid("autoMergeCells", [ 'station' ]);
 					}
 				});
 	}
@@ -131,9 +113,6 @@
 					<form id="searchForm">
 						<table>
 							<tr>
-								<td>分站:</td>
-								<td><input style="width: 120em;" id="station"
-									name="station" /></td>
 								<td>&nbsp;车辆:</td>
 								<td><input style="width: 120em;" id="carCode"
 									name="carCode" /></td>

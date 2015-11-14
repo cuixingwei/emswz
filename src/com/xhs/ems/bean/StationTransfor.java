@@ -23,7 +23,7 @@ public class StationTransfor {
 	 */
 	private String takeBacks;
 	/**
-	 * 里程耗时
+	 * 里程合计
 	 */
 	private String distance;
 	/**
@@ -79,14 +79,7 @@ public class StationTransfor {
 		this.time = time;
 	}
 
-	public StationTransfor(String area, String station, String outCalls,
-			String takeBacks, String distance, String time) {
-		this.area = area;
-		this.station = station;
-		this.outCalls = outCalls;
-		this.takeBacks = takeBacks;
-		this.distance = distance;
-		this.time = time;
+	public StationTransfor() {
 	}
 
 }

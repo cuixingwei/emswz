@@ -30,7 +30,7 @@ public class AnswerAlarm {
 	 */
 	private String judgementOnPhone;
 	/**
-	 * 出车急救站
+	 * 出车分站
 	 */
 	private String station;
 	/**
@@ -41,6 +41,30 @@ public class AnswerAlarm {
 	 * 调度员
 	 */
 	private String dispatcher;
+	/**
+	 * 接回数
+	 */
+	private String takeBacks;
+	/**
+	 * 出诊结果
+	 */
+	private String outResult;
+
+	public String getTakeBacks() {
+		return takeBacks;
+	}
+
+	public void setTakeBacks(String takeBacks) {
+		this.takeBacks = takeBacks;
+	}
+
+	public String getOutResult() {
+		return outResult;
+	}
+
+	public void setOutResult(String outResult) {
+		this.outResult = outResult;
+	}
 
 	public String getId() {
 		return id;
@@ -114,18 +138,7 @@ public class AnswerAlarm {
 		this.dispatcher = dispatcher;
 	}
 
-	public AnswerAlarm(String id, String answerAlarmTime, String alarmPhone,
-			String relatedPhone, String siteAddress, String judgementOnPhone,
-			String station, String sendCarTime, String dispatcher) {
-		this.id = id;
-		this.answerAlarmTime = answerAlarmTime;
-		this.alarmPhone = alarmPhone;
-		this.relatedPhone = relatedPhone;
-		this.siteAddress = siteAddress;
-		this.judgementOnPhone = judgementOnPhone;
-		this.station = station;
-		this.sendCarTime = sendCarTime;
-		this.dispatcher = dispatcher;
+	public AnswerAlarm() {
 	}
 
 }

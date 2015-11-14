@@ -37,6 +37,30 @@ public class HungEvent {
 	 * 分诊调度医院
 	 */
 	private String station;
+	/**
+	 * 区域
+	 */
+	private String area;
+	/**
+	 * 出诊类型
+	 */
+	private String eventType;
+
+	public String getArea() {
+		return area;
+	}
+
+	public void setArea(String area) {
+		this.area = area;
+	}
+
+	public String getEventType() {
+		return eventType;
+	}
+
+	public void setEventType(String eventType) {
+		this.eventType = eventType;
+	}
 
 	public String getStation() {
 		return station;
@@ -104,7 +128,8 @@ public class HungEvent {
 
 	public HungEvent(String eventName, String acceptType, String hungTime,
 			String hungReason, String dispatcher, String endTime,
-			String hungtimes, String station) {
+			String hungtimes, String station, String area, String eventType) {
+		super();
 		this.eventName = eventName;
 		this.acceptType = acceptType;
 		this.hungTime = hungTime;
@@ -113,7 +138,8 @@ public class HungEvent {
 		this.endTime = endTime;
 		this.hungtimes = hungtimes;
 		this.station = station;
+		this.area = area;
+		this.eventType = eventType;
 	}
-
 
 }

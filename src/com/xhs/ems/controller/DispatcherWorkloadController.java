@@ -26,7 +26,7 @@ import com.xhs.ems.service.DispatcherWorkloadService;
 @Controller
 @RequestMapping(value = "page/base")
 public class DispatcherWorkloadController {
-	private Logger logger = Logger.getLogger(DiseaseGradeController.class);
+	private Logger logger = Logger.getLogger(DispatcherWorkloadController.class);
 	@Autowired
 	private DispatcherWorkloadService dispatcherWorkloadService;
 

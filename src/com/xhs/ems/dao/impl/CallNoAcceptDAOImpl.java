@@ -35,10 +35,12 @@ public class CallNoAcceptDAOImpl implements CallNoAcceptDAO {
 
 	@Override
 	public Grid getData(Parameter parameter) {
-		String sql = "select  hr.NameM reason,COUNT(*) times,'' rate 	from AuSp120.tb_AcceptDescriptV a 	"
+		String sql = "select hr.NameM reason,COUNT(*) times,'' rate 	from AuSp120.tb_EventV e  "
+				+ "left outer join AuSp120.tb_AcceptDescriptV a on e.事件编码=a.事件编码	"
 				+ "left outer join AuSp120.tb_TaskV t on t.受理序号=a.受理序号 and t.事件编码=a.事件编码	"
-				+ "left outer join AuSp120.tb_EventV e on e.事件编码=t.事件编码	left outer join AuSp120.tb_DHangReason hr on hr.Code=a.挂起原因编码	"
-				+ "where e.事件性质编码=1 and a.类型编码 in (2,4) and e.受理时刻 between :startTime and :endTime	group by hr.NameM ";
+				+ "left outer join AuSp120.tb_DHangReason hr on hr.Code=a.挂起原因编码	"
+				+ "where e.事件性质编码=1 and a.类型编码 in (2,4) and e.受理时刻 between :startTime and :endTime	"
+				+ "group by hr.NameM ";
 		Map<String, String> paramMap = new HashMap<String, String>();
 		paramMap.put("startTime", parameter.getStartTime());
 		paramMap.put("endTime", parameter.getEndTime());

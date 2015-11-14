@@ -14,10 +14,8 @@
 	var exportData = function() {
 		var url = "exportSubstationLateVisitDatas?startTime="
 				+ $('#startTime').datetimebox('getValue') + "&endTime="
-				+ $('#endTime').datetimebox('getValue') + "&outCarTimesMax="
-				+ $('#outCarTimesMax').val() + "&station="
-				+ $('#station').combobox('getValue') + "&outCarTimesMin="
-				+ $('#outCarTimesMin').val();
+				+ $('#endTime').datetimebox('getValue') + "&station="
+				+ $('#station').combobox('getValue');
 		window.location.href = url;
 	};
 	/* 初始化页面标签 */
@@ -28,10 +26,6 @@
 		});
 		$('#endTime').datetimebox({
 			value : getCurrentTime()
-		});
-		$('#outCarTimesMin').numberbox({
-			min : 0,
-			value : 3
 		});
 		$('#station').combobox({
 			url : 'getStations',
@@ -47,6 +41,7 @@
 					striped : true,
 					singleSelect : true,
 					rownumbers : true,
+					nowrap : false,
 					idField : 'id',
 					pageSize : 20,
 					pageList : [ 10, 20, 30, 40, 50, 100, 200, 300, 400, 500 ],
@@ -54,7 +49,7 @@
 						field : 'siteAddress',
 						title : '现场地址',
 						resizable : true,
-						width : "14%",
+						width : "9%",
 						align : 'center'
 					}, {
 						field : 'eventType',
@@ -66,47 +61,71 @@
 						field : 'carCode',
 						title : '车辆标识',
 						resizable : true,
-						width : "8%",
+						width : "5%",
 						align : 'center'
 					}, {
 						field : 'acceptTime',
 						title : '受理时刻',
 						resizable : true,
-						width : "12%",
+						width : "9%",
 						align : 'center'
 					}, {
-						field : 'createTaskTime',
-						title : '生成任务时刻',
+						field : 'acceptTaskTime',
+						title : '接收命令时刻',
 						resizable : true,
-						width : "12%",
+						width : "9%",
 						align : 'center',
 					}, {
 						field : 'outCarTime',
 						title : '出车时刻',
 						resizable : true,
-						width : "12%",
+						width : "9%",
 						align : 'center'
 					}, {
 						field : 'outCarTimes',
 						title : '出车时长',
 						resizable : true,
-						width : "8%",
+						width : "7%",
 						align : 'center'
 					}, {
 						field : 'taskResult',
 						title : '出车结果',
 						resizable : true,
-						width : "8%",
+						width : "6%",
 						align : 'center',
 					}, {
 						field : 'remark',
 						title : '任务备注',
 						resizable : true,
-						width : "10%",
+						width : "7%",
 						align : 'center'
 					}, {
 						field : 'dispatcher',
 						title : '调度员',
+						resizable : true,
+						width : "7%",
+						align : 'center'
+					}, {
+						field : 'docter',
+						title : '医生',
+						resizable : true,
+						width : "6%",
+						align : 'center'
+					}, {
+						field : 'nurse',
+						title : '护士',
+						resizable : true,
+						width : "6%",
+						align : 'center'
+					}, {
+						field : 'driver',
+						title : '司机',
+						resizable : true,
+						width : "6%",
+						align : 'center'
+					}, {
+						field : 'station',
+						title : '分站',
 						resizable : true,
 						width : "7%",
 						align : 'center'
@@ -115,19 +134,8 @@
 					onBeforeLoad : function(param) {
 						var varify = cxw.checkStartTimeBeforeEndTime(
 								'#startTime', '#endTime');
-						var isMinBeforeMax = cxw.checkMinBeforeMax(
-								'#outCarTimesMin', '#outCarTimesMax');
 						if (!varify) {
 							$.messager.alert('警告', '结束时间要大于开始时间', 'warning');
-						}
-						if (!isMinBeforeMax) {
-							$.messager.alert('警告', '出车时长范围错误,较小值应该小于较大值',
-									'warning');
-						}
-						if (varify && isMinBeforeMax) {
-							parent.$.messager.progress({
-								text : '数据加载中....'
-							});
 						}
 					},
 					onLoadSuccess : function(data) {
@@ -153,12 +161,6 @@
 								<td>分站:</td>
 								<td><input style="width: 120em;" id="station"
 									name="station" /></td>
-								<td>&nbsp;出车时长:</td>
-								<td><input type="text" style="width: 80px;"
-									id="outCarTimesMin" name="outCarTimesMin"
-									class="easyui-numberbox" data-options="precision:0" />至<input
-									type="text" style="width: 80px;" id="outCarTimesMax"
-									name="outCarTimesMax" class="easyui-numberbox" /></td>
 								<td>&nbsp;查询时间:</td>
 								<td><input id="startTime" name="startTime"
 									style="width: 150em;" />至<input id="endTime" name="endTime"

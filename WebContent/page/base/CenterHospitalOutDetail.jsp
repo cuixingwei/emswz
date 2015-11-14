@@ -47,31 +47,32 @@
 					nowrap : false,
 					singleSelect : true,
 					rownumbers : true,
+					nowrap : false,
 					pageSize : 20,
 					pageList : [ 10, 20, 30, 40, 50, 100, 200, 300, 400, 500 ],
 					columns : [ [ {
 						field : 'dateTime',
 						title : '时间',
 						resizable : true,
-						width : "9%",
+						width : "7%",
 						align : 'center',
 					}, {
 						field : 'patientName',
-						title : '病人姓名',
+						title : '病人<br />姓名',
 						resizable : true,
-						width : "5%",
+						width : "3%",
 						align : 'center'
 					}, {
 						field : 'sex',
 						title : '性别',
 						resizable : true,
-						width : "5%",
+						width : "3%",
 						align : 'center'
 					}, {
 						field : 'age',
 						title : '年龄',
 						resizable : true,
-						width : "5%",
+						width : "3%",
 						align : 'center'
 					}, {
 						field : 'diagnose',
@@ -81,97 +82,126 @@
 						align : 'center'
 					}, {
 						field : 'diseaseDepartment',
-						title : '疾病科别',
+						title : '疾病<br />科别',
 						resizable : true,
-						width : "6%",
+						width : "4%",
 						align : 'center'
 					}, {
 						field : 'classState',
-						title : '分类统计',
+						title : '分类<br />统计',
 						resizable : true,
 						width : "6%",
 						align : 'center'
 					}, {
 						field : 'diseaseDegree',
-						title : '病情程度',
+						title : '病情<br />程度',
 						resizable : true,
 						width : "5%",
 						align : 'center'
 					}, {
 						field : 'treatmentEffet',
-						title : '救治效果',
+						title : '救治<br />效果',
 						resizable : true,
-						width : "5%",
+						width : "4%",
 						align : 'center'
 					}, {
 						field : 'area',
 						title : '区域',
 						resizable : true,
-						width : "5%",
+						width : "4%",
 						align : 'center'
 					}, {
 						field : 'address',
-						title : '现场地址',
+						title : '现场<br />地址',
 						resizable : true,
-						width : "6%",
+						width : "4%",
 						align : 'center'
 					}, {
 						field : 'outStation',
-						title : '出诊分站',
+						title : '出诊<br />分站',
 						resizable : true,
 						width : "6%",
 						align : 'center'
 					}, {
 						field : 'outResult',
-						title : '出诊结果',
+						title : '出诊<br />结果',
 						resizable : true,
-						width : "5%",
+						width : "4%",
 						align : 'center',
 					}, {
 						field : 'sendAddress',
-						title : '送达地点',
+						title : '送达<br />地点',
 						resizable : true,
-						width : "5%",
+						width : "4%",
 						align : 'center',
 					}, {
 						field : 'doctor',
-						title : '出诊医生',
+						title : '出诊<br />医生',
 						resizable : true,
-						width : "5%",
+						width : "3%",
 						align : 'center'
 					}, {
 						field : 'nurse',
-						title : '出诊护士',
+						title : '出诊<br />护士',
 						resizable : true,
-						width : "5%",
+						width : "3%",
 						align : 'center'
 					}, {
 						field : 'driver',
-						title : '出诊司机',
+						title : '出诊<br />司机',
+						resizable : true,
+						width : "3%",
+						align : 'center'
+					}, {
+						field : 'distance',
+						title : '出诊<br />里程',
+						resizable : true,
+						width : "3%",
+						align : 'center'
+					}, {
+						field : 'eventType',
+						title : '出诊<br />类型',
 						resizable : true,
 						width : "5%",
 						align : 'center'
 					}, {
-						field : 'distance',
-						title : '出诊里程',
+						field : 'carCode',
+						title : '车辆<br />编码',
 						resizable : true,
-						width : "5%",
+						width : "4%",
 						align : 'center'
-					} ] ],
+					}, {
+						field : 'poorTime',
+						title : '出车<br />差时',
+						resizable : true,
+						width : "3%",
+						align : 'center'
+					}, {
+						field : 'userTime',
+						title : '出诊<br />耗时',
+						resizable : true,
+						width : "3%",
+						align : 'center'
+					}, {
+						field : 'cureMeasure',
+						title : '救治<br />措施',
+						resizable : true,
+						width : "4%",
+						align : 'center'
+					} , {
+						field : 'dispatcher',
+						title : '调度员',
+						resizable : true,
+						width : "4%",
+						align : 'center'
+					}] ],
 					toolbar : '#toolbar',
 					onBeforeLoad : function(param) {
 						var varify = cxw.checkStartTimeBeforeEndTime(
 								'#startTime', '#endTime');
-						if (varify) {
-							parent.$.messager.progress({
-								text : '数据加载中....'
-							});
-						} else {
+						if (!varify) {
 							$.messager.alert('警告', '结束时间要大于开始时间', 'warning');
 						}
-					},
-					onLoadSuccess : function(data) {
-						parent.$.messager.progress('close');
 					}
 				});
 	}

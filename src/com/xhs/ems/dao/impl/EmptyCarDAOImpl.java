@@ -45,13 +45,13 @@ public class EmptyCarDAOImpl implements EmptyCarDAO {
 	@Override
 	public Grid getData(Parameter parameter) {
 		String sql = "select convert(varchar(20),a.开始受理时刻,120) acceptTime,a.现场地址 sickAddress,"
-				+ "m.姓名 dispatcher,	isnull(DATEDIFF(Second,t.出车时刻,t.途中待命时刻),0) emptyRunTimes,der.NameM emptyReason	"
+				+ "m.姓名 dispatcher,	isnull(DATEDIFF(Second,t.出车时刻,t.途中待命时刻),0) emptyRunTimes,der.NameM emptyReason,et.NameM eventType	 	"
 				+ "from AuSp120.tb_AcceptDescriptV a	"
 				+ "left outer join AuSp120.tb_TaskV t on a.事件编码=t.事件编码 and a.受理序号=t.受理序号	"
-				+ "left outer join AuSp120.tb_EventV e on e.事件编码=t.事件编码	"
+				+ "left outer join AuSp120.tb_EventV e on e.事件编码=t.事件编码	left outer join AuSp120.tb_DEventType et on et.Code=e.事件类型编码	 "
 				+ "left outer join AuSp120.tb_MrUser m on t.调度员编码=m.工号	"
 				+ "left outer join AuSp120.tb_DEmptyReason der on der.Code=t.放空车原因编码  	"
-				+ "where e.事件性质编码=1 and t.结果编码=3 and t.放空车原因编码 is not null and a.开始受理时刻 between :startTime and :endTime ";
+				+ "where e.事件性质编码=1 and a.类型编码 not in (2,4) and t.结果编码=3 and t.放空车原因编码 is not null and a.开始受理时刻 between :startTime and :endTime ";
 		if (!CommonUtil.isNullOrEmpty(parameter.getDispatcher())) {
 			sql += " and t.调度员编码=:dispatcher ";
 		}
@@ -78,7 +78,7 @@ public class EmptyCarDAOImpl implements EmptyCarDAO {
 								.getString("sickAddress"), rs
 								.getString("dispatcher"), rs
 								.getString("emptyRunTimes"), rs
-								.getString("emptyReason"));
+								.getString("emptyReason"),rs.getString("eventType"));
 					}
 				});
 		logger.info("一共有" + results.size() + "条数据");

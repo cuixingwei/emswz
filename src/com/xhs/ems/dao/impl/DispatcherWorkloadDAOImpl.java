@@ -41,7 +41,7 @@ public class DispatcherWorkloadDAOImpl implements DispatcherWorkloadDAO {
 				+ "select m.姓名,a.类型编码,a.救治人数,a.调度员编码,t.结果编码,a.开始受理时刻,t.事件编码,a.派车时刻,t.任务序号,t.任务编码 into #temp2 "
 				+ "from AuSp120.tb_AcceptDescriptV a 	left outer join AuSp120.tb_TaskV t on a.受理序号=t.受理序号 and a.事件编码=t.事件编码 "
 				+ "left outer join AuSp120.tb_EventV e on e.事件编码=a.事件编码	left outer join AuSp120.tb_MrUser m on m.工号=a.调度员编码	"
-				+ "where e.事件性质编码=1 and m.人员类型=0 and a.开始受理时刻 between :startTime and :endTime  "
+				+ "where e.事件性质编码=1 and a.类型编码 not in (2,4) and m.人员类型=0 and a.开始受理时刻 between :startTime and :endTime  "
 				+ "select t2.姓名,SUM(t2.救治人数) 分诊数 into #temp5 from #temp2 t2 where t2.类型编码 in (11,12) group by t2.姓名    select t2.姓名,"
 				+ "SUM(case when t2.开始受理时刻 is not null and t2.派车时刻 is not null then 1 else 0 end) 有效派车,	SUM(case when t2.结果编码=4 then 1 else 0 end)正常完成,	SUM(case when t2.结果编码=3 then 1 else 0 end) 空车,	"
 				+ "SUM(case when t2.结果编码=2 then 1 else 0 end) 中止任务,SUM(case when t2.结果编码=5 then 1 else 0 end) 拒绝出车 into #temp3  	"

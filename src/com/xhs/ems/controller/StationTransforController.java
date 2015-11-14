@@ -45,7 +45,7 @@ public class StationTransforController {
 		response.setContentType("application/msexcel;charset=UTF-8");
 
 		String title = "医院转诊统计";
-		String[] headers = new String[] { "区域", "医院名称", "出诊数", "接回数", "里程耗时",
+		String[] headers = new String[] { "区域", "医院名称", "出诊数", "接回数", "里程合计",
 				"耗时" };
 		String[] fields = new String[] { "area", "station", "outCalls",
 				"takeBacks", "distance", "time" };

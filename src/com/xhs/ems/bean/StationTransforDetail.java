@@ -27,13 +27,50 @@ public class StationTransforDetail {
 	 */
 	private String diagnose;
 	/**
-	 * 出诊地址
+	 * 出诊分站
 	 */
 	private String outCallAddress;
 	/**
 	 * 送达科室
 	 */
 	private String sendClass;
+	/**
+	 * 现场地址
+	 */
+	private String spotAddress;
+	/**
+	 * 里程
+	 */
+	private String distance;
+	/**
+	 * 出诊结果
+	 */
+	private String outResult;
+
+	
+	public String getSpotAddress() {
+		return spotAddress;
+	}
+
+	public void setSpotAddress(String spotAddress) {
+		this.spotAddress = spotAddress;
+	}
+
+	public String getDistance() {
+		return distance;
+	}
+
+	public void setDistance(String distance) {
+		this.distance = distance;
+	}
+
+	public String getOutResult() {
+		return outResult;
+	}
+
+	public void setOutResult(String outResult) {
+		this.outResult = outResult;
+	}
 
 	public String getDate() {
 		return date;
@@ -91,16 +128,8 @@ public class StationTransforDetail {
 		this.sendClass = sendClass;
 	}
 
-	public StationTransforDetail(String date, String patientName, String age,
-			String gender, String diagnose, String outCallAddress,
-			String sendClass) {
-		this.date = date;
-		this.patientName = patientName;
-		this.age = age;
-		this.gender = gender;
-		this.diagnose = diagnose;
-		this.outCallAddress = outCallAddress;
-		this.sendClass = sendClass;
+	public StationTransforDetail() {
+		super();
 	}
 
 }

@@ -8,7 +8,6 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
@@ -39,7 +38,8 @@ public class DocterNurseDriverDAOImpl implements DocterNurseDriverDAO {
 
 	@Override
 	public Grid getData(Parameter parameter) {
-		final String doctorOrNurseOrDriver = parameter.getDoctorOrNurseOrDriver();
+		final String doctorOrNurseOrDriver = parameter
+				.getDoctorOrNurseOrDriver();
 		Grid grid = new Grid();
 		if (null == doctorOrNurseOrDriver) {
 			grid.setTotal(0);
@@ -47,72 +47,140 @@ public class DocterNurseDriverDAOImpl implements DocterNurseDriverDAO {
 		} else {
 			String sql = "";
 			if ("1".equals(doctorOrNurseOrDriver)) {
-				sql = "select s.分站名称 station,pc.随车医生 name, COUNT(*) outCalls,SUM(case when pc.转归编码=1 then 1 else 0 end) takeBacks,"
-						+ "	SUM(case when t.结果编码 in (2,3) then 1 else 0 end) emptyCars,SUM(case when pc.转归编码=7 then 1 else 0 end) refuseHospitals,	"
-						+ "SUM(case when pc.救治结果编码=2 then 1 else 0 end) spotDeaths,SUM(case when pc.救治结果编码  in (6,7) then 1 else 0 end) afterDeaths,	"
-						+ "SUM(case when e.事件类型编码=3 then 1 else 0 end) inHospitalTransports,"
-						+ "SUM(case when e.事件类型编码=10 then 1 else 0 end) others,	"
+				sql = "select s.分站名称 station,pc.随车医生 name, SUM(case when pc.转归编码=1 then 1 else 0 end) takeBacks,	"
+						+ "SUM(case when pc.转归编码=10 then 1 else 0 end) emptyCars,"
+						+ "SUM(case when pc.转归编码=7 then 1 else 0 end) refuseHospitals,	"
+						+ "SUM(case when pc.转归编码=5 then 1 else 0 end) spotDeaths,"
+						+ "SUM(case when pc.转归编码=6 then 1 else 0 end) afterDeaths,	"
+						+ "SUM(case when pc.转归编码=8 then 1 else 0 end) others,"
+						+ "SUM(case when pc.转归编码=12 then 1 else 0 end) safeOut,	"
+						+ "SUM(case when pc.转归编码=11 then 1 else 0 end) noAmbulance,	"
 						+ "SUM(case when pc.任务编码 is not null then 1 else 0 end) cureNumbers into #temp1	"
-						+ "from AuSp120.tb_TaskV  t	left outer join AuSp120.tb_PatientCase pc on t.任务序号=pc.任务序号 and t.任务编码=pc.任务编码	"
-						+ "left outer join AuSp120.tb_EventV e on t.事件编码=e.事件编码	left outer join AuSp120.tb_Station s on  s.分站编码=t.分站编码	"
-						+ "where e.事件性质编码=1 and pc.随车医生 is not null and pc.随车医生<>'' and e.受理时刻  between :startTime and :endTime	"
-						+ "group by s.分站名称,pc.随车医生    "
-						+ "select distinct s.分站名称 station,pc.随车医生 name,pc.任务序号,pc.任务编码,pc.里程,cr.收费金额,	e.受理时刻,t.到达医院时刻,t.到达现场时刻,t.出车时刻 into #temp2	"
-						+ "from AuSp120.tb_TaskV  t	left outer join AuSp120.tb_PatientCase pc on t.任务序号=pc.任务序号 and t.任务编码=pc.任务编码	"
-						+ "left outer join AuSp120.tb_EventV e on t.事件编码=e.事件编码	left outer join AuSp120.tb_Station s on  s.分站编码=t.分站编码	"
-						+ "left outer join AuSp120.tb_ChargeRecord cr on t.任务编码=cr.任务编码 and cr.车辆标识=t.车辆标识  	"
-						+ "where e.事件性质编码=1 and pc.随车医生 is not null and pc.随车医生<>'' and e.受理时刻 between :startTime and :endTime	  "
-						+ "select t2.station,t2.name,SUM(t2.里程) distanceTotal,SUM(t2.收费金额) costToal,	"
-						+ "AVG(DATEDIFF(Second,t2.受理时刻,t2.到达现场时刻)) averageResponseTime,	sum(datediff(Second,t2.出车时刻,t2.到达医院时刻)) outCallTimeTotal "
-						+ "into #temp3	from #temp2 t2	group by t2.station,t2.name "
-						+ "select t1.station,t1.name,t1.afterDeaths,t1.cureNumbers,t1.emptyCars,t1.inHospitalTransports,t1.takeBacks,"
-						+ "t1.others,t1.outCalls,t1.refuseHospitals,t1.spotDeaths,isnull(t3.averageResponseTime,0) averageResponseTime,"
-						+ "isnull(t3.costToal,0) costToal,	t3.distanceTotal,isnull(t3.outCallTimeTotal,0) outCallTimeTotal	"
-						+ "from #temp1 t1 left outer join #temp3 t3 on t1.name=t3.name and t1.station=t3.station  "
-						+ "drop table #temp1,#temp2,#temp3 ";
-			} else if ("2".equals(doctorOrNurseOrDriver)) {
-				sql = "select s.分站名称 station,pc.随车护士 name, COUNT(*) outCalls,SUM(case when pc.转归编码=1 then 1 else 0 end) takeBacks,"
-						+ "	SUM(case when t.结果编码 in (2,3) then 1 else 0 end) emptyCars,SUM(case when pc.转归编码=7 then 1 else 0 end) refuseHospitals,	"
-						+ "SUM(case when pc.救治结果编码=2 then 1 else 0 end) spotDeaths,SUM(case when pc.救治结果编码  in (6,7) then 1 else 0 end) afterDeaths,	"
-						+ "SUM(case when e.事件类型编码=3 then 1 else 0 end) inHospitalTransports,"
-						+ "SUM(case when e.事件类型编码=10 then 1 else 0 end) others,	"
-						+ "SUM(case when pc.任务编码 is not null then 1 else 0 end) cureNumbers into #temp1	"
-						+ "from AuSp120.tb_TaskV  t	left outer join AuSp120.tb_PatientCase pc on t.任务序号=pc.任务序号 and t.任务编码=pc.任务编码	"
-						+ "left outer join AuSp120.tb_EventV e on t.事件编码=e.事件编码	left outer join AuSp120.tb_Station s on  s.分站编码=t.分站编码	"
-						+ "where e.事件性质编码=1 and pc.随车护士 is not null and pc.随车护士<>'' and e.受理时刻  between :startTime and :endTime	"
-						+ "group by s.分站名称,pc.随车护士    "
-						+ "select distinct s.分站名称 station,pc.随车护士 name,pc.任务序号,pc.任务编码,pc.里程,cr.收费金额,	e.受理时刻,t.到达医院时刻,t.到达现场时刻,t.出车时刻 into #temp2	"
-						+ "from AuSp120.tb_TaskV  t	left outer join AuSp120.tb_PatientCase pc on t.任务序号=pc.任务序号 and t.任务编码=pc.任务编码	"
-						+ "left outer join AuSp120.tb_EventV e on t.事件编码=e.事件编码	left outer join AuSp120.tb_Station s on  s.分站编码=t.分站编码	"
-						+ "left outer join AuSp120.tb_ChargeRecord cr on t.任务编码=cr.任务编码 and cr.车辆标识=t.车辆标识  	"
-						+ "where e.事件性质编码=1 and pc.随车护士 is not null and pc.随车护士<>'' and e.受理时刻 between :startTime and :endTime	  "
-						+ "select t2.station,t2.name,SUM(t2.里程) distanceTotal,SUM(t2.收费金额) costToal,	"
-						+ "AVG(DATEDIFF(Second,t2.受理时刻,t2.到达现场时刻)) averageResponseTime,	sum(datediff(Second,t2.出车时刻,t2.到达医院时刻)) outCallTimeTotal "
-						+ "into #temp3	from #temp2 t2	group by t2.station,t2.name "
-						+ "select t1.station,t1.name,t1.afterDeaths,t1.cureNumbers,t1.emptyCars,t1.inHospitalTransports,t1.takeBacks,"
-						+ "t1.others,t1.outCalls,t1.refuseHospitals,t1.spotDeaths,isnull(t3.averageResponseTime,0) averageResponseTime,"
-						+ "isnull(t3.costToal,0) costToal,	t3.distanceTotal,isnull(t3.outCallTimeTotal,0) outCallTimeTotal	"
-						+ "from #temp1 t1 left outer join #temp3 t3 on t1.name=t3.name and t1.station=t3.station  "
-						+ "drop table #temp1,#temp2,#temp3 ";
-			} else if ("3".equals(doctorOrNurseOrDriver)) {
-				sql = "select t.司机 name, COUNT(*) outCalls,	SUM(case when pc.转归编码=1 then 1 else 0 end) takeBacks,"
-						+ "SUM(case when t.结果编码 in (2,3) then 1 else 0 end) emptyCars,SUM(case when pc.转归编码=7 then 1 else 0 end) refuseHospitals,	"
-						+ "SUM(case when pc.救治结果编码=2 then 1 else 0 end) spotDeaths,SUM(case when pc.救治结果编码 in (6,7) then 1 else 0 end) afterDeaths,	"
-						+ "SUM(case when e.事件类型编码=3 then 1 else 0 end) inHospitalTransports,	SUM(case when e.事件类型编码=10 then 1 else 0 end) others,	"
-						+ "SUM(case when pc.任务编码 is not null then 1 else 0 end) cureNumbers into #temp1	from AuSp120.tb_TaskV  t	"
+						+ "from AuSp120.tb_AcceptDescriptV a	"
+						+ "left outer join AuSp120.tb_TaskV t on a.事件编码=t.事件编码 and a.受理序号=t.受理序号	"
+						+ "left outer join AuSp120.tb_EventV e on t.事件编码=e.事件编码	"
 						+ "left outer join AuSp120.tb_PatientCase pc on t.任务序号=pc.任务序号 and t.任务编码=pc.任务编码	"
-						+ "left outer join AuSp120.tb_EventV e on t.事件编码=e.事件编码	left outer join AuSp120.tb_Station s on  s.分站编码=t.分站编码	"
-						+ "where e.事件性质编码=1 and t.司机 is not null and t.司机<>'' and e.受理时刻  between :startTime and :endTime 	group by t.司机  "
-						+ "select distinct t.司机 name,pc.任务序号,pc.任务编码,pc.里程,cr.收费金额,	e.受理时刻,t.到达医院时刻,t.到达现场时刻,t.出车时刻 into #temp2	"
-						+ "from AuSp120.tb_TaskV  t	left outer join AuSp120.tb_PatientCase pc on t.任务序号=pc.任务序号 and t.任务编码=pc.任务编码	"
-						+ "left outer join AuSp120.tb_EventV e on t.事件编码=e.事件编码	left outer join AuSp120.tb_Station s on  s.分站编码=t.分站编码	"
-						+ "left outer join AuSp120.tb_ChargeRecord cr on t.任务编码=cr.任务编码 and cr.车辆标识=t.车辆标识 	"
-						+ "where e.事件性质编码=1 and t.司机 is not null and t.司机<>'' and e.受理时刻 between :startTime and :endTime  "
-						+ "select t2.name,SUM(t2.里程) distanceTotal,SUM(t2.收费金额) costToal,	AVG(DATEDIFF(Second,t2.受理时刻,t2.到达现场时刻)) averageResponseTime,	sum(datediff(Second,t2.出车时刻,t2.到达医院时刻)) outCallTimeTotal into #temp3	from #temp2 t2	group by t2.name  "
-						+ "select t1.name,t1.afterDeaths,t1.cureNumbers,t1.emptyCars,t1.inHospitalTransports,t1.takeBacks,t1.others,	"
-						+ "t1.outCalls,t1.refuseHospitals,t1.spotDeaths,isnull(t3.averageResponseTime,0) averageResponseTime,	"
-						+ "isnull(t3.costToal,0) costToal,	t3.distanceTotal,isnull(t3.outCallTimeTotal,0) outCallTimeTotal	from #temp1 t1	"
-						+ "left outer join #temp3 t3 on t1.name=t3.name	drop table #temp1,#temp2,#temp3  ";
+						+ "left outer join AuSp120.tb_Station s on  s.分站编码=t.分站编码	"
+						+ "where e.事件性质编码=1 and a.类型编码 not in (2,4) and pc.随车医生 is not null and pc.随车医生<>'' "
+						+ "and e.受理时刻 between :startTime and :endTime	group by s.分站名称,pc.随车医生	"
+						+ "select distinct s.分站名称 station,pc.随车医生 name,pc.任务序号,pc.任务编码,pc.里程,cr.收费金额,t.接收命令时刻,	"
+						+ "e.受理时刻,t.到达医院时刻,t.到达现场时刻,t.出车时刻 into #temp2	"
+						+ "from AuSp120.tb_AcceptDescriptV a	"
+						+ "left outer join AuSp120.tb_TaskV t on a.事件编码=t.事件编码 and a.受理序号=t.受理序号	"
+						+ "left outer join AuSp120.tb_EventV e on t.事件编码=e.事件编码	"
+						+ "left outer join AuSp120.tb_PatientCase pc on t.任务序号=pc.任务序号 and t.任务编码=pc.任务编码	"
+						+ "left outer join AuSp120.tb_Station s on  s.分站编码=t.分站编码	"
+						+ "left outer join AuSp120.tb_ChargeRecord cr on t.任务编码=cr.任务编码 and cr.车辆标识=t.车辆标识	"
+						+ "where e.事件性质编码=1 and a.类型编码 not in (2,4) and pc.随车医生 is not null and pc.随车医生<>'' "
+						+ "and e.受理时刻 between :startTime and :endTime	"
+						+ "select distinct s.分站名称 station,pc.随车医生 name,pc.里程,t.接收命令时刻,	e.受理时刻,t.到达医院时刻,t.到达现场时刻,"
+						+ "t.出车时刻 into #temp4	from AuSp120.tb_AcceptDescriptV a	"
+						+ "left outer join AuSp120.tb_TaskV t on a.事件编码=t.事件编码 and a.受理序号=t.受理序号	"
+						+ "left outer join AuSp120.tb_EventV e on t.事件编码=e.事件编码	"
+						+ "left outer join AuSp120.tb_PatientCase pc on t.任务序号=pc.任务序号 and t.任务编码=pc.任务编码	"
+						+ "left outer join AuSp120.tb_Station s on  s.分站编码=t.分站编码	"
+						+ "where e.事件性质编码=1 and a.类型编码 not in (2,4) and pc.随车医生 is not null "
+						+ "and pc.随车医生<>'' and e.受理时刻 between :startTime and :endTime	"
+						+ "select t2.station,t2.name,SUM(t2.收费金额) costToal into #temp5	from #temp2 t2	"
+						+ "group by t2.station,t2.name	select t4.station,t4.name,SUM(t4.里程) distanceTotal,COUNT(*) outCalls,"
+						+ "	AVG(DATEDIFF(Second,t4.受理时刻,t4.到达现场时刻)) averageResponseTime,	AVG(DATEDIFF(Second,t4.接收命令时刻,t4.出车时刻)) averageSendTime,	"
+						+ "sum(datediff(Second,t4.出车时刻,t4.到达医院时刻)) outCallTimeTotal into #temp3	from #temp4 t4	group by t4.station,"
+						+ "t4.name	select t1.station,t1.name,t1.afterDeaths,t1.cureNumbers,t1.emptyCars,t1.safeOut,t1.takeBacks,t1.noAmbulance,"
+						+ "t1.others,t3.outCalls,	t1.refuseHospitals,t1.spotDeaths,isnull(t3.averageResponseTime,0) averageResponseTime,"
+						+ "isnull(t3.averageSendTime,0) averageSendTime,	isnull(t5.costToal,0) costToal,	t3.distanceTotal,"
+						+ "isnull(t3.outCallTimeTotal,0) outCallTimeTotal	from #temp1 t1 left outer join #temp3 t3 on t1.name=t3.name and t1.station=t3.station	"
+						+ "left outer join #temp5 t5 on t1.name=t5.name and t1.station=t5.station order by t1.station "
+						+ "drop table #temp1,#temp2,#temp3,#temp4,#temp5 ";
+			} else if ("2".equals(doctorOrNurseOrDriver)) {
+				sql = "select s.分站名称 station,pc.随车护士 name, SUM(case when pc.转归编码=1 then 1 else 0 end) takeBacks,	"
+						+ "SUM(case when pc.转归编码=10 then 1 else 0 end) emptyCars,"
+						+ "SUM(case when pc.转归编码=7 then 1 else 0 end) refuseHospitals,	"
+						+ "SUM(case when pc.转归编码=5 then 1 else 0 end) spotDeaths,"
+						+ "SUM(case when pc.转归编码=6 then 1 else 0 end) afterDeaths,	"
+						+ "SUM(case when pc.转归编码=8 then 1 else 0 end) others,"
+						+ "SUM(case when pc.转归编码=12 then 1 else 0 end) safeOut,	"
+						+ "SUM(case when pc.转归编码=11 then 1 else 0 end) noAmbulance,	"
+						+ "SUM(case when pc.任务编码 is not null then 1 else 0 end) cureNumbers into #temp1	"
+						+ "from AuSp120.tb_AcceptDescriptV a	"
+						+ "left outer join AuSp120.tb_TaskV t on a.事件编码=t.事件编码 and a.受理序号=t.受理序号	"
+						+ "left outer join AuSp120.tb_EventV e on t.事件编码=e.事件编码	"
+						+ "left outer join AuSp120.tb_PatientCase pc on t.任务序号=pc.任务序号 and t.任务编码=pc.任务编码	"
+						+ "left outer join AuSp120.tb_Station s on  s.分站编码=t.分站编码	"
+						+ "where e.事件性质编码=1 and a.类型编码 not in (2,4) and pc.随车护士 is not null and pc.随车护士<>'' "
+						+ "and e.受理时刻 between :startTime and :endTime	group by s.分站名称,pc.随车护士	"
+						+ "select distinct s.分站名称 station,pc.随车护士 name,pc.任务序号,pc.任务编码,pc.里程,cr.收费金额,t.接收命令时刻,	"
+						+ "e.受理时刻,t.到达医院时刻,t.到达现场时刻,t.出车时刻 into #temp2	"
+						+ "from AuSp120.tb_AcceptDescriptV a	"
+						+ "left outer join AuSp120.tb_TaskV t on a.事件编码=t.事件编码 and a.受理序号=t.受理序号	"
+						+ "left outer join AuSp120.tb_EventV e on t.事件编码=e.事件编码	"
+						+ "left outer join AuSp120.tb_PatientCase pc on t.任务序号=pc.任务序号 and t.任务编码=pc.任务编码	"
+						+ "left outer join AuSp120.tb_Station s on  s.分站编码=t.分站编码	"
+						+ "left outer join AuSp120.tb_ChargeRecord cr on t.任务编码=cr.任务编码 and cr.车辆标识=t.车辆标识	"
+						+ "where e.事件性质编码=1 and a.类型编码 not in (2,4) and pc.随车护士 is not null and pc.随车护士<>'' "
+						+ "and e.受理时刻 between :startTime and :endTime	"
+						+ "select distinct s.分站名称 station,pc.随车护士 name,pc.里程,t.接收命令时刻,	e.受理时刻,t.到达医院时刻,t.到达现场时刻,"
+						+ "t.出车时刻 into #temp4	from AuSp120.tb_AcceptDescriptV a	"
+						+ "left outer join AuSp120.tb_TaskV t on a.事件编码=t.事件编码 and a.受理序号=t.受理序号	"
+						+ "left outer join AuSp120.tb_EventV e on t.事件编码=e.事件编码	"
+						+ "left outer join AuSp120.tb_PatientCase pc on t.任务序号=pc.任务序号 and t.任务编码=pc.任务编码	"
+						+ "left outer join AuSp120.tb_Station s on  s.分站编码=t.分站编码	"
+						+ "where e.事件性质编码=1 and a.类型编码 not in (2,4) and pc.随车护士 is not null "
+						+ "and pc.随车护士<>'' and e.受理时刻 between :startTime and :endTime	"
+						+ "select t2.station,t2.name,SUM(t2.收费金额) costToal into #temp5	from #temp2 t2	"
+						+ "group by t2.station,t2.name	select t4.station,t4.name,SUM(t4.里程) distanceTotal,COUNT(*) outCalls,"
+						+ "	AVG(DATEDIFF(Second,t4.受理时刻,t4.到达现场时刻)) averageResponseTime,	AVG(DATEDIFF(Second,t4.接收命令时刻,t4.出车时刻)) averageSendTime,	"
+						+ "sum(datediff(Second,t4.出车时刻,t4.到达医院时刻)) outCallTimeTotal into #temp3	from #temp4 t4	group by t4.station,"
+						+ "t4.name	select t1.station,t1.name,t1.afterDeaths,t1.cureNumbers,t1.emptyCars,t1.safeOut,t1.takeBacks,t1.noAmbulance,"
+						+ "t1.others,t3.outCalls,	t1.refuseHospitals,t1.spotDeaths,isnull(t3.averageResponseTime,0) averageResponseTime,"
+						+ "isnull(t3.averageSendTime,0) averageSendTime,	isnull(t5.costToal,0) costToal,	t3.distanceTotal,"
+						+ "isnull(t3.outCallTimeTotal,0) outCallTimeTotal	from #temp1 t1 left outer join #temp3 t3 on t1.name=t3.name and t1.station=t3.station	"
+						+ "left outer join #temp5 t5 on t1.name=t5.name and t1.station=t5.station order by t1.station	"
+						+ "drop table #temp1,#temp2,#temp3,#temp4,#temp5 ";
+			} else if ("3".equals(doctorOrNurseOrDriver)) {
+				sql = "select s.分站名称 station,pc.司机 name, SUM(case when pc.转归编码=1 then 1 else 0 end) takeBacks,	"
+						+ "SUM(case when pc.转归编码=10 then 1 else 0 end) emptyCars,"
+						+ "SUM(case when pc.转归编码=7 then 1 else 0 end) refuseHospitals,	"
+						+ "SUM(case when pc.转归编码=5 then 1 else 0 end) spotDeaths,"
+						+ "SUM(case when pc.转归编码=6 then 1 else 0 end) afterDeaths,	"
+						+ "SUM(case when pc.转归编码=8 then 1 else 0 end) others,"
+						+ "SUM(case when pc.转归编码=12 then 1 else 0 end) safeOut,	"
+						+ "SUM(case when pc.转归编码=11 then 1 else 0 end) noAmbulance,	"
+						+ "SUM(case when pc.任务编码 is not null then 1 else 0 end) cureNumbers into #temp1	"
+						+ "from AuSp120.tb_AcceptDescriptV a	"
+						+ "left outer join AuSp120.tb_TaskV t on a.事件编码=t.事件编码 and a.受理序号=t.受理序号	"
+						+ "left outer join AuSp120.tb_EventV e on t.事件编码=e.事件编码	"
+						+ "left outer join AuSp120.tb_PatientCase pc on t.任务序号=pc.任务序号 and t.任务编码=pc.任务编码	"
+						+ "left outer join AuSp120.tb_Station s on  s.分站编码=t.分站编码	"
+						+ "where e.事件性质编码=1 and a.类型编码 not in (2,4) and pc.司机 is not null and pc.司机<>'' "
+						+ "and e.受理时刻 between :startTime and :endTime	group by s.分站名称,pc.司机	"
+						+ "select distinct s.分站名称 station,pc.司机 name,pc.任务序号,pc.任务编码,pc.里程,cr.收费金额,t.接收命令时刻,	"
+						+ "e.受理时刻,t.到达医院时刻,t.到达现场时刻,t.出车时刻 into #temp2	"
+						+ "from AuSp120.tb_AcceptDescriptV a	"
+						+ "left outer join AuSp120.tb_TaskV t on a.事件编码=t.事件编码 and a.受理序号=t.受理序号	"
+						+ "left outer join AuSp120.tb_EventV e on t.事件编码=e.事件编码	"
+						+ "left outer join AuSp120.tb_PatientCase pc on t.任务序号=pc.任务序号 and t.任务编码=pc.任务编码	"
+						+ "left outer join AuSp120.tb_Station s on  s.分站编码=t.分站编码	"
+						+ "left outer join AuSp120.tb_ChargeRecord cr on t.任务编码=cr.任务编码 and cr.车辆标识=t.车辆标识	"
+						+ "where e.事件性质编码=1 and a.类型编码 not in (2,4) and pc.司机 is not null and pc.司机<>'' "
+						+ "and e.受理时刻 between :startTime and :endTime	"
+						+ "select distinct s.分站名称 station,pc.司机 name,pc.里程,t.接收命令时刻,	e.受理时刻,t.到达医院时刻,t.到达现场时刻,"
+						+ "t.出车时刻 into #temp4	from AuSp120.tb_AcceptDescriptV a	"
+						+ "left outer join AuSp120.tb_TaskV t on a.事件编码=t.事件编码 and a.受理序号=t.受理序号	"
+						+ "left outer join AuSp120.tb_EventV e on t.事件编码=e.事件编码	"
+						+ "left outer join AuSp120.tb_PatientCase pc on t.任务序号=pc.任务序号 and t.任务编码=pc.任务编码	"
+						+ "left outer join AuSp120.tb_Station s on  s.分站编码=t.分站编码	"
+						+ "where e.事件性质编码=1 and a.类型编码 not in (2,4) and pc.司机 is not null "
+						+ "and pc.司机<>'' and e.受理时刻 between :startTime and :endTime	"
+						+ "select t2.station,t2.name,SUM(t2.收费金额) costToal into #temp5	from #temp2 t2	"
+						+ "group by t2.station,t2.name	select t4.station,t4.name,SUM(t4.里程) distanceTotal,COUNT(*) outCalls,"
+						+ "	AVG(DATEDIFF(Second,t4.受理时刻,t4.到达现场时刻)) averageResponseTime,	AVG(DATEDIFF(Second,t4.接收命令时刻,t4.出车时刻)) averageSendTime,	"
+						+ "sum(datediff(Second,t4.出车时刻,t4.到达医院时刻)) outCallTimeTotal into #temp3	from #temp4 t4	group by t4.station,"
+						+ "t4.name	select t1.station,t1.name,t1.afterDeaths,t1.cureNumbers,t1.emptyCars,t1.safeOut,t1.takeBacks,t1.noAmbulance,"
+						+ "t1.others,t3.outCalls,	t1.refuseHospitals,t1.spotDeaths,isnull(t3.averageResponseTime,0) averageResponseTime,"
+						+ "isnull(t3.averageSendTime,0) averageSendTime,	isnull(t5.costToal,0) costToal,	t3.distanceTotal,"
+						+ "isnull(t3.outCallTimeTotal,0) outCallTimeTotal	from #temp1 t1 left outer join #temp3 t3 on t1.name=t3.name and t1.station=t3.station	"
+						+ "left outer join #temp5 t5 on t1.name=t5.name and t1.station=t5.station order by t1.station "
+						+ "drop table #temp1,#temp2,#temp3,#temp4,#temp5 ";
 			}
 
 			Map<String, String> paramMap = new HashMap<String, String>();
@@ -125,22 +193,38 @@ public class DocterNurseDriverDAOImpl implements DocterNurseDriverDAO {
 						public DocterNurseDriver mapRow(ResultSet rs, int index)
 								throws SQLException {
 							DocterNurseDriver docterNurseDriver = new DocterNurseDriver();
-							if (!StringUtils.equals("3", doctorOrNurseOrDriver)){
-								docterNurseDriver.setStation(rs.getString("station"));
-							}
+							docterNurseDriver.setStation(rs
+									.getString("station"));
 							docterNurseDriver.setName(rs.getString("name"));
-							docterNurseDriver.setOutCalls(rs.getString("outCalls"));
-							docterNurseDriver.setTakeBacks(rs.getString("takeBacks"));
-							docterNurseDriver.setEmptyCars(rs.getString("emptyCars"));
-							docterNurseDriver.setRefuseHospitals(rs.getString("refuseHospitals"));
-							docterNurseDriver.setSpotDeaths(rs.getString("spotDeaths"));
-							docterNurseDriver.setAfterDeaths(rs.getString("afterDeaths"));
-							docterNurseDriver.setInHospitalTransports(rs.getString("inHospitalTransports"));
-							docterNurseDriver.setDistanceTotal(rs.getString("distanceTotal"));
-							docterNurseDriver.setCostToal(rs.getString("costToal"));
-							docterNurseDriver.setAverageResponseTime(rs.getString("averageResponseTime"));
-							docterNurseDriver.setOutCallTimeTotal(rs.getString("outCallTimeTotal"));
-							docterNurseDriver.setCureNumbers(rs.getString("cureNumbers"));
+							docterNurseDriver.setOutCalls(rs
+									.getString("outCalls"));
+							docterNurseDriver.setTakeBacks(rs
+									.getString("takeBacks"));
+							docterNurseDriver.setEmptyCars(rs
+									.getString("emptyCars"));
+							docterNurseDriver.setOthers(rs.getString("others"));
+							docterNurseDriver.setRefuseHospitals(rs
+									.getString("refuseHospitals"));
+							docterNurseDriver.setSpotDeaths(rs
+									.getString("spotDeaths"));
+							docterNurseDriver.setAfterDeaths(rs
+									.getString("afterDeaths"));
+							docterNurseDriver.setDistanceTotal(rs
+									.getString("distanceTotal"));
+							docterNurseDriver.setCostToal(rs
+									.getString("costToal"));
+							docterNurseDriver.setAverageResponseTime(rs
+									.getString("averageResponseTime"));
+							docterNurseDriver.setOutCallTimeTotal(rs
+									.getString("outCallTimeTotal"));
+							docterNurseDriver.setCureNumbers(rs
+									.getString("cureNumbers"));
+							docterNurseDriver.setSafeOut(rs
+									.getString("safeOut"));
+							docterNurseDriver.setNoAmbulance(rs
+									.getString("noAmbulance"));
+							docterNurseDriver.setAverageSendTime(rs
+									.getString("averageSendTime"));
 							return docterNurseDriver;
 						}
 					});
@@ -150,6 +234,8 @@ public class DocterNurseDriverDAOImpl implements DocterNurseDriverDAO {
 						.getAverageResponseTime()));
 				result.setOutCallTimeTotal(CommonUtil.formatSecond(result
 						.getOutCallTimeTotal()));
+				result.setAverageSendTime(CommonUtil.formatSecond(result
+						.getAverageSendTime()));
 			}
 			if ((int) parameter.getPage() > 0) {
 				int page = (int) parameter.getPage();

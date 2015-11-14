@@ -34,6 +34,7 @@ public class DriverOutCall {
 	 * 平均耗时
 	 */
 	private String averageTime;
+	
 
 	public String getName() {
 		return name;

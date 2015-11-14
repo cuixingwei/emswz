@@ -39,10 +39,6 @@ public class DocterNurseDriver {
 	 */
 	private String afterDeaths;
 	/**
-	 * 院内转运
-	 */
-	private String inHospitalTransports;
-	/**
 	 * 其他
 	 */
 	private String others;
@@ -66,6 +62,42 @@ public class DocterNurseDriver {
 	 * 治疗数统计
 	 */
 	private String cureNumbers;
+	/**
+	 * 安全送出
+	 */
+	private String safeOut;
+	/**
+	 * 非急救任务完成
+	 */
+	private String noAmbulance;
+	/**
+	 * 平均出车时间
+	 */
+	private String averageSendTime;
+
+	public String getSafeOut() {
+		return safeOut;
+	}
+
+	public void setSafeOut(String safeOut) {
+		this.safeOut = safeOut;
+	}
+
+	public String getNoAmbulance() {
+		return noAmbulance;
+	}
+
+	public void setNoAmbulance(String noAmbulance) {
+		this.noAmbulance = noAmbulance;
+	}
+
+	public String getAverageSendTime() {
+		return averageSendTime;
+	}
+
+	public void setAverageSendTime(String averageSendTime) {
+		this.averageSendTime = averageSendTime;
+	}
 
 	public String getStation() {
 		return station;
@@ -131,14 +163,6 @@ public class DocterNurseDriver {
 		this.afterDeaths = afterDeaths;
 	}
 
-	public String getInHospitalTransports() {
-		return inHospitalTransports;
-	}
-
-	public void setInHospitalTransports(String inHospitalTransports) {
-		this.inHospitalTransports = inHospitalTransports;
-	}
-
 	public String getOthers() {
 		return others;
 	}
@@ -184,29 +208,6 @@ public class DocterNurseDriver {
 	}
 
 	public void setCureNumbers(String cureNumbers) {
-		this.cureNumbers = cureNumbers;
-	}
-
-	public DocterNurseDriver(String station, String name, String outCalls,
-			String takeBacks, String emptyCars, String refuseHospitals,
-			String spotDeaths, String afterDeaths, String inHospitalTransports,
-			String others, String distanceTotal, String costToal,
-			String averageResponseTime, String outCallTimeTotal,
-			String cureNumbers) {
-		this.station = station;
-		this.name = name;
-		this.outCalls = outCalls;
-		this.takeBacks = takeBacks;
-		this.emptyCars = emptyCars;
-		this.refuseHospitals = refuseHospitals;
-		this.spotDeaths = spotDeaths;
-		this.afterDeaths = afterDeaths;
-		this.inHospitalTransports = inHospitalTransports;
-		this.others = others;
-		this.distanceTotal = distanceTotal;
-		this.costToal = costToal;
-		this.averageResponseTime = averageResponseTime;
-		this.outCallTimeTotal = outCallTimeTotal;
 		this.cureNumbers = cureNumbers;
 	}
 

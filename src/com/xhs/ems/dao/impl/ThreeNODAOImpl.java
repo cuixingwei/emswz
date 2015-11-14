@@ -37,14 +37,18 @@ public class ThreeNODAOImpl implements ThreeNODAO {
 
 	@Override
 	public Grid getData(Parameter parameter) {
-		String sql = "select cr.任务编码,cr.任务序号,cr.病历序号,SUM(cr.收费金额) cost into #temp1 from AuSp120.tb_ChargeRecord cr 	"
-				+ "group by cr.任务编码,cr.任务序号,cr.病历序号  "
-				+ " select pc.任务编码,pc.任务序号,pc.序号,pc.姓名 name,pc.性别 gender,pc.年龄 age,pc.医生诊断 diagnose,pc.现场地点 address,	"
-				+ "pc.送往地点 toAddress,pc.里程 distance into #temp2	from AuSp120.tb_PatientCase pc	"
-				+ "left outer join AuSp120.tb_TaskV t on t.任务编码=pc.任务编码 and t.任务序号=pc.任务序号 	left outer join AuSp120.tb_EventV e on t.事件编码=e.事件编码	"
-				+ "where e.事件性质编码=1 and e.受理时刻 between :startTime and :endTime  "
-				+ "select  t1.cost,t2.age,t2.address,t2.diagnose,t2.distance,t2.gender,t2.name,t2.toAddress 	"
-				+ "from #temp2 t2 left outer join #temp1 t1 on t1.任务序号=t2.任务序号 and t1.任务编码=t2.任务编码 and t1.病历序号=t2.序号  "
+		String sql = "select cr.任务编码,cr.任务序号,cr.病历序号,SUM(cr.收费金额) cost into #temp1 "
+				+ "from AuSp120.tb_ChargeRecord cr	group by cr.任务编码,cr.任务序号,cr.病历序号	"
+				+ "select pc.任务编码,pc.任务序号,pc.序号,pc.姓名 name,pc.性别 gender,pc.年龄 age,pc.医生诊断 diagnose,"
+				+ "pc.现场地点 address,	pc.送往地点 toAddress,pc.里程 distance into #temp2	"
+				+ "from AuSp120.tb_AcceptDescriptV a	"
+				+ "left outer join AuSp120.tb_TaskV t on a.事件编码=t.事件编码 and a.受理序号=t.受理序号	"
+				+ "left outer join AuSp120.tb_EventV e on t.事件编码=e.事件编码	"
+				+ "left outer join AuSp120.tb_PatientCase pc on t.任务编码=pc.任务编码 and t.任务序号=pc.任务序号	"
+				+ "where e.事件性质编码=1 and a.类型编码 not in (2,4) and pc.三无标志=1 "
+				+ "and e.受理时刻 between :startTime and :endTime	"
+				+ "select  t1.cost,t2.age,t2.address,t2.diagnose,t2.distance,t2.gender,t2.name,t2.toAddress	"
+				+ "from #temp2 t2 left outer join #temp1 t1 on t1.任务序号=t2.任务序号 and t1.任务编码=t2.任务编码 and t1.病历序号=t2.序号	"
 				+ "drop table #temp1,#temp2 ";
 		Map<String, String> paramMap = new HashMap<String, String>();
 		paramMap.put("startTime", parameter.getStartTime());

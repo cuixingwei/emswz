@@ -48,7 +48,7 @@ public class AcceptEventTypeDAOImpl implements AcceptEventTypeDAO {
 				+ "sum(case when t.结果编码=4 then 1 else 0 end) nomalComplete,'' ratioComplete	"
 				+ "from  AuSp120.tb_AcceptDescriptV a	left outer join AuSp120.tb_TaskV t on a.事件编码=t.事件编码 and a.受理序号=t.受理序号	"
 				+ "left outer join AuSp120.tb_Event e on e.事件编码=t.事件编码	left outer join AuSp120.tb_MrUser m on m.工号=t.调度员编码	"
-				+ "where e.事件性质编码=1 and a.开始受理时刻  between :startTime and :endTime and m.人员类型=0	group by m.姓名";
+				+ "where e.事件性质编码=1 and a.类型编码 not in (2,4) and a.开始受理时刻  between :startTime and :endTime and m.人员类型=0	group by m.姓名";
 		Map<String, String> paramMap = new HashMap<String, String>();
 		paramMap.put("startTime", parameter.getStartTime());
 		paramMap.put("endTime", parameter.getEndTime());

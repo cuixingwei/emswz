@@ -7,10 +7,6 @@ package com.xhs.ems.bean;
  */
 public class CarWork {
 	/**
-	 * 分站
-	 */
-	private String station;
-	/**
 	 * 车辆
 	 */
 	private String carCode;
@@ -34,14 +30,6 @@ public class CarWork {
 	 * 暂停次数
 	 */
 	private String pauseNumbers;
-
-	public String getStation() {
-		return station;
-	}
-
-	public void setStation(String station) {
-		this.station = station;
-	}
 
 	public String getCarCode() {
 		return carCode;
@@ -91,10 +79,9 @@ public class CarWork {
 		this.pauseNumbers = pauseNumbers;
 	}
 
-	public CarWork(String station, String carCode, String outCarNumbers,
+	public CarWork(String carCode, String outCarNumbers,
 			String averageOutCarTimes, String arriveSpotNumbers,
 			String averageArriveSpotTimes, String pauseNumbers) {
-		this.station = station;
 		this.carCode = carCode;
 		this.outCarNumbers = outCarNumbers;
 		this.averageOutCarTimes = averageOutCarTimes;

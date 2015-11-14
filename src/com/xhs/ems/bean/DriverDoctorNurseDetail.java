@@ -25,8 +25,62 @@ public class DriverDoctorNurseDetail {
 	private String treatmentEffet; // 救治效果
 	private String area; // 区域
 	private String sendAddress; // 送到地点
+	private String eventType; // 出诊类型
+	private String carCode; // 车辆编码
+	private String poorTime; // 出车差时
+	private String userTime; // 出诊耗时
+	private String cureMeasure; // 救治措施
+	private String dispatcher; //调度员
+
+	public String getDispatcher() {
+		return dispatcher;
+	}
+
+	public void setDispatcher(String dispatcher) {
+		this.dispatcher = dispatcher;
+	}
 
 	public DriverDoctorNurseDetail() {
+	}
+
+	public String getEventType() {
+		return eventType;
+	}
+
+	public void setEventType(String eventType) {
+		this.eventType = eventType;
+	}
+
+	public String getCarCode() {
+		return carCode;
+	}
+
+	public void setCarCode(String carCode) {
+		this.carCode = carCode;
+	}
+
+	public String getPoorTime() {
+		return poorTime;
+	}
+
+	public void setPoorTime(String poorTime) {
+		this.poorTime = poorTime;
+	}
+
+	public String getUserTime() {
+		return userTime;
+	}
+
+	public void setUserTime(String userTime) {
+		this.userTime = userTime;
+	}
+
+	public String getCureMeasure() {
+		return cureMeasure;
+	}
+
+	public void setCureMeasure(String cureMeasure) {
+		this.cureMeasure = cureMeasure;
 	}
 
 	public String getSex() {

@@ -77,14 +77,6 @@ public class Parameter {
 	 */
 	private String phone;
 	/**
-	 * 急救站晚出诊统计(出诊时长最小值)
-	 */
-	private String outCarTimesMin;
-	/**
-	 * 急救站晚出诊统计(出诊时长最大值)
-	 */
-	private String outCarTimesMax;
-	/**
 	 * 响铃到接听大于X秒（超时时长）
 	 */
 	private String overtimes;
@@ -194,22 +186,6 @@ public class Parameter {
 
 	public void setOvertimes(String overtimes) {
 		this.overtimes = overtimes;
-	}
-
-	public String getOutCarTimesMin() {
-		return outCarTimesMin;
-	}
-
-	public void setOutCarTimesMin(String outCarTimesMin) {
-		this.outCarTimesMin = outCarTimesMin;
-	}
-
-	public String getOutCarTimesMax() {
-		return outCarTimesMax;
-	}
-
-	public void setOutCarTimesMax(String outCarTimesMax) {
-		this.outCarTimesMax = outCarTimesMax;
 	}
 
 	public String getPhone() {

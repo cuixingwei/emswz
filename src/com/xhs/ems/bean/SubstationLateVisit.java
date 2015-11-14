@@ -22,9 +22,9 @@ public class SubstationLateVisit {
 	 */
 	private String acceptTime;
 	/**
-	 * 生成任务时刻
+	 * 接收命令时刻
 	 */
-	private String createTaskTime;
+	private String acceptTaskTime;
 	/**
 	 * 出车时刻
 	 */
@@ -45,6 +45,62 @@ public class SubstationLateVisit {
 	 * 调度员
 	 */
 	private String dispatcher;
+	/**
+	 * 医生
+	 */
+	private String docter;
+	/**
+	 * 护士
+	 */
+	private String nurse;
+	/**
+	 * 司机
+	 */
+	private String driver;
+	/**
+	 * 分站
+	 */
+	private String station;
+
+	public String getAcceptTaskTime() {
+		return acceptTaskTime;
+	}
+
+	public void setAcceptTaskTime(String acceptTaskTime) {
+		this.acceptTaskTime = acceptTaskTime;
+	}
+
+	public String getDocter() {
+		return docter;
+	}
+
+	public void setDocter(String docter) {
+		this.docter = docter;
+	}
+
+	public String getNurse() {
+		return nurse;
+	}
+
+	public void setNurse(String nurse) {
+		this.nurse = nurse;
+	}
+
+	public String getDriver() {
+		return driver;
+	}
+
+	public void setDriver(String driver) {
+		this.driver = driver;
+	}
+
+	public String getStation() {
+		return station;
+	}
+
+	public void setStation(String station) {
+		this.station = station;
+	}
 
 	public String getSiteAddress() {
 		return siteAddress;
@@ -76,14 +132,6 @@ public class SubstationLateVisit {
 
 	public void setAcceptTime(String acceptTime) {
 		this.acceptTime = acceptTime;
-	}
-
-	public String getCreateTaskTime() {
-		return createTaskTime;
-	}
-
-	public void setCreateTaskTime(String createTaskTime) {
-		this.createTaskTime = createTaskTime;
 	}
 
 	public String getOutCarTime() {
@@ -126,20 +174,7 @@ public class SubstationLateVisit {
 		this.dispatcher = dispatcher;
 	}
 
-	public SubstationLateVisit(String siteAddress, String eventType,
-			String carCode, String acceptTime, String createTaskTime,
-			String outCarTime, String outCarTimes, String taskResult,
-			String remark, String dispatcher) {
-		this.siteAddress = siteAddress;
-		this.eventType = eventType;
-		this.carCode = carCode;
-		this.acceptTime = acceptTime;
-		this.createTaskTime = createTaskTime;
-		this.outCarTime = outCarTime;
-		this.outCarTimes = outCarTimes;
-		this.taskResult = taskResult;
-		this.remark = remark;
-		this.dispatcher = dispatcher;
+	public SubstationLateVisit() {
 	}
 
 }

@@ -38,15 +38,26 @@ public class MissMealDAOImpl implements MissMealDAO {
 
 	@Override
 	public Grid getData(Parameter parameter) {
-		String sql = "select pc.随车医生 name,COUNT(*) times,SUM(case when (DATEPART(Hour,t.出车时刻)<12 and DATEPART(Hour,t.到达医院时刻)>12) or (DATEPART(Hour,t.出车时刻)<18 and DATEPART(Hour,t.到达医院时刻)>18) then 1 else 0 end)   rate	"
-				+ "from AuSp120.tb_TaskV t	left outer join AuSp120.tb_EventV e on e.事件编码=t.事件编码	left outer join AuSp120.tb_PatientCase pc on t.任务编码=pc.任务编码 and t.任务序号=pc.任务序号	"
-				+ "where e.事件性质编码=1 and e.受理时刻 between :startTime and :endTime	and pc.任务编码 is not null and pc.随车医生<>''	group by pc.随车医生 "
-				+ " union  select pc.随车护士 name,COUNT(*) times,	SUM(case when (DATEPART(Hour,t.出车时刻)<12 and DATEPART(Hour,t.到达医院时刻)>12) or (DATEPART(Hour,t.出车时刻)<18 and DATEPART(Hour,t.到达医院时刻)>18) then 1 else 0 end)   rate	"
-				+ "from AuSp120.tb_TaskV t	left outer join AuSp120.tb_EventV e on e.事件编码=t.事件编码	left outer join AuSp120.tb_PatientCase pc on t.任务编码=pc.任务编码 and t.任务序号=pc.任务序号	"
-				+ "where e.事件性质编码=1 and e.受理时刻 between :startTime and :endTime	and pc.任务编码 is not null and pc.随车护士<>''	group by pc.随车护士 "
-				+ " union  select pc.司机 name,COUNT(*) times,	SUM(case when (DATEPART(Hour,t.出车时刻)<12 and DATEPART(Hour,t.到达医院时刻)>12) or (DATEPART(Hour,t.出车时刻)<18 and DATEPART(Hour,t.到达医院时刻)>18) then 1 else 0 end)   rate	"
-				+ "from AuSp120.tb_TaskV t	left outer join AuSp120.tb_EventV e on e.事件编码=t.事件编码	left outer join AuSp120.tb_PatientCase pc on t.任务编码=pc.任务编码 and t.任务序号=pc.任务序号	"
-				+ "where e.事件性质编码=1 and e.受理时刻 between :startTime and :endTime	and pc.任务编码 is not null and pc.司机<>''	group by pc.司机 ";
+		String sql = "select distinct 任务序号,任务编码,随车医生,随车护士,司机 into #pc from AuSp120.tb_PatientCase  "
+				+ "select pc.随车医生 name,COUNT(*) rate,	"
+				+ "SUM(case when (DATEPART(Hour,t.出车时刻)<12 and DATEPART(Hour,t.到达医院时刻)>12) or (DATEPART(Hour,t.出车时刻)<18 and DATEPART(Hour,t.到达医院时刻)>18) then 1 else 0 end)   times	"
+				+ "from #pc pc left outer join AuSp120.tb_TaskV t on t.任务编码=pc.任务编码 and t.任务序号=pc.任务序号	"
+				+ "left outer join AuSp120.tb_AcceptDescriptV a on a.事件编码=t.事件编码 and a.受理序号=t.受理序号	"
+				+ "left outer join AuSp120.tb_EventV e on e.事件编码=t.事件编码	"
+				+ "where e.事件性质编码=1 and a.类型编码 not in (2,4) and e.受理时刻 between :startTime and :endTime	"
+				+ "and pc.任务编码 is not null and pc.随车医生<>''	group by pc.随车医生	union	"
+				+ "select pc.随车护士 name,COUNT(*) rate,	SUM(case when (DATEPART(Hour,t.出车时刻)<12 and DATEPART(Hour,t.到达医院时刻)>12) or (DATEPART(Hour,t.出车时刻)<18 and DATEPART(Hour,t.到达医院时刻)>18) then 1 else 0 end)   times	"
+				+ "from #pc pc left outer join AuSp120.tb_TaskV t on t.任务编码=pc.任务编码 and t.任务序号=pc.任务序号	"
+				+ "left outer join AuSp120.tb_AcceptDescriptV a on a.事件编码=t.事件编码 and a.受理序号=t.受理序号	"
+				+ "left outer join AuSp120.tb_EventV e on e.事件编码=t.事件编码	where e.事件性质编码=1 "
+				+ "and a.类型编码 not in (2,4) and e.受理时刻 between :startTime and :endTime	"
+				+ "and pc.任务编码 is not null and pc.随车护士<>''	group by pc.随车护士	union	select pc.司机 name,COUNT(*) rate,	"
+				+ "SUM(case when (DATEPART(Hour,t.出车时刻)<12 and DATEPART(Hour,t.到达医院时刻)>12) or (DATEPART(Hour,t.出车时刻)<18 and DATEPART(Hour,t.到达医院时刻)>18) then 1 else 0 end)   times	"
+				+ "from #pc pc left outer join AuSp120.tb_TaskV t on t.任务编码=pc.任务编码 and t.任务序号=pc.任务序号	"
+				+ "left outer join AuSp120.tb_AcceptDescriptV a on a.事件编码=t.事件编码 and a.受理序号=t.受理序号	"
+				+ "left outer join AuSp120.tb_EventV e on e.事件编码=t.事件编码	where e.事件性质编码=1 and a.类型编码 not in (2,4) "
+				+ "and e.受理时刻 between :startTime and :endTime	and pc.任务编码 is not null and pc.司机<>''"
+				+ "group by pc.司机 drop table #pc";
 		Map<String, String> paramMap = new HashMap<String, String>();
 		paramMap.put("startTime", parameter.getStartTime());
 		paramMap.put("endTime", parameter.getEndTime());
@@ -64,7 +75,7 @@ public class MissMealDAOImpl implements MissMealDAO {
 		logger.info("一共有" + results.size() + "条数据");
 		for (MissMeal result : results) {
 			result.setRate(CommonUtil.calculateRate(
-					Integer.parseInt(result.getTimes()), result.getRate()));
+					Integer.parseInt(result.getRate()), result.getTimes()));
 		}
 		Grid grid = new Grid();
 		if ((int) parameter.getPage() > 0) {

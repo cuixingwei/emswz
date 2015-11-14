@@ -17,6 +17,7 @@ import org.springframework.stereotype.Repository;
 import com.xhs.ems.bean.EmergencySafeguard;
 import com.xhs.ems.bean.easyui.Grid;
 import com.xhs.ems.bean.easyui.Parameter;
+import com.xhs.ems.common.CommonUtil;
 import com.xhs.ems.dao.EmergencySafeguardDAO;
 
 /**
@@ -37,32 +38,45 @@ public class EmergencySafeguardDAOImpl implements EmergencySafeguardDAO {
 
 	@Override
 	public Grid getData(Parameter parameter) {
-		String sql = "select distinct pc.任务编码,pc.任务序号,pc.里程,pc.随车医生,pc.随车护士,pc.司机 into #pc from AuSp120.tb_PatientCase pc "
-				+ "select CONVERT(varchar(20),e.受理时刻,120) date,det.NameM nature,e.事件名称 event,a.现场地址 address,	isnull(pc.里程,0) distance,pc.随车医生 doctor,"
-				+ "pc.随车护士 nurse,pc.司机 driver	from AuSp120.tb_TaskV t left outer join AuSp120.tb_EventV e on e.事件编码=t.事件编码	"
-				+ "left outer join #pc pc on pc.任务序号=t.任务序号 and pc.任务编码=t.任务编码 	left outer join AuSp120.tb_DEventType det on det.Code=e.事件类型编码	"
-				+ "left outer join AuSp120.tb_AcceptDescriptV a on a.事件编码=t.事件编码 and a.受理序号=t.受理序号 	"
-				+ "where e.事件性质编码=1 and e.受理时刻 between :startTime and :endTime and e.事件类型编码 in (1,5) drop table #pc ";
+		String sql = "select distinct pc.任务编码,pc.任务序号,pc.里程,pc.随车医生,pc.随车护士,pc.司机 into #pc "
+				+ "from AuSp120.tb_PatientCase pc	"
+				+ "select CONVERT(varchar(20),e.受理时刻,120) date,det.NameM nature,a.初步判断 event,a.现场地址 address,"
+				+ "isnull(pc.里程,0) distance,pc.随车医生 doctor,pc.随车护士 nurse,pc.司机 driver,"
+				+ "DATEDIFF(SECOND,t.出车时刻,t.到达医院时刻) safeTime	from AuSp120.tb_AcceptDescriptV a	"
+				+ "left outer join AuSp120.tb_TaskV t on a.事件编码=t.事件编码 and a.受理序号=t.受理序号	"
+				+ "left outer join AuSp120.tb_EventV e on t.事件编码=e.事件编码	"
+				+ "left outer join #pc pc on pc.任务序号=t.任务序号 and pc.任务编码=t.任务编码	"
+				+ "left outer join AuSp120.tb_DEventType det on det.Code=e.事件类型编码	"
+				+ "where e.事件性质编码=1 and a.类型编码 not in (2,4) and e.受理时刻 between :startTime and :endTime "
+				+ "and e.事件类型编码=5	 ";
 		Map<String, String> paramMap = new HashMap<String, String>();
 		paramMap.put("startTime", parameter.getStartTime());
 		paramMap.put("endTime", parameter.getEndTime());
+		sql += " drop table #pc";
 
 		List<EmergencySafeguard> results = this.npJdbcTemplate.query(sql,
 				paramMap, new RowMapper<EmergencySafeguard>() {
 					@Override
 					public EmergencySafeguard mapRow(ResultSet rs, int index)
 							throws SQLException {
-
-						return new EmergencySafeguard(rs.getString("date"), rs
-								.getString("nature"), rs.getString("event"), rs
-								.getString("address"),
-								rs.getString("distance"), rs
-										.getString("doctor"), rs
-										.getString("nurse"), rs
-										.getString("driver"));
+						EmergencySafeguard emergencySafeguard = new EmergencySafeguard();
+						emergencySafeguard.setAddress(rs.getString("address"));
+						emergencySafeguard.setDate(rs.getString("date"));
+						emergencySafeguard.setDistance(rs.getString("distance"));
+						emergencySafeguard.setDoctor(rs.getString("doctor"));
+						emergencySafeguard.setDriver(rs.getString("driver"));
+						emergencySafeguard.setEvent(rs.getString("event"));
+						emergencySafeguard.setNature(rs.getString("nature"));
+						emergencySafeguard.setNurse(rs.getString("nurse"));
+						emergencySafeguard.setSafeTime(rs.getString("safeTime"));
+						return emergencySafeguard;
 					}
 				});
 		logger.info("一共有" + results.size() + "条数据");
+		for (EmergencySafeguard emergencySafeguard : results) {
+			emergencySafeguard.setSafeTime(CommonUtil
+					.formatSecond(emergencySafeguard.getSafeTime()));
+		}
 		Grid grid = new Grid();
 		if ((int) parameter.getPage() > 0) {
 			int page = (int) parameter.getPage();

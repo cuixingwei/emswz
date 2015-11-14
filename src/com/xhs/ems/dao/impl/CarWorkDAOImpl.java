@@ -43,47 +43,42 @@ public class CarWorkDAOImpl implements CarWorkDAO {
 	 */
 	@Override
 	public Grid getData(Parameter parameter) {
-		String sql = "select 分站编码 station,实际标识 carCode,count( p.车辆编码) as pauseNumbers into #temp1 	"
-				+ "from AuSp120.tb_RecordPauseReason p left join AuSp120.tb_Ambulance a on p.车辆编码=a.车辆编码 	"
-				+ "where p.操作时刻 between :startTime and :endTime group by (分站编码),(实际标识) "
-				+ "select t.分站编码 station,am.实际标识 carCode,t.出车时刻 ,t.到达现场时刻,t.生成任务时刻,结果编码 into #temp2	"
-				+ "from AuSp120.tb_TaskV t left outer join AuSp120.tb_EventV e on e.事件编码=t.事件编码	"
-				+ "left outer join AuSp120.tb_Ambulance am on am.车辆编码=t.车辆编码 	"
-				+ "where e.事件性质编码=1 and t.生成任务时刻 between :startTime and :endTime ";
-		if (!CommonUtil.isNullOrEmpty(parameter.getStation())) {
-			sql = sql + " and t.分站编码=:station ";
-		}
+		String sql = "select 实际标识 carCode,count( p.车辆编码) as pauseNumbers into #temp1 		"
+				+ "from AuSp120.tb_RecordPauseReason p left join AuSp120.tb_Ambulance a on p.车辆编码=a.车辆编码	"
+				+ "where p.操作时刻 between :startTime and :endTime group by (实际标识) "
+				+ "select am.实际标识 carCode,t.出车时刻 ,t.到达现场时刻,t.生成任务时刻,结果编码 into #temp2	"
+				+ "from AuSp120.tb_AcceptDescriptV a	left outer join AuSp120.tb_TaskV t on a.事件编码=t.事件编码 "
+				+ "and a.受理序号=t.受理序号	left outer join AuSp120.tb_EventV e on t.事件编码=e.事件编码	"
+				+ "left outer join AuSp120.tb_Ambulance am on am.车辆编码=t.车辆编码	"
+				+ "where e.事件性质编码=1 and a.类型编码 not in (2,4) and t.生成任务时刻 between :startTime and :endTime ";
 		if (!CommonUtil.isNullOrEmpty(parameter.getCarCode())) {
 			sql = sql + " and t.车辆编码=:carCode ";
 		}
-		sql += "select station,carCode,AVG(DATEDIFF(Second,生成任务时刻,出车时刻)) averageOutCarTimes into #temp3 	from #temp2 "
-				+ "where 生成任务时刻<出车时刻 group by station,carCode	"
-				+ "select station,carCode,AVG(DATEDIFF(Second,出车时刻,到达现场时刻)) averageArriveSpotTimes into #temp4	"
-				+ "from #temp2 where 出车时刻<到达现场时刻 and 出车时刻 is not null group by station,carCode "
-				+ "select t.station,t.carCode,sum(case when t.出车时刻 is not null then 1 else 0 end) outCarNumbers,"
+		sql += "select carCode,AVG(DATEDIFF(Second,生成任务时刻,出车时刻)) averageOutCarTimes into #temp3 	"
+				+ "from #temp2 where 生成任务时刻<出车时刻 group by carCode  "
+				+ "select carCode,AVG(DATEDIFF(Second,出车时刻,到达现场时刻)) averageArriveSpotTimes into #temp4	"
+				+ "from #temp2 where 出车时刻<到达现场时刻 and 出车时刻 is not null group by carCode	"
+				+ "select t.carCode,sum(case when t.出车时刻 is not null then 1 else 0 end) outCarNumbers,	"
 				+ "sum(case when t.到达现场时刻 is not null then 1 else 0 end) arriveSpotNumbers into #temp5	"
-				+ "from #temp2 t group by t.station,t.carCode "
-				+ "select s.分站名称 station,t5.carCode,outCarNumbers,averageOutCarTimes,arriveSpotNumbers,"
-				+ "averageArriveSpotTimes,pauseNumbers 	from AuSp120.tb_Station s "
-				+ "left outer join #temp1 t1  on t1.station=s.分站编码	"
-				+ "left outer join #temp5 t5 on t1.station=t5.station and t1.carCode=t5.carCode	"
-				+ "left outer join #temp3 t3  on t3.station=t5.station and t3.carCode=t5.carCode	"
-				+ "left outer join #temp4 t4  on t3.station=t4.station and t3.carCode=t4.carCode	"
-				+ "where t5.carCode is not null	order by s.显示顺序 "
-				+ " drop table #temp1,#temp2,#temp3,#temp4,#temp5";
+				+ "from #temp2 t group by t.carCode	"
+				+ "select t5.carCode,outCarNumbers,averageOutCarTimes,arriveSpotNumbers,averageArriveSpotTimes,isnull(pauseNumbers,0) pauseNumbers		"
+				+ "from  #temp5  t5	left outer join #temp1 t1 on  t1.carCode=t5.carCode	"
+				+ "left outer join #temp3 t3 on t3.carCode=t5.carCode	"
+				+ "left outer join #temp4 t4 on t5.carCode=t4.carCode	where t5.carCode is not null	"
+				+ "drop table #temp1,#temp2,#temp3,#temp4,#temp5";
 		Map<String, String> paramMap = new HashMap<String, String>();
 		paramMap.put("startTime", parameter.getStartTime());
 		paramMap.put("endTime", parameter.getEndTime());
-		paramMap.put("station", parameter.getStation());
 		paramMap.put("carCode", parameter.getCarCode());
+
+		logger.info(sql);
 
 		List<CarWork> results = this.npJdbcTemplate.query(sql, paramMap,
 				new RowMapper<CarWork>() {
 					@Override
 					public CarWork mapRow(ResultSet rs, int index)
 							throws SQLException {
-						return new CarWork(rs.getString("station"), rs
-								.getString("carCode"), rs
+						return new CarWork(rs.getString("carCode"), rs
 								.getString("outCarNumbers"), rs
 								.getString("averageOutCarTimes"), rs
 								.getString("arriveSpotNumbers"), rs

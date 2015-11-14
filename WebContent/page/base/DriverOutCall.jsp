@@ -35,7 +35,9 @@
 					striped : true,
 					singleSelect : true,
 					rownumbers : true,
-					idField : 'id',
+					nowrap : false,
+					idField : 'name',
+					nowrap : false,
 					pageSize : 20,
 					pageList : [ 10, 20, 30, 40, 50, 100, 200, 300, 400, 500 ],
 					columns : [ [ {
@@ -85,16 +87,9 @@
 					onBeforeLoad : function(param) {
 						var varify = cxw.checkStartTimeBeforeEndTime(
 								'#startTime', '#endTime');
-						if (varify) {
-							parent.$.messager.progress({
-								text : '数据加载中....'
-							});
-						} else {
+						if (!varify) {
 							$.messager.alert('警告', '结束时间要大于开始时间', 'warning');
 						}
-					},
-					onLoadSuccess : function(data) {
-						parent.$.messager.progress('close');
 					}
 				});
 	}

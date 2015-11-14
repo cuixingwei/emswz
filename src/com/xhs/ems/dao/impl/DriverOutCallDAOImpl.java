@@ -28,7 +28,7 @@ import com.xhs.ems.dao.DriverOutCallDAO;
 @Repository
 public class DriverOutCallDAOImpl implements DriverOutCallDAO {
 	private static final Logger logger = Logger
-			.getLogger(CaseQualityDAOImpl.class);
+			.getLogger(DriverOutCallDAOImpl.class);
 
 	private NamedParameterJdbcTemplate npJdbcTemplate;
 
@@ -39,22 +39,24 @@ public class DriverOutCallDAOImpl implements DriverOutCallDAO {
 
 	@Override
 	public Grid getData(Parameter parameter) {
-		String sql = "select t.司机 name,COUNT(*) outCalls,SUM(case when t.结果编码=4 then 1 else 0 end) takeBacks,	"
-				+ "AVG(DATEDIFF(Second,e.受理时刻,t.到达现场时刻)) averageResponseTime,"
-				+ "SUM(DATEDIFF(Second,t.出车时刻,t.到达医院时刻)) outCallTimeTotal,	"
-				+ "avg(DATEDIFF(Second,t.出车时刻,t.到达医院时刻)) averageTime into #temp1	"
-				+ "from AuSp120.tb_TaskV t	left outer join AuSp120.tb_EventV e on e.事件编码=t.事件编码	"
-				+ "where e.事件性质编码=1 and t.司机 is not null and t.司机<>'' and e.受理时刻 between :startTime and :endTime	group by t.司机  "
-				+ "select distinct t.司机 ,pc.任务编码,pc.任务序号,t.事件编码, 里程 into #dis	"
-				+ "from AuSp120.tb_PatientCase pc	"
-				+ "left outer join AuSp120.tb_TaskV t on t.任务编码=pc.任务编码 and t.任务序号=pc.任务序号 	"
-				+ "left outer join AuSp120.tb_EventV e on e.事件编码=t.事件编码	"
-				+ "where e.事件性质编码=1 and t.司机 is not null and t.司机<>'' and e.受理时刻 between :startTime and :endTime  "
-				+ "select 司机 name,SUM(里程) distance into #temp2 from #dis d group by 司机  "
-				+ "select t1.name,isnull(t1.averageResponseTime,0) averageResponseTime,"
-				+ "isnull(t1.averageTime,0) averageTime,isnull(t1.outCallTimeTotal,0) outCallTimeTotal,	t1.outCalls,t1.takeBacks,isnull(t2.distance,0) distance	"
-				+ "from #temp1 t1 left outer join #temp2 t2 on t1.name=t2.name  "
-				+ "drop table #dis,#temp1,#temp2 ";
+		String sql = "select distinct pc.司机 ,pc.任务编码,pc.任务序号, 里程 into #pc from AuSp120.tb_PatientCase pc	"
+				+ "select pc.司机 name,COUNT(*) outCalls,	AVG(DATEDIFF(Second,e.受理时刻,t.到达现场时刻)) averageResponseTime,	"
+				+ "SUM(DATEDIFF(Second,t.出车时刻,t.到达医院时刻)) outCallTimeTotal,"
+				+ "avg(DATEDIFF(Second,t.出车时刻,t.到达医院时刻)) averageTime,SUM(里程) distance  into #temp1	"
+				+ "from AuSp120.tb_EventV e left outer join AuSp120.tb_AcceptDescriptV a on a.事件编码=e.事件编码	"
+				+ "left outer join	AuSp120.tb_TaskV t on a.事件编码=t.事件编码 and a.受理序号=t.受理序号	"
+				+ "left outer join #pc pc on t.任务序号=pc.任务序号 and t.任务编码=pc.任务编码	"
+				+ "where e.事件性质编码=1 and a.类型编码 not in (2,4) and pc.司机 is not null and pc.司机<>'' "
+				+ "and e.受理时刻 between :startTime and :endTime	group by pc.司机	"
+				+ "select pc.司机 name,SUM(case when pc.转归编码=1 then 1 else 0 end) takeBacks into #temp2 "
+				+ "from AuSp120.tb_PatientCase pc left outer join AuSp120.tb_TaskV t on t.任务序号=pc.任务序号 and t.任务编码=pc.任务编码	"
+				+ "left outer join AuSp120.tb_AcceptDescriptV a on a.事件编码=t.事件编码 and a.受理序号=t.受理序号	"
+				+ "left outer join AuSp120.tb_EventV e on a.事件编码=e.事件编码	"
+				+ "where e.事件性质编码=1 and a.类型编码 not in (2,4) and pc.司机 is not null and pc.司机<>'' "
+				+ "and e.受理时刻 between :startTime and :endTime	group by pc.司机	"
+				+ "select t1.name,isnull(t1.averageResponseTime,0) averageResponseTime,isnull(t1.averageTime,0) averageTime,"
+				+ "isnull(t1.outCallTimeTotal,0) outCallTimeTotal,	t1.outCalls,t2.takeBacks,isnull(t1.distance,0) distance	"
+				+ "from #temp1 t1 left outer join #temp2 t2 on t1.name=t2.name	drop table #pc,#temp1,#temp2 ";
 		Map<String, String> paramMap = new HashMap<String, String>();
 		paramMap.put("startTime", parameter.getStartTime());
 		paramMap.put("endTime", parameter.getEndTime());
@@ -215,20 +217,23 @@ public class DriverOutCallDAOImpl implements DriverOutCallDAO {
 
 	@Override
 	public Grid getCenterHospitalOutDetail(Parameter parameter) {
-		String sql = "select convert(varchar(20),e.受理时刻,120) dateTime,pc.姓名 patientName,pc.现场地点 address,pc.出诊地址 outStation,"
-				+ "tr.NameM outResult,pc.随车医生 doctor,pc.随车护士 nurse,pc.里程 distance,	pc.司机 driver,pc.性别 sex,pc.年龄 age,"
-				+ "pc.医生诊断 diagnose,pc.送往地点 sendAddress,da.NameM area,dc.NameM diseaseDepartment,dcs.NameM classState,	"
-				+ "dis.NameM diseaseDegree,de.NameM treatmentEffet	from AuSp120.tb_PatientCase pc "
-				+ "left outer join AuSp120.tb_TaskV t on t.任务编码=pc.任务编码 and t.任务序号=pc.任务序号	"
-				+ "left outer join AuSp120.tb_EventV e on e.事件编码=t.事件编码 	"
-				+ "left outer join AuSp120.tb_DTaskResult tr on tr.Code=t.结果编码	"
+		String sql = "select convert(varchar(20),e.受理时刻,120) dateTime,pc.姓名 patientName,pc.现场地点 address,pc.出诊地址 outStation,	"
+				+ "dr.NameM outResult,pc.随车医生 doctor,pc.随车护士 nurse,pc.里程 distance,pc.司机 driver,pc.性别 sex,"
+				+ "pc.年龄 age,	pc.医生诊断 diagnose,pc.送往地点 sendAddress,da.NameM area,dc.NameM diseaseDepartment,"
+				+ "dcs.NameM classState,dis.NameM diseaseDegree,de.NameM treatmentEffet,et.NameM eventType,t.车辆编码 carCode,"
+				+ "DATEDIFF(Second,t.接收命令时刻,t.到达现场时刻) poorTime,	DATEDIFF(Second,t.出车时刻,t.完成时刻) userTime,"
+				+ "AuSp120.GetCureMeasure(pc.任务编码,pc.序号) cureMeasure,u.姓名 dispatcher	"
+				+ "from AuSp120.tb_PatientCase pc	left outer join AuSp120.tb_TaskV t on t.任务编码=pc.任务编码 and t.任务序号=pc.任务序号	"
+				+ "left outer join AuSp120.tb_EventV e on e.事件编码=t.事件编码	"
+				+ "left outer join AuSp120.tb_DResult dr on dr.Code=t.结果编码	 "
 				+ "left outer join AuSp120.tb_AcceptDescriptV  a on a.受理序号=t.受理序号 and a.事件编码=t.事件编码	"
-				+ "left outer join AuSp120.tb_DArea da on da.Code=a.区域编码 "
-				+ "left outer join AuSp120.tb_DDiseaseClass dc on dc.Code=pc.疾病科别编码	"
-				+ "left outer join AuSp120.tb_DDiseaseClassState dcs on dcs.Code=pc.分类统计编码	"
-				+ "left outer join AuSp120.tb_DILLState dis on dis.Code=pc.病情编码	"
-				+ "left outer join AuSp120.tb_DEffect de on de.Code=pc.救治效果编码	"
-				+ "where e.事件性质编码=1 and pc.出诊地址 in ('三峡中心医院急救分院','百安分院','江南分院') and e.受理时刻 between  :startTime and :endTime";
+				+ "left outer join AuSp120.tb_DArea da on da.Code=a.区域编码	left outer join AuSp120.tb_DDiseaseClass dc on dc.Code=pc.疾病科别编码	"
+				+ "left outer join AuSp120.tb_DDiseaseClassState dcs on dcs.Code=pc.分类统计编码 "
+				+ "left outer join AuSp120.tb_DILLState dis on dis.Code=pc.病情编码 "
+				+ "left outer join AuSp120.tb_MrUser u on u.工号=t.调度员编码	"
+				+ "left outer join AuSp120.tb_DEffect de on de.Code=pc.救治效果编码  "
+				+ "left outer join AuSp120.tb_DEventType et on et.Code=e.事件类型编码	"
+				+ "where e.事件性质编码=1 and a.类型编码 not in (2,4) and pc.出诊地址 in ('三峡中心医院急救分院','百安分院','江南分院')  and e.受理时刻 between  :startTime and :endTime";
 		Map<String, String> paramMap = new HashMap<String, String>();
 		paramMap.put("startTime", parameter.getStartTime());
 		paramMap.put("endTime", parameter.getEndTime());
@@ -286,9 +291,19 @@ public class DriverOutCallDAOImpl implements DriverOutCallDAO {
 						detail.setSendAddress(rs.getString("sendAddress"));
 						detail.setSex(rs.getString("sex"));
 						detail.setTreatmentEffet(rs.getString("treatmentEffet"));
+						detail.setEventType(rs.getString("eventType"));
+						detail.setCarCode(rs.getString("carCode"));
+						detail.setCureMeasure(rs.getString("cureMeasure"));
+						detail.setPoorTime(rs.getString("poorTime"));
+						detail.setUserTime(rs.getString("userTime"));
+						detail.setDispatcher(rs.getString("dispatcher"));
 						return detail;
 					}
 				});
+		for (DriverDoctorNurseDetail detail : results) {
+			detail.setPoorTime(CommonUtil.formatSecond(detail.getPoorTime()));
+			detail.setUserTime(CommonUtil.formatSecond(detail.getUserTime()));
+		}
 		Grid grid = new Grid();
 		if ((int) parameter.getPage() > 0) {
 			int page = (int) parameter.getPage();

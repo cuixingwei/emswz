@@ -35,6 +35,7 @@
 					striped : true,
 					singleSelect : true,
 					rownumbers : true,
+					nowrap : false,
 					idField : 'id',
 					pageSize : 20,
 					pageList : [ 10, 20, 30, 40, 50, 100, 200, 300, 400, 500 ],
@@ -54,13 +55,13 @@
 						field : 'event',
 						title : '事件',
 						resizable : true,
-						width : "16%",
+						width : "10%",
 						align : 'center'
 					}, {
 						field : 'address',
 						title : '地址',
 						resizable : true,
-						width : "16%",
+						width : "14%",
 						align : 'center'
 					}, {
 						field : 'distance',
@@ -72,17 +73,23 @@
 						field : 'doctor',
 						title : '医生',
 						resizable : true,
-						width : "12%",
+						width : "10%",
 						align : 'center',
 					}, {
 						field : 'nurse',
 						title : '护士',
 						resizable : true,
-						width : "12%",
+						width : "10%",
 						align : 'center'
 					}, {
 						field : 'driver',
 						title : '司机',
+						resizable : true,
+						width : "10%",
+						align : 'center'
+					}, {
+						field : 'safeTime',
+						title : '保障时长',
 						resizable : true,
 						width : "10%",
 						align : 'center'
@@ -91,16 +98,9 @@
 					onBeforeLoad : function(param) {
 						var varify = cxw.checkStartTimeBeforeEndTime(
 								'#startTime', '#endTime');
-						if (varify) {
-							parent.$.messager.progress({
-								text : '数据加载中....'
-							});
-						} else {
+						if (!varify) {
 							$.messager.alert('警告', '结束时间要大于开始时间', 'warning');
 						}
-					},
-					onLoadSuccess : function(data) {
-						parent.$.messager.progress('close');
 					}
 				});
 	}

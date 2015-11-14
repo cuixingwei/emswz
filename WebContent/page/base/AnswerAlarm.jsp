@@ -43,13 +43,14 @@
 					striped : true,
 					singleSelect : true,
 					rownumbers : true,
+					nowrap : false,
 					idField : 'id',
 					pageSize : 20,
 					pageList : [ 10, 20, 30, 40, 50, 100, 200, 300, 400, 500 ],
 					columns : [ [ {
 						field : 'answerAlarmTime',
 						title : '接诊时间',
-						width : "15%",
+						width : "11%",
 						align : 'center'
 					}, {
 						field : 'alarmPhone',
@@ -65,28 +66,39 @@
 					}, {
 						field : 'siteAddress',
 						title : '报警地址',
-						width : "15%",
+						width : "11%",
 						align : 'center'
 					}, {
 						field : 'judgementOnPhone',
 						title : '电话判断',
-						width : "15%",
+						width : "11%",
 						align : 'center'
 					}, {
 						field : 'station',
-						title : '出车急救站',
+						title : '出诊分站',
 						width : "10%",
 						resizable : true,
 						align : 'center'
 					}, {
 						field : 'sendCarTime',
 						title : '派车时间',
-						width : "14%",
+						width : "10%",
 						align : 'center'
 					}, {
 						field : 'dispatcher',
 						title : '调度员',
+						width : "8%",
+						resizable : true,
+						align : 'center'
+					}, {
+						field : 'outResult',
+						title : '出诊结果',
 						width : "10%",
+						align : 'center'
+					}, {
+						field : 'takeBacks',
+						title : '接回数',
+						width : "8%",
 						resizable : true,
 						align : 'center'
 					} ] ],

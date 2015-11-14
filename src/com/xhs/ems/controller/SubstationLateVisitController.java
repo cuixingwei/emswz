@@ -45,15 +45,17 @@ public class SubstationLateVisitController {
 		response.setContentType("application/msexcel;charset=UTF-8");
 		String title = "急救站3分钟未出诊统计";
 		String[] headers = new String[] { "现场地址", "事件类型", "车辆标识", "受理时刻",
-				"生成任务时刻", "出车时刻", "出车时长", "出车结果", "任务备注", "调度员" };
+				"接收命令时刻", "出车时刻", "出车时长", "出车结果", "任务备注", "调度员", "医生", "护士",
+				"司机", "分站" };
 		String[] fields = new String[] { "siteAddress", "eventType", "carCode",
-				"acceptTime", "createTaskTime", "outCarTime", "outCarTimes",
-				"taskResult", "remark", "dispatcher" };
+				"acceptTime", "acceptTaskTime", "outCarTime", "outCarTimes",
+				"taskResult", "remark", "dispatcher", "docter", "nurse",
+				"driver", "station" };
 		TableData td = ExcelUtils.createTableData(substationLateVisitService
 				.getData(parameter).getRows(), ExcelUtils
 				.createTableHeader(headers), fields);
 		JsGridReportBase report = new JsGridReportBase(request, response);
-		
+
 		HttpSession session = request.getSession();
 		SessionInfo sessionInfo = (SessionInfo) session
 				.getAttribute("sessionInfo");

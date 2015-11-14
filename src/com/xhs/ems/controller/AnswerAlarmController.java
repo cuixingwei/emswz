@@ -45,10 +45,10 @@ public class AnswerAlarmController {
 		response.setContentType("application/msexcel;charset=UTF-8");
 		String title = "中心接警统计";
 		String[] headers = new String[] { "接诊时间", "报警电话", "相关电话", "报警地址",
-				"电话判断", "出车急救站", "派车时间", "调度员" };
+				"电话判断", "出诊分站", "派车时间", "调度员", "出诊结果", "接回人数" };
 		String[] fields = new String[] { "answerAlarmTime", "alarmPhone",
 				"relatedPhone", "siteAddress", "judgementOnPhone", "station",
-				"sendCarTime", "dispatcher" };
+				"sendCarTime", "dispatcher", "outResult", "takeBacks" };
 		TableData td = ExcelUtils.createTableData(
 				answerAlarmService.getData(parameter).getRows(),
 				ExcelUtils.createTableHeader(headers), fields);

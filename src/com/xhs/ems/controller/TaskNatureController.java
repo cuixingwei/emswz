@@ -46,10 +46,11 @@ public class TaskNatureController {
 
 		String title = "任务性质统计";
 		String[] headers = new String[] { "出诊类型", "次数", "接回数", "接回率", "里程",
-				"平均反应时间", "平均用时", "空车", "拒绝入院", "死亡" };
+				"平均反应时间", "平均用时", "空车", "拒绝入院", "死亡", "市区", "万州区", "其他" };
 		String[] fields = new String[] { "outCallType", "times", "takeBacks",
 				"takeBackRate", "distance", "averageResponseTime",
-				"averageTime", "emptyCars", "refuseToHospitals", "deaths" };
+				"averageTime", "emptyCars", "refuseToHospitals", "deaths",
+				"shiqu", "wanzhou", "others" };
 		int spanCount = 1; // 需要合并的列数。从第1列开始到指定列。
 		TableData td = ExcelUtils.createTableData(
 				taskNatureService.getData(parameter).getRows(),

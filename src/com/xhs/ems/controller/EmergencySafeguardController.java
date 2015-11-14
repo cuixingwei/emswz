@@ -46,9 +46,9 @@ public class EmergencySafeguardController {
 
 		String title = "急救保障明细";
 		String[] headers = new String[] { "日期", "性质", "事件", "地址", "里程", "医生",
-				"护士", "司机" };
+				"护士", "司机", "保障时长" };
 		String[] fields = new String[] { "date", "nature", "event", "address",
-				"distance", "doctor", "nurse", "driver" };
+				"distance", "doctor", "nurse", "driver", "safeTime" };
 		int spanCount = 1; // 需要合并的列数。从第1列开始到指定列。
 		TableData td = ExcelUtils.createTableData(emergencySafeguardService
 				.getData(parameter).getRows(), ExcelUtils.createTableHeader(

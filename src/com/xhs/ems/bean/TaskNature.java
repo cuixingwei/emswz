@@ -46,6 +46,42 @@ public class TaskNature {
 	 * 死亡
 	 */
 	private String deaths;
+	/**
+	 * 市区
+	 */
+	private String shiqu;
+	/**
+	 * 万州
+	 */
+	private String wanzhou;
+	/**
+	 * 其他
+	 */
+	private String others;
+
+	public String getShiqu() {
+		return shiqu;
+	}
+
+	public void setShiqu(String shiqu) {
+		this.shiqu = shiqu;
+	}
+
+	public String getWanzhou() {
+		return wanzhou;
+	}
+
+	public void setWanzhou(String wanzhou) {
+		this.wanzhou = wanzhou;
+	}
+
+	public String getOthers() {
+		return others;
+	}
+
+	public void setOthers(String others) {
+		this.others = others;
+	}
 
 	public String getOutCallType() {
 		return outCallType;
@@ -127,20 +163,7 @@ public class TaskNature {
 		this.deaths = deaths;
 	}
 
-	public TaskNature(String outCallType, String times, String takeBacks,
-			String takeBackRate, String distance, String averageResponseTime,
-			String averageTime, String emptyCars, String refuseToHospitals,
-			String deaths) {
-		this.outCallType = outCallType;
-		this.times = times;
-		this.takeBacks = takeBacks;
-		this.takeBackRate = takeBackRate;
-		this.distance = distance;
-		this.averageResponseTime = averageResponseTime;
-		this.averageTime = averageTime;
-		this.emptyCars = emptyCars;
-		this.refuseToHospitals = refuseToHospitals;
-		this.deaths = deaths;
+	public TaskNature() {
 	}
 
 }

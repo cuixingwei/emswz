@@ -43,15 +43,14 @@ public class CarWorkController {
 		logger.info("导出车辆工作统计到excel");
 		response.setContentType("application/msexcel;charset=UTF-8");
 		String title = "车辆工作情况统计";
-		String[] headers = new String[] { "分站", "车辆", "出车次数", "平均出车时长",
-				"到达现场次数", "平均到达现场时长", "暂停次数" };
-		String[] fields = new String[] { "station", "carCode", "outCarNumbers",
+		String[] headers = new String[] { "车辆", "出车次数", "平均出车时长", "到达现场次数",
+				"平均到达现场时长", "暂停次数" };
+		String[] fields = new String[] { "carCode", "outCarNumbers",
 				"averageOutCarTimes", "arriveSpotNumbers",
 				"averageArriveSpotTimes", "pauseNumbers" };
-		int spanCount = 1; // 需要合并的列数。从第1列开始到指定列。
 		TableData td = ExcelUtils.createTableData(
 				carWorkService.getData(parameter).getRows(),
-				ExcelUtils.createTableHeader(headers, spanCount), fields);
+				ExcelUtils.createTableHeader(headers), fields);
 		JsGridReportBase report = new JsGridReportBase(request, response);
 
 		HttpSession session = request.getSession();

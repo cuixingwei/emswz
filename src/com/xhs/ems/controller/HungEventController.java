@@ -45,14 +45,15 @@ public class HungEventController {
 
 		String title = "挂起事件流水统计";
 		String[] headers = new String[] { "事件名称", "受理类型", "操作人", "挂起时刻",
-				"挂起原因", "结束时刻", "时长" };
+				"挂起原因", "结束时刻", "时长", "区域", "出诊类型" };
 		String[] fields = new String[] { "eventName", "acceptType",
-				"dispatcher", "hungTime", "hungReason", "endTime", "hungtimes" };
+				"dispatcher", "hungTime", "hungReason", "endTime", "hungtimes",
+				"area", "eventType" };
 		TableData td = ExcelUtils.createTableData(
 				hungEventService.getData(parameter).getRows(),
 				ExcelUtils.createTableHeader(headers), fields);
 		JsGridReportBase report = new JsGridReportBase(request, response);
-		
+
 		HttpSession session = request.getSession();
 		SessionInfo sessionInfo = (SessionInfo) session
 				.getAttribute("sessionInfo");

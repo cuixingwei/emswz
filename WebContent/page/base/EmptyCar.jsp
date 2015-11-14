@@ -61,34 +61,41 @@
 					rownumbers : true,
 					idField : 'id',
 					pageSize : 20,
+					nowrap: false,
 					pageList : [ 10, 20, 30, 40, 50, 100, 200, 300, 400, 500 ],
 					columns : [ [ {
 						field : 'acceptTime',
 						title : '受理时间',
 						resizable : true,
-						width : "20%",
+						width : "16%",
 						align : 'center'
 					}, {
 						field : 'sickAddress',
 						title : '患者地址',
 						resizable : true,
-						width : "20%",
+						width : "16%",
 						align : 'center',
 					}, {
 						field : 'dispatcher',
 						title : '调度员',
 						resizable : true,
-						width : "20%",
+						width : "16%",
 						align : 'center'
 					}, {
 						field : 'emptyRunTimes',
 						title : '空跑时间',
 						resizable : true,
-						width : "20%",
+						width : "16%",
 						align : 'center',
 					}, {
 						field : 'emptyReason',
 						title : '空跑原因',
+						resizable : true,
+						width : "16%",
+						align : 'center'
+					}, {
+						field : 'eventType',
+						title : '出诊性质',
 						resizable : true,
 						width : "19%",
 						align : 'center'

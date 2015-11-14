@@ -46,13 +46,14 @@ public class InStationTransforDetailController {
 
 		String title = "院内转运明细";
 		String[] headers = new String[] { "日期", "病人姓名", "年龄", "性别", "诊断",
-				"出诊地址", "送达科室" };
+				"出诊分站", "送达科室", "现场地址", "距离", "耗时" };
 		String[] fields = new String[] { "date", "patientName", "age",
-				"gender", "diagnose", "outCallAddress", "sendClass" };
+				"gender", "diagnose", "outCallAddress", "sendClass", "spot",
+				"distance", "time" };
 		int spanCount = 1; // 需要合并的列数。从第1列开始到指定列。
-		TableData td = ExcelUtils.createTableData(inStationTransforDetailService
-				.getData(parameter).getRows(), ExcelUtils.createTableHeader(
-				headers, spanCount), fields);
+		TableData td = ExcelUtils.createTableData(
+				inStationTransforDetailService.getData(parameter).getRows(),
+				ExcelUtils.createTableHeader(headers, spanCount), fields);
 		JsGridReportBase report = new JsGridReportBase(request, response);
 
 		HttpSession session = request.getSession();

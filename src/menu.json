@@ -158,6 +158,19 @@
     	"attributes":
     		{
     			"target":"",
+    			"url":"TriageRefuseReason.jsp"
+    		},
+    	"checked":false,
+    	"iconCls":"ext-icon-world",
+    	"id":"010",
+    	"pid":"0",
+    	"state":"open",
+    	"text":"分诊他院拒绝原因统计"
+    },
+    {
+    	"attributes":
+    		{
+    			"target":"",
     			"url":""
     		},
     	"checked":false,
@@ -391,6 +404,45 @@
     	"attributes":
     		{
     			"target":"",
+    			"url":"CenterBusiness.jsp"
+    		},
+    	"checked":false,
+    	"iconCls":"ext-icon-world",
+    	"id":"14",
+    	"pid":"1",
+    	"state":"open",
+    	"text":"中心业务数据统计表"
+    },
+    {
+    	"attributes":
+    		{
+    			"target":"",
+    			"url":"OutOfThree.jsp"
+    		},
+    	"checked":false,
+    	"iconCls":"ext-icon-world",
+    	"id":"15",
+    	"pid":"1",
+    	"state":"open",
+    	"text":"出诊时间大于3分钟统计表"
+    },
+    {
+    	"attributes":
+    		{
+    			"target":"",
+    			"url":"DocterNurseDriverOutCarTime.jsp"
+    		},
+    	"checked":false,
+    	"iconCls":"ext-icon-world",
+    	"id":"16",
+    	"pid":"1",
+    	"state":"open",
+    	"text":"医生护士驾驶员出车时间表"
+    },
+    {
+    	"attributes":
+    		{
+    			"target":"",
     			"url":""
     		},
     	"checked":false,
@@ -514,7 +566,7 @@
     	"id":"21",
     	"pid":"2",
     	"state":"open",
-    	"text":"急救站晚出诊统计"
+    	"text":"急救站3分钟未出车明细表"
     },
     {
     	"attributes":
@@ -735,5 +787,18 @@
     	"pid":"3",
     	"state":"open",
     	"text":"急救保障明细"
+    },
+    {
+    	"attributes":
+    		{
+    			"target":"",
+    			"url":"OutResult.jsp"
+    		},
+    	"checked":false,
+    	"iconCls":"ext-icon-world",
+    	"id":"316",
+    	"pid":"3",
+    	"state":"open",
+    	"text":"转归结果统计"
     }
 ]

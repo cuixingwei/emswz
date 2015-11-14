@@ -25,6 +25,18 @@ public class EmptyCar {
 	 * 空炮原因
 	 */
 	private String emptyReason;
+	/**
+	 * 出诊性质
+	 */
+	private String eventType;
+
+	public String getEventType() {
+		return eventType;
+	}
+
+	public void setEventType(String eventType) {
+		this.eventType = eventType;
+	}
 
 	public String getAcceptTime() {
 		return acceptTime;
@@ -66,13 +78,24 @@ public class EmptyCar {
 		this.emptyReason = emptyReason;
 	}
 
+	/**
+	 * @param acceptTime
+	 * @param sickAddress
+	 * @param dispatcher
+	 * @param emptyRunTimes
+	 * @param emptyReason
+	 * @param eventType
+	 */
 	public EmptyCar(String acceptTime, String sickAddress, String dispatcher,
-			String emptyRunTimes, String emptyReason) {
+			String emptyRunTimes, String emptyReason, String eventType) {
+		super();
 		this.acceptTime = acceptTime;
 		this.sickAddress = sickAddress;
 		this.dispatcher = dispatcher;
 		this.emptyRunTimes = emptyRunTimes;
 		this.emptyReason = emptyReason;
+		this.eventType = eventType;
 	}
+
 
 }

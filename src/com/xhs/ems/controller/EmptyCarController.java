@@ -44,9 +44,10 @@ public class EmptyCarController {
 		response.setContentType("application/msexcel;charset=UTF-8");
 
 		String title = "放空车统计";
-		String[] headers = new String[] { "受理时间", "患者地址", "调度员", "空跑时间", "空炮原因" };
+		String[] headers = new String[] { "受理时间", "患者地址", "调度员", "空跑时间",
+				"空跑原因", "出诊性质" };
 		String[] fields = new String[] { "acceptTime", "sickAddress",
-				"dispatcher", "emptyRunTimes", "emptyReason" };
+				"dispatcher", "emptyRunTimes", "emptyReason", "eventType" };
 		TableData td = ExcelUtils.createTableData(
 				emptyCarService.getData(parameter).getRows(),
 				ExcelUtils.createTableHeader(headers), fields);

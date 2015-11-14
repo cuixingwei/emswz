@@ -34,13 +34,14 @@
 					pagination : true,
 					striped : true,
 					singleSelect : true,
+					nowrap : false,
 					rownumbers : true,
 					idField : 'id',
 					pageSize : 20,
 					pageList : [ 10, 20, 30, 40, 50, 100, 200, 300, 400, 500 ],
 					columns : [ [ {
 						field : 'station',
-						title : '分站名称',
+						title : '出诊分站',
 						resizable : true,
 						width : "25%",
 						align : 'center'
@@ -67,16 +68,9 @@
 					onBeforeLoad : function(param) {
 						var varify = cxw.checkStartTimeBeforeEndTime(
 								'#startTime', '#endTime');
-						if (varify) {
-							parent.$.messager.progress({
-								text : '数据加载中....'
-							});
-						} else {
+						if (!varify) {
 							$.messager.alert('警告', '结束时间要大于开始时间', 'warning');
 						}
-					},
-					onLoadSuccess : function(data) {
-						parent.$.messager.progress('close');
 					}
 				});
 	}

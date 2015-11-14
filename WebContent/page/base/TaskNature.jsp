@@ -35,6 +35,7 @@
 					striped : true,
 					singleSelect : true,
 					rownumbers : true,
+					nowrap : false,
 					idField : 'id',
 					pageSize : 20,
 					pageList : [ 10, 20, 30, 40, 50, 100, 200, 300, 400, 500 ],
@@ -48,25 +49,25 @@
 						field : 'times',
 						title : '次数',
 						resizable : true,
-						width : "9%",
+						width : "5%",
 						align : 'center',
 					}, {
 						field : 'takeBacks',
 						title : '接回数',
 						resizable : true,
-						width : "10%",
+						width : "7%",
 						align : 'center'
 					}, {
 						field : 'takeBackRate',
 						title : '接回率',
 						resizable : true,
-						width : "10%",
+						width : "7%",
 						align : 'center'
 					}, {
 						field : 'distance',
 						title : '里程',
 						resizable : true,
-						width : "10%",
+						width : "7%",
 						align : 'center'
 					}, {
 						field : 'averageResponseTime',
@@ -78,43 +79,54 @@
 						field : 'averageTime',
 						title : '平均用时',
 						resizable : true,
-						width : "10%",
+						width : "8%",
 						align : 'center'
 					}, {
 						field : 'emptyCars',
 						title : '空车',
 						resizable : true,
-						width : "10%",
+						width : "7%",
 						align : 'center'
 					}, {
 						field : 'refuseToHospitals',
 						title : '拒绝入院',
 						resizable : true,
-						width : "10%",
+						width : "8%",
 						align : 'center'
 					}, {
 						field : 'deaths',
 						title : '死亡',
 						resizable : true,
-						width : "10%",
+						width : "7%",
+						align : 'center'
+					}, {
+						field : 'shiqu',
+						title : '市区',
+						resizable : true,
+						width : "6%",
+						align : 'center'
+					}, {
+						field : 'wanzhou',
+						title : '万州区',
+						resizable : true,
+						width : "8%",
+						align : 'center'
+					}, {
+						field : 'others',
+						title : '其他',
+						resizable : true,
+						width : "7%",
 						align : 'center'
 					} ] ],
 					toolbar : '#toolbar',
 					onBeforeLoad : function(param) {
 						var varify = cxw.checkStartTimeBeforeEndTime(
 								'#startTime', '#endTime');
-						if (varify) {
-							parent.$.messager.progress({
-								text : '数据加载中....'
-							});
-						} else {
+						if (!varify) {
 							$.messager.alert('警告', '结束时间要大于开始时间', 'warning');
 						}
-					},
-					onLoadSuccess : function(data) {
-						parent.$.messager.progress('close');
 					}
-				});
+	});
 	}
 
 	$(document).ready(function() {

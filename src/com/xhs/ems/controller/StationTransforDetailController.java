@@ -46,9 +46,10 @@ public class StationTransforDetailController {
 
 		String title = "医院转诊明细";
 		String[] headers = new String[] { "日期", "病人姓名", "年龄", "性别", "诊断",
-				"出诊地址", "送达科室" };
+				"出诊分站", "送达科室", "现场地址", "里程", "出诊结果" };
 		String[] fields = new String[] { "date", "patientName", "age",
-				"gender", "diagnose", "outCallAddress", "sendClass" };
+				"gender", "diagnose", "outCallAddress", "sendClass",
+				"spotAddress", "distance", "outResult" };
 		int spanCount = 1; // 需要合并的列数。从第1列开始到指定列。
 		TableData td = ExcelUtils.createTableData(stationTransforDetailService
 				.getData(parameter).getRows(), ExcelUtils.createTableHeader(

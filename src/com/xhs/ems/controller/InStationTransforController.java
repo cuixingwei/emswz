@@ -46,7 +46,7 @@ public class InStationTransforController {
 		response.setContentType("application/msexcel;charset=UTF-8");
 
 		String title = "院内转运统计";
-		String[] headers = new String[] { "分站名称", "转运次数", "里程", "转运耗时" };
+		String[] headers = new String[] { "出诊分站", "转运次数", "里程", "转运耗时" };
 		String[] fields = new String[] { "station", "transforTimes",
 				"distance", "transforTime" };
 		int spanCount = 1; // 需要合并的列数。从第1列开始到指定列。

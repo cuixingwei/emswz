@@ -45,8 +45,8 @@ public class OutCallSpanController {
 		response.setContentType("application/msexcel;charset=UTF-8");
 
 		String title = "24小时出诊强度";
-		String[] headers = new String[] { "时段", "次数", "接回", "平均反应时间", "出诊耗时合计",
-				"平均耗时" };
+		String[] headers = new String[] { "时段", "平均出诊次数", "接回", "平均反应时间",
+				"出诊耗时合计", "平均耗时" };
 		String[] fields = new String[] { "span", "times", "takeBacks",
 				"averageResponseTime", "outCallTotal", "averageTime" };
 		int spanCount = 1; // 需要合并的列数。从第1列开始到指定列。

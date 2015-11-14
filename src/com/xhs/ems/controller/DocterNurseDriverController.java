@@ -39,9 +39,8 @@ public class DocterNurseDriverController {
 	}
 
 	@RequestMapping(value = "/exportDocterNurseDriver", method = RequestMethod.GET)
-	public void export(Parameter parameter,
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+	public void export(Parameter parameter, HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
 		logger.info("导出医护、司机工作统计数据到excel");
 		response.setContentType("application/msexcel;charset=UTF-8");
 
@@ -49,17 +48,16 @@ public class DocterNurseDriverController {
 		String title2 = "护士工作统计";
 		String title3 = "司机工作统计";
 		String[] headers = new String[] { "站点", "姓名", "出诊数", "接回数", "空车",
-				"拒绝入院", "现场死亡", "救后死亡", "院内转运", "其他", "里程合计", "收费合计", "平均反应时间",
-				"出诊用时合计", "治疗数统计" };
+				"拒绝入院", "现场死亡", "救后死亡", "安全送出", "非急救任务完成", "其他", "里程合计",
+				"收费合计", "平均反应时间", "平均出车时间", "出诊用时合计", "治疗数统计" };
 		String[] fields = new String[] { "station", "name", "outCalls",
 				"takeBacks", "emptyCars", "refuseHospitals", "spotDeaths",
-				"afterDeaths", "inHospitalTransports", "others",
+				"afterDeaths", "safeOut", "noAmbulance", "others",
 				"distanceTotal", "costToal", "averageResponseTime",
-				"outCallTimeTotal", "cureNumbers" };
-		int spanCount = 1; // 需要合并的列数。从第1列开始到指定列。
+				"averageSendTime", "outCallTimeTotal", "cureNumbers" };
 		TableData td = ExcelUtils.createTableData(docterNurseDriverService
-				.getData(parameter).getRows(), ExcelUtils.createTableHeader(
-				headers, spanCount), fields);
+				.getData(parameter).getRows(), ExcelUtils
+				.createTableHeader(headers), fields);
 		JsGridReportBase report = new JsGridReportBase(request, response);
 
 		HttpSession session = request.getSession();

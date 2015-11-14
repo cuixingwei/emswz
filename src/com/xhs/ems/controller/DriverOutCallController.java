@@ -151,12 +151,14 @@ public class DriverOutCallController {
 		String title = "三峡中心医院出诊明细表";
 		String[] headers = new String[] { "时间", "病人姓名", "性别", "年龄", "诊断",
 				"疾病科别", "分类统计", "病情程度", "救治效果", "区域", "现场地址", "出诊分站", "出诊结果",
-				"送达地点", "出诊医生", "出诊护士", "出诊司机", "出诊里程" };
+				"送达地点", "出诊医生", "出诊护士", "出诊司机", "出诊里程", "出诊性质", "车辆编码", "出车差时",
+				"出诊耗时", "救治措施","调度员" };
 		String[] fields = new String[] { "dateTime", "patientName", "sex",
 				"age", "diagnose", "diseaseDepartment", "classState",
 				"diseaseDegree", "treatmentEffet", "area", "address",
 				"outStation", "outResult", "sendAddress", "doctor", "nurse",
-				"driver", "distance" };
+				"driver", "distance", "eventType", "carCode", "poorTime",
+				"userTime", "cureMeasure","dispatcher" };
 		int spanCount = 1; // 需要合并的列数。从第1列开始到指定列。
 		TableData td = ExcelUtils.createTableData(driverOutCallService
 				.getCenterHospitalOutDetail(parameter).getRows(), ExcelUtils

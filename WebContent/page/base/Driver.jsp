@@ -36,26 +36,33 @@
 					striped : true,
 					singleSelect : true,
 					rownumbers : true,
+					nowrap : false,
 					idField : 'id',
 					pageSize : 20,
 					pageList : [ 10, 20, 30, 40, 50, 100, 200, 300, 400, 500 ],
 					columns : [ [ {
+						field : 'station',
+						title : '站点',
+						resizable : true,
+						width : "6%",
+						align : 'center'
+					}, {
 						field : 'name',
 						title : '姓名',
 						resizable : true,
-						width : "8%",
+						width : "5%",
 						align : 'center',
 					}, {
 						field : 'outCalls',
 						title : '出诊数',
 						resizable : true,
-						width : "6%",
+						width : "5%",
 						align : 'center'
 					}, {
 						field : 'takeBacks',
 						title : '接回数',
 						resizable : true,
-						width : "7%",
+						width : "5%",
 						align : 'center'
 					}, {
 						field : 'emptyCars',
@@ -67,23 +74,29 @@
 						field : 'refuseHospitals',
 						title : '拒绝入院',
 						resizable : true,
-						width : "7%",
+						width : "6%",
 						align : 'center',
 					}, {
 						field : 'spotDeaths',
 						title : '现场死亡',
 						resizable : true,
-						width : "7%",
+						width : "6%",
 						align : 'center'
 					}, {
 						field : 'afterDeaths',
 						title : '救后死亡',
 						resizable : true,
-						width : "7%",
+						width : "6%",
 						align : 'center'
 					}, {
-						field : 'inHospitalTransports',
-						title : '院内转运',
+						field : 'safeOut',
+						title : '安全送出',
+						resizable : true,
+						width : "6%",
+						align : 'center'
+					}, {
+						field : 'noAmbulance',
+						title : '非急救任<br />务完成',
 						resizable : true,
 						width : "6%",
 						align : 'center'
@@ -97,25 +110,31 @@
 						field : 'distanceTotal',
 						title : '里程合计',
 						resizable : true,
-						width : "7%",
+						width : "6%",
 						align : 'center'
 					}, {
 						field : 'costToal',
 						title : '收费合计',
 						resizable : true,
-						width : "7%",
+						width : "6%",
 						align : 'center'
 					}, {
 						field : 'averageResponseTime',
 						title : '平均反应时间',
 						resizable : true,
-						width : "8%",
+						width : "7%",
+						align : 'center'
+					}, {
+						field : 'averageSendTime',
+						title : '平均出车时间',
+						resizable : true,
+						width : "7%",
 						align : 'center'
 					}, {
 						field : 'outCallTimeTotal',
 						title : '出诊用时合计',
 						resizable : true,
-						width : "8%",
+						width : "7%",
 						align : 'center'
 					}, {
 						field : 'cureNumbers',
@@ -128,16 +147,9 @@
 					onBeforeLoad : function(param) {
 						var varify = cxw.checkStartTimeBeforeEndTime(
 								'#startTime', '#endTime');
-						if (varify) {
-							parent.$.messager.progress({
-								text : '数据加载中....'
-							});
-						} else {
+						if (!varify) {
 							$.messager.alert('警告', '结束时间要大于开始时间', 'warning');
 						}
-					},
-					onLoadSuccess : function(data) {
-						parent.$.messager.progress('close');
 					}
 				});
 	}

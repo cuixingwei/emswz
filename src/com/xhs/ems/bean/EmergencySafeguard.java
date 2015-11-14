@@ -38,6 +38,10 @@ public class EmergencySafeguard {
 	 * 司机
 	 */
 	private String driver;
+	/**
+	 * 保障时长
+	 */
+	private String safeTime;
 
 	public String getDate() {
 		return date;
@@ -103,17 +107,16 @@ public class EmergencySafeguard {
 		this.driver = driver;
 	}
 
-	public EmergencySafeguard(String date, String nature, String event,
-			String address, String distance, String doctor, String nurse,
-			String driver) {
-		this.date = date;
-		this.nature = nature;
-		this.event = event;
-		this.address = address;
-		this.distance = distance;
-		this.doctor = doctor;
-		this.nurse = nurse;
-		this.driver = driver;
+	public String getSafeTime() {
+		return safeTime;
+	}
+
+	public void setSafeTime(String safeTime) {
+		this.safeTime = safeTime;
+	}
+
+	public EmergencySafeguard() {
+		
 	}
 
 }

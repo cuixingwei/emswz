@@ -35,66 +35,79 @@
 					striped : true,
 					singleSelect : true,
 					rownumbers : true,
+					nowrap : false,
 					idField : 'id',
+					nowrap : false,
 					pageSize : 20,
 					pageList : [ 10, 20, 30, 40, 50, 100, 200, 300, 400, 500 ],
 					columns : [ [ {
 						field : 'date',
 						title : '日期',
 						resizable : true,
-						width : "14%",
+						width : "10%",
 						align : 'center'
 					}, {
 						field : 'patientName',
 						title : '病人姓名',
 						resizable : true,
-						width : "14%",
+						width : "10%",
 						align : 'center',
 					}, {
 						field : 'age',
 						title : '年龄',
 						resizable : true,
-						width : "14%",
+						width : "10%",
 						align : 'center'
 					}, {
 						field : 'gender',
 						title : '性别',
 						resizable : true,
-						width : "14%",
+						width : "10%",
 						align : 'center'
 					}, {
 						field : 'diagnose',
 						title : '诊断',
 						resizable : true,
-						width : "14%",
+						width : "10%",
 						align : 'center',
 					}, {
 						field : 'outCallAddress',
-						title : '出诊地址',
+						title : '出诊分站',
 						resizable : true,
-						width : "14%",
+						width : "10%",
 						align : 'center'
 					}, {
 						field : 'sendClass',
 						title : '送达科室',
 						resizable : true,
-						width : "14%",
+						width : "10%",
+						align : 'center'
+					}, {
+						field : 'spot',
+						title : '现场地址',
+						resizable : true,
+						width : "10%",
+						align : 'center',
+					}, {
+						field : 'distance',
+						title : '距离',
+						resizable : true,
+						width : "8%",
+						align : 'center'
+					}, {
+						field : 'time',
+						title : '耗时',
+						resizable : true,
+						width : "8%",
 						align : 'center'
 					} ] ],
 					toolbar : '#toolbar',
 					onBeforeLoad : function(param) {
 						var varify = cxw.checkStartTimeBeforeEndTime(
 								'#startTime', '#endTime');
-						if (varify) {
-							parent.$.messager.progress({
-								text : '数据加载中....'
-							});
-						} else {
+						if (!varify) {
 							$.messager.alert('警告', '结束时间要大于开始时间', 'warning');
 						}
-					},
-					onLoadSuccess : function(data) {
-						parent.$.messager.progress('close');
 					}
 				});
 	}

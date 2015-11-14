@@ -48,6 +48,7 @@
 					striped : true,
 					singleSelect : true,
 					rownumbers : true,
+					nowarp : false,
 					idField : 'id',
 					pageSize : 20,
 					pageList : [ 10, 20, 30, 40, 50, 100, 200, 300, 400, 500 ],
@@ -61,19 +62,19 @@
 						field : 'acceptType',
 						title : '受理类型',
 						resizable : true,
-						width : "12%",
+						width : "8%",
 						align : 'center',
 					}, {
 						field : 'hungReason',
 						title : '挂起原因',
 						resizable : true,
-						width : "12%",
+						width : "10%",
 						align : 'center'
 					}, {
 						field : 'dispatcher',
 						title : '操作人',
 						resizable : true,
-						width : "12%",
+						width : "6%",
 						align : 'center'
 					}, {
 						field : 'hungTime',
@@ -97,7 +98,19 @@
 						field : 'station',
 						title : '分诊调度医院',
 						resizable : true,
-						width : "14%",
+						width : "10%",
+						align : 'center'
+					}, {
+						field : 'area',
+						title : '区域',
+						resizable : true,
+						width : "8%",
+						align : 'center'
+					}, {
+						field : 'eventType',
+						title : '出诊类型',
+						resizable : true,
+						width : "7%",
 						align : 'center'
 					} ] ],
 					toolbar : '#toolbar',

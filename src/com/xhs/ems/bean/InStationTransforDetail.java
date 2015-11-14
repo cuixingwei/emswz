@@ -34,6 +34,18 @@ public class InStationTransforDetail {
 	 * 送达科室
 	 */
 	private String sendClass;
+	/**
+	 * 现场地址
+	 */
+	private String spot;
+	/**
+	 * 距离
+	 */
+	private String distance;
+	/**
+	 * 耗时
+	 */
+	private String time;
 
 	public String getDate() {
 		return date;
@@ -91,16 +103,32 @@ public class InStationTransforDetail {
 		this.sendClass = sendClass;
 	}
 
-	public InStationTransforDetail(String date, String patientName, String age,
-			String gender, String diagnose, String outCallAddress,
-			String sendClass) {
-		this.date = date;
-		this.patientName = patientName;
-		this.age = age;
-		this.gender = gender;
-		this.diagnose = diagnose;
-		this.outCallAddress = outCallAddress;
-		this.sendClass = sendClass;
+	public String getSpot() {
+		return spot;
+	}
+
+	public void setSpot(String spot) {
+		this.spot = spot;
+	}
+
+	public String getDistance() {
+		return distance;
+	}
+
+	public void setDistance(String distance) {
+		this.distance = distance;
+	}
+
+	public String getTime() {
+		return time;
+	}
+
+	public void setTime(String time) {
+		this.time = time;
+	}
+
+	public InStationTransforDetail() {
+
 	}
 
 }

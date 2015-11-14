@@ -48,7 +48,7 @@ public class CarDAOImpl implements CarDAO {
 		final List<Car> results = new ArrayList<Car>();
 		this.npJdbcTemplate.query(sql, paramMap, new RowCallbackHandler() {
 			public void processRow(ResultSet rs) throws SQLException {
-				Car car = new Car(rs.getString("车辆编码"), rs.getString("实际标识"));
+				Car car = new Car(rs.getString("车辆编码"), rs.getString("车牌号码"));
 				results.add(car);
 			}
 		});
