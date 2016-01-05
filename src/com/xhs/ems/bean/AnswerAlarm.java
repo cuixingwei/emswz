@@ -49,6 +49,18 @@ public class AnswerAlarm {
 	 * 出诊结果
 	 */
 	private String outResult;
+	/**
+	 * 分诊医院
+	 */
+	private String triageStation;
+
+	public String getTriageStation() {
+		return triageStation;
+	}
+
+	public void setTriageStation(String triageStation) {
+		this.triageStation = triageStation;
+	}
 
 	public String getTakeBacks() {
 		return takeBacks;

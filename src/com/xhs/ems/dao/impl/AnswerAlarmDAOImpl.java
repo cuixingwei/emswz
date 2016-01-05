@@ -49,7 +49,7 @@ public class AnswerAlarmDAOImpl implements AnswerAlarmDAO {
 				+ "left outer join AuSp120.tb_DResult dr on pc.救治结果编码=dr.Code	group by t.事件编码,dr.NameM,"
 				+ "pc.出诊地址,t.受理序号 select convert(varchar(20),e.受理时刻,120) answerAlarmTime,m.姓名 dispatcher,"
 				+ "a.呼救电话 alarmPhone,a.联系电话 relatedPhone,	a.现场地址 siteAddress,	a.初步判断 judgementOnPhone,"
-				+ "t1.出诊地址 station,t1.outResult,t1.takeBacks,convert(varchar(20),a.派车时刻,120) sendCarTime	"
+				+ "t1.出诊地址 station,t1.outResult,t1.takeBacks,convert(varchar(20),a.派车时刻,120) sendCarTime,a.分诊调度医院 triageStation	"
 				+ "from AuSp120.tb_EventV e left outer join AuSp120.tb_AcceptDescriptV a on e.事件编码=a.事件编码	"
 				+ "left outer join #temp1 t1 on t1.事件编码=a.事件编码 and t1.受理序号=a.受理序号	"
 				+ "left outer join AuSp120.tb_MrUser m on m.工号=a.调度员编码	"
@@ -89,6 +89,7 @@ public class AnswerAlarmDAOImpl implements AnswerAlarmDAO {
 						alarm.setSiteAddress(rs.getString("siteAddress"));
 						alarm.setStation(rs.getString("station"));
 						alarm.setTakeBacks(rs.getString("takeBacks"));
+						alarm.setTriageStation(rs.getString("triageStation"));
 						return alarm;
 					}
 				});
