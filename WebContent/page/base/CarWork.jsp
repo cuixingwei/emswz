@@ -41,6 +41,7 @@
 					striped : true,
 					singleSelect : true,
 					rownumbers : true,
+					nowrap : false,
 					idField : 'id',
 					pageSize : 20,
 					pageList : [ 10, 20, 30, 40, 50, 100, 200, 300, 400, 500 ],
@@ -48,53 +49,58 @@
 						field : 'carCode',
 						title : '车辆',
 						resizable : true,
-						width : "14%",
+						width : "9%",
 						align : 'center',
 					}, {
 						field : 'outCarNumbers',
 						title : '出车次数',
 						resizable : true,
-						width : "15%",
+						width : "13%",
 						align : 'center'
 					}, {
 						field : 'averageOutCarTimes',
 						title : '平均出车时长',
 						resizable : true,
-						width : "16%",
+						width : "13%",
 						align : 'center'
 					}, {
 						field : 'arriveSpotNumbers',
 						title : '到达现场次数',
 						resizable : true,
-						width : "16%",
+						width : "14%",
 						align : 'center'
 					}, {
 						field : 'averageArriveSpotTimes',
 						title : '平均到达现场时长',
 						resizable : true,
-						width : "16%",
+						width : "15%",
 						align : 'center'
 					}, {
 						field : 'pauseNumbers',
 						title : '暂停次数',
 						resizable : true,
-						width : "15%",
+						width : "10%",
+						align : 'center',
+					}, {
+						field : 'outDistance',
+						title : '出诊里程统计',
+						resizable : true,
+						width : "10%",
+						align : 'center'
+					}, {
+						field : 'distance',
+						title : '里程统计',
+						resizable : true,
+						width : "12%",
 						align : 'center',
 					} ] ],
 					toolbar : '#toolbar',
 					onBeforeLoad : function(param) {
 						var varify = cxw.checkStartTimeBeforeEndTime(
 								'#startTime', '#endTime');
-						if (varify) {
-							parent.$.messager.progress({
-								text : '数据加载中....'
-							});
-						} else {
+						if (!varify) {
 							$.messager.alert('警告', '结束时间要大于开始时间', 'warning');
 						}
-					},
-					onLoadSuccess : function(data) {
-						parent.$.messager.progress('close');
 					}
 				});
 	}

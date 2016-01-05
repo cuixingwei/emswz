@@ -233,7 +233,7 @@ public class DriverOutCallDAOImpl implements DriverOutCallDAO {
 				+ "left outer join AuSp120.tb_MrUser u on u.工号=t.调度员编码	"
 				+ "left outer join AuSp120.tb_DEffect de on de.Code=pc.救治效果编码  "
 				+ "left outer join AuSp120.tb_DEventType et on et.Code=e.事件类型编码	"
-				+ "where e.事件性质编码=1 and a.类型编码 not in (2,4) and pc.出诊地址 in ('三峡中心医院急救分院','百安分院','江南分院')  and e.受理时刻 between  :startTime and :endTime";
+				+ "where e.事件性质编码=1 and a.类型编码 not in (2,4) and pc.出诊地址 in ('三峡中心医院急救分院','三峡中心医院百安分院','三峡中心医院江南分院')  and e.受理时刻 between  :startTime and :endTime";
 		Map<String, String> paramMap = new HashMap<String, String>();
 		paramMap.put("startTime", parameter.getStartTime());
 		paramMap.put("endTime", parameter.getEndTime());

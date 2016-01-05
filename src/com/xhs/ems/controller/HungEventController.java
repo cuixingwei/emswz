@@ -45,10 +45,10 @@ public class HungEventController {
 
 		String title = "挂起事件流水统计";
 		String[] headers = new String[] { "事件名称", "受理类型", "操作人", "挂起时刻",
-				"挂起原因", "结束时刻", "时长", "区域", "出诊类型" };
+				"挂起原因", "结束时刻", "时长", "区域", "出诊类型", "后续结果" };
 		String[] fields = new String[] { "eventName", "acceptType",
 				"dispatcher", "hungTime", "hungReason", "endTime", "hungtimes",
-				"area", "eventType" };
+				"area", "eventType", "result" };
 		TableData td = ExcelUtils.createTableData(
 				hungEventService.getData(parameter).getRows(),
 				ExcelUtils.createTableHeader(headers), fields);

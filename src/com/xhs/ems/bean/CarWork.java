@@ -30,6 +30,30 @@ public class CarWork {
 	 * 暂停次数
 	 */
 	private String pauseNumbers;
+	/**
+	 * 出诊里程
+	 */
+	private String outDistance;
+	/**
+	 * 里程统计(GPS)
+	 */
+	private String distance;
+
+	public String getOutDistance() {
+		return outDistance;
+	}
+
+	public void setOutDistance(String outDistance) {
+		this.outDistance = outDistance;
+	}
+
+	public String getDistance() {
+		return distance;
+	}
+
+	public void setDistance(String distance) {
+		this.distance = distance;
+	}
 
 	public String getCarCode() {
 		return carCode;
@@ -79,15 +103,8 @@ public class CarWork {
 		this.pauseNumbers = pauseNumbers;
 	}
 
-	public CarWork(String carCode, String outCarNumbers,
-			String averageOutCarTimes, String arriveSpotNumbers,
-			String averageArriveSpotTimes, String pauseNumbers) {
-		this.carCode = carCode;
-		this.outCarNumbers = outCarNumbers;
-		this.averageOutCarTimes = averageOutCarTimes;
-		this.arriveSpotNumbers = arriveSpotNumbers;
-		this.averageArriveSpotTimes = averageArriveSpotTimes;
-		this.pauseNumbers = pauseNumbers;
+	public CarWork() {
+		super();
 	}
 
 }

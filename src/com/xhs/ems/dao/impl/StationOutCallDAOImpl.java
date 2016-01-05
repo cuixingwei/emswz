@@ -42,7 +42,7 @@ public class StationOutCallDAOImpl implements StationOutCallDAO {
 				+ "SUM(case when e.事件类型编码=1 then 1 else 0 end) spotFirstAid,SUM(pc.里程) distance,	"
 				+ "SUM(case when e.事件类型编码=2 then 1 else 0 end) stationTransfer,"
 				+ "SUM(case when e.事件类型编码=3 then 1 else 0 end) inHospitalTransfer,	"
-				+ "SUM(case when e.事件类型编码=4 then 1 else 0 end) sendOutPatient,"
+				+ "SUM(case when e.事件类型编码 in (12,13) then 1 else 0 end) sendOutPatient,"
 				+ "SUM(case when e.事件类型编码=5 then 1 else 0 end) safeguard,	"
 				+ "SUM(case when e.事件类型编码=6 then 1 else 0 end) auv,"
 				+ "SUM(case when e.事件类型编码=7 then 1 else 0 end) volunteer,	"

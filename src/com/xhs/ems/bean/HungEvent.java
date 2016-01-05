@@ -45,6 +45,10 @@ public class HungEvent {
 	 * 出诊类型
 	 */
 	private String eventType;
+	/**
+	 * 后续结果
+	 */
+	private String result;
 
 	public String getArea() {
 		return area;
@@ -124,6 +128,17 @@ public class HungEvent {
 
 	public void setHungtimes(String hungtimes) {
 		this.hungtimes = hungtimes;
+	}
+
+	public String getResult() {
+		return result;
+	}
+
+	public void setResult(String result) {
+		this.result = result;
+	}
+
+	public HungEvent() {
 	}
 
 	public HungEvent(String eventName, String acceptType, String hungTime,

@@ -130,16 +130,26 @@ select t1.name,t1.afterDeaths,t1.cureNumbers,t1.emptyCars,t1.inHospitalTransport
 	left outer join #temp3 t3 on t1.name=t3.name  
 	drop table #temp1,#temp2,#temp3 
 --Ò½Éú»¤Ê¿Ë¾»ú¹¤×÷Í³¼Æ
-select s.·ÖÕ¾Ãû³Æ station,pc.Ë¾»ú name, SUM(case when pc.×ª¹é±àÂë=1 then 1 else 0 end) takeBacks,
-	SUM(case when pc.×ª¹é±àÂë=10 then 1 else 0 end) emptyCars,SUM(case when pc.×ª¹é±àÂë=7 then 1 else 0 end) refuseHospitals,
-	SUM(case when pc.×ª¹é±àÂë=5 then 1 else 0 end) spotDeaths,SUM(case when pc.×ª¹é±àÂë=6 then 1 else 0 end) afterDeaths,
-	SUM(case when pc.×ª¹é±àÂë=8 then 1 else 0 end) others,SUM(case when pc.×ª¹é±àÂë=12 then 1 else 0 end) safeOut,
-	SUM(case when pc.×ª¹é±àÂë=11 then 1 else 0 end) noAmbulance,
-	SUM(case when pc.ÈÎÎñ±àÂë is not null then 1 else 0 end) cureNumbers into #temp1
+select distinct ÈÎÎñ±àÂë,²¡ÀıĞòºÅ,ÈÎÎñĞòºÅ into #cm from AuSp120.tb_CureMeasure
+select s.·ÖÕ¾Ãû³Æ station,pc.Ë¾»ú name,SUM(case when cm.ID is not null then 1 else 0 end) cureNumbers  into #temp6
 	from AuSp120.tb_AcceptDescriptV a 
 	left outer join AuSp120.tb_TaskV t on a.ÊÂ¼ş±àÂë=t.ÊÂ¼ş±àÂë and a.ÊÜÀíĞòºÅ=t.ÊÜÀíĞòºÅ
 	left outer join AuSp120.tb_EventV e on t.ÊÂ¼ş±àÂë=e.ÊÂ¼ş±àÂë
 	left outer join AuSp120.tb_PatientCase pc on t.ÈÎÎñĞòºÅ=pc.ÈÎÎñĞòºÅ and t.ÈÎÎñ±àÂë=pc.ÈÎÎñ±àÂë
+	left outer join AuSp120.tb_CureMeasure cm on cm.ÈÎÎñĞòºÅ=pc.ÈÎÎñĞòºÅ and cm.ÈÎÎñ±àÂë=pc.ÈÎÎñ±àÂë and cm.²¡ÀıĞòºÅ=pc.ĞòºÅ
+	left outer join AuSp120.tb_Station s on  s.·ÖÕ¾±àÂë=t.·ÖÕ¾±àÂë
+	where e.ÊÂ¼şĞÔÖÊ±àÂë=1 and a.ÀàĞÍ±àÂë not in (2,4) and pc.Ë¾»ú is not null and pc.Ë¾»ú<>'' and e.ÊÜÀíÊ±¿Ì between '2014-01-01 00:00:00' and '2015-11-01 00:00:00'
+	group by s.·ÖÕ¾Ãû³Æ,pc.Ë¾»ú 
+select s.·ÖÕ¾Ãû³Æ station,pc.Ë¾»ú name, SUM(case when pc.×ª¹é±àÂë=1 then 1 else 0 end) takeBacks,
+	SUM(case when pc.×ª¹é±àÂë=10 then 1 else 0 end) emptyCars,SUM(case when pc.×ª¹é±àÂë=7 then 1 else 0 end) refuseHospitals,
+	SUM(case when pc.×ª¹é±àÂë=5 then 1 else 0 end) spotDeaths,SUM(case when pc.×ª¹é±àÂë=6 then 1 else 0 end) afterDeaths,
+	SUM(case when pc.×ª¹é±àÂë=8 then 1 else 0 end) others,SUM(case when pc.×ª¹é±àÂë=12 then 1 else 0 end) safeOut,
+	SUM(case when pc.×ª¹é±àÂë=11 then 1 else 0 end) noAmbulance into #temp1
+	from AuSp120.tb_AcceptDescriptV a 
+	left outer join AuSp120.tb_TaskV t on a.ÊÂ¼ş±àÂë=t.ÊÂ¼ş±àÂë and a.ÊÜÀíĞòºÅ=t.ÊÜÀíĞòºÅ
+	left outer join AuSp120.tb_EventV e on t.ÊÂ¼ş±àÂë=e.ÊÂ¼ş±àÂë
+	left outer join AuSp120.tb_PatientCase pc on t.ÈÎÎñĞòºÅ=pc.ÈÎÎñĞòºÅ and t.ÈÎÎñ±àÂë=pc.ÈÎÎñ±àÂë
+	left outer join #cm cm on cm.ÈÎÎñĞòºÅ=pc.ÈÎÎñĞòºÅ and cm.ÈÎÎñ±àÂë=pc.ÈÎÎñ±àÂë and cm.²¡ÀıĞòºÅ=pc.ĞòºÅ
 	left outer join AuSp120.tb_Station s on  s.·ÖÕ¾±àÂë=t.·ÖÕ¾±àÂë
 	where e.ÊÂ¼şĞÔÖÊ±àÂë=1 and a.ÀàĞÍ±àÂë not in (2,4) and pc.Ë¾»ú is not null and pc.Ë¾»ú<>'' and e.ÊÜÀíÊ±¿Ì between '2014-01-01 00:00:00' and '2015-11-01 00:00:00'
 	group by s.·ÖÕ¾Ãû³Æ,pc.Ë¾»ú 	
@@ -169,12 +179,13 @@ select t4.station,t4.name,SUM(t4.Àï³Ì) distanceTotal,COUNT(*) outCalls,
 	sum(datediff(Second,t4.³ö³µÊ±¿Ì,t4.µ½´ïÒ½ÔºÊ±¿Ì)) outCallTimeTotal into #temp3
 	from #temp4 t4
 	group by t4.station,t4.name
-select t1.station,t1.name,t1.afterDeaths,t1.cureNumbers,t1.emptyCars,t1.safeOut,t1.takeBacks,t1.noAmbulance,t1.others,t3.outCalls,
+select t1.station,t1.name,t1.afterDeaths,t6.cureNumbers,t1.emptyCars,t1.safeOut,t1.takeBacks,t1.noAmbulance,t1.others,t3.outCalls,
 	t1.refuseHospitals,t1.spotDeaths,isnull(t3.averageResponseTime,0) averageResponseTime,isnull(t3.averageSendTime,0) averageSendTime,
 	isnull(t5.costToal,0) costToal,	t3.distanceTotal,isnull(t3.outCallTimeTotal,0) outCallTimeTotal
 	from #temp1 t1 left outer join #temp3 t3 on t1.name=t3.name and t1.station=t3.station
-	left outer join #temp5 t5 on t1.name=t5.name and t1.station=t5.station order by t1.station
-drop table #temp1,#temp2,#temp3,#temp4,#temp5
+	left outer join #temp5 t5 on t1.name=t5.name and t1.station=t5.station 
+	left outer join #temp6 t6 on t1.name=t6.name and t1.station=t6.station order by t1.station
+drop table #temp1,#temp2,#temp3,#temp4,#temp5,#cm,#temp6
 --Ë¾»ú³öÕï±í
 select distinct pc.Ë¾»ú ,pc.ÈÎÎñ±àÂë,pc.ÈÎÎñĞòºÅ, Àï³Ì into #pc from AuSp120.tb_PatientCase pc
 select pc.Ë¾»ú name,COUNT(*) outCalls,	AVG(DATEDIFF(Second,e.ÊÜÀíÊ±¿Ì,t.µ½´ïÏÖ³¡Ê±¿Ì)) averageResponseTime,
@@ -198,7 +209,7 @@ drop table #pc,#temp1,#temp2
 select distinct pc.ÈÎÎñĞòºÅ,pc.ÈÎÎñ±àÂë,pc.³öÕïµØÖ·,pc.Àï³Ì into #pc from AuSp120.tb_PatientCase pc
 select pc.³öÕïµØÖ· station,SUM(case when e.ÊÂ¼şÀàĞÍ±àÂë=1 then 1 else 0 end) spotFirstAid,SUM(pc.Àï³Ì) distance,
 	SUM(case when e.ÊÂ¼şÀàĞÍ±àÂë=2 then 1 else 0 end) stationTransfer,SUM(case when e.ÊÂ¼şÀàĞÍ±àÂë=3 then 1 else 0 end) inHospitalTransfer,
-	SUM(case when e.ÊÂ¼şÀàĞÍ±àÂë=4 then 1 else 0 end) sendOutPatient,SUM(case when e.ÊÂ¼şÀàĞÍ±àÂë=5 then 1 else 0 end) safeguard,
+	SUM(case when e.ÊÂ¼şÀàĞÍ±àÂë in (12,13) then 1 else 0 end) sendOutPatient,SUM(case when e.ÊÂ¼şÀàĞÍ±àÂë=5 then 1 else 0 end) safeguard,
 	SUM(case when e.ÊÂ¼şÀàĞÍ±àÂë=6 then 1 else 0 end) auv,SUM(case when e.ÊÂ¼şÀàĞÍ±àÂë=7 then 1 else 0 end) volunteer,
 	SUM(case when e.ÊÂ¼şÀàĞÍ±àÂë=8 then 1 else 0 end) train,SUM(case when e.ÊÂ¼şÀàĞÍ±àÂë=9 then 1 else 0 end) practice,
 	SUM(case when e.ÊÂ¼şÀàĞÍ±àÂë=10 then 1 else 0 end) other,COUNT(*) outCallTotal into #temp1
@@ -255,22 +266,22 @@ select t1.station,isnull(t1.zaverageResponseTime,0) zaverageResponseTime,
 	left outer join #temp3 t3 on t1.station=t3.station  where t1.station is not null and t1.station<>''
 drop table #pc,#temp1,#temp2,#temp3
 --Ò½Ôº×ªÕïÍ³¼Æ
-select distinct pc.ÈÎÎñ±àÂë,pc.ÈÎÎñĞòºÅ,pc.Àï³Ì,pc.³öÕïµØÖ· into #pc from AuSp120.tb_PatientCase pc
-select da.NameM area ,pc.³öÕïµØÖ· station,COUNT(*) outCalls,
+select distinct pc.ÈÎÎñ±àÂë,pc.ÈÎÎñĞòºÅ,pc.Àï³Ì into #pc from AuSp120.tb_PatientCase pc
+select da.NameM area ,a.ÏÖ³¡µØÖ· station,COUNT(*) outCalls,
 	isnull(SUM(pc.Àï³Ì),0) distance,isnull(sum(DATEDIFF(Second,t.³ö³µÊ±¿Ì,t.µ½´ïÒ½ÔºÊ±¿Ì)),0) time into #temp1
 	from AuSp120.tb_EventV e left outer join AuSp120.tb_TaskV t on t.ÊÂ¼ş±àÂë=e.ÊÂ¼ş±àÂë
 	left outer join AuSp120.tb_AcceptDescriptV a on a.ÊÂ¼ş±àÂë=t.ÊÂ¼ş±àÂë and a.ÊÜÀíĞòºÅ=t.ÊÜÀíĞòºÅ
 	left outer join #pc pc on t.ÈÎÎñĞòºÅ=pc.ÈÎÎñĞòºÅ and pc.ÈÎÎñ±àÂë=t.ÈÎÎñ±àÂë
 	left outer join AuSp120.tb_DArea da on da.Code=a.ÇøÓò±àÂë
 	where e.ÊÂ¼şĞÔÖÊ±àÂë=1  and a.ÀàĞÍ±àÂë not in (2,4)  and e.ÊÂ¼şÀàĞÍ±àÂë=2 and e.ÊÜÀíÊ±¿Ì between '2014-01-01 00:00:00' and '2015-11-01 00:00:00'
-	group by da.NameM,pc.³öÕïµØÖ·
-select da.NameM area ,pc.³öÕïµØÖ· station,SUM(case when pc.×ª¹é±àÂë=1 then 1 else 0 end) takeBacks into #temp2
+	group by da.NameM,a.ÏÖ³¡µØÖ·
+select da.NameM area ,a.ÏÖ³¡µØÖ· station,SUM(case when pc.×ª¹é±àÂë=1 then 1 else 0 end) takeBacks into #temp2
 	from AuSp120.tb_EventV e left outer join AuSp120.tb_TaskV t on t.ÊÂ¼ş±àÂë=e.ÊÂ¼ş±àÂë
 	left outer join AuSp120.tb_AcceptDescriptV a on a.ÊÂ¼ş±àÂë=t.ÊÂ¼ş±àÂë and a.ÊÜÀíĞòºÅ=t.ÊÜÀíĞòºÅ
 	left outer join AuSp120.tb_PatientCase pc on t.ÈÎÎñĞòºÅ=pc.ÈÎÎñĞòºÅ and pc.ÈÎÎñ±àÂë=t.ÈÎÎñ±àÂë
 	left outer join AuSp120.tb_DArea da on da.Code=a.ÇøÓò±àÂë
 	where e.ÊÂ¼şĞÔÖÊ±àÂë=1 and a.ÀàĞÍ±àÂë not in (2,4)  and e.ÊÂ¼şÀàĞÍ±àÂë=2 and e.ÊÜÀíÊ±¿Ì between '2014-01-01 00:00:00' and '2015-11-01 00:00:00'
-	group by da.NameM,pc.³öÕïµØÖ·
+	group by da.NameM,a.ÏÖ³¡µØÖ·
 select t1.area,t1.station,t1.distance,t1.outCalls,t2.takeBacks,t1.time 
 	from #temp1 t1 left outer join #temp2 t2 on t1.area=t2.area and t1.station=t2.station order by t1.area
 drop table #pc,#temp1,#temp2
@@ -300,7 +311,7 @@ select CONVERT(varchar(20),e.ÊÜÀíÊ±¿Ì,120) date,pc.ĞÕÃû patientName,pc.ÄêÁä age,
 	left outer join AuSp120.tb_TaskV t on t.ÊÂ¼ş±àÂë=a.ÊÂ¼ş±àÂë and t.ÊÜÀíĞòºÅ=a.ÊÜÀíĞòºÅ
 	left outer join AuSp120.tb_PatientCase pc  on t.ÈÎÎñĞòºÅ=pc.ÈÎÎñĞòºÅ and pc.ÈÎÎñ±àÂë=t.ÈÎÎñ±àÂë
 	where e.ÊÂ¼şĞÔÖÊ±àÂë=1 and a.ÀàĞÍ±àÂë not in (2,4)   
-	and e.ÊÂ¼şÀàĞÍ±àÂë=3 and e.ÊÜÀíÊ±¿Ì between '2014-01-01 00:00:00' and '2015-11-01 00:00:00'
+	and e.ÊÂ¼şÀàĞÍ±àÂë=3 and pc.ÈÎÎñ±àÂë is not null and e.ÊÜÀíÊ±¿Ì between '2014-01-01 00:00:00' and '2015-11-01 00:00:00'
 	
 --±¾ÔºÄÚ³öÕïÃ÷Ï¸
 select CONVERT(varchar(20),e.ÊÜÀíÊ±¿Ì,120) date,pc.ĞÕÃû patientName,pc.ÄêÁä age,pc.ĞÔ±ğ gender,pc.Ò½ÉúÕï¶Ï diagnose,pc.ÏÖ³¡µØµã outCallAddress,pc.¿ÆÊÒ sendClass
@@ -573,7 +584,7 @@ select convert(varchar(20),e.ÊÜÀíÊ±¿Ì,120) dateTime,pc.ĞÕÃû patientName,pc.ÏÖ³¡µ
 	left outer join AuSp120.tb_DEffect de on de.Code=pc.¾ÈÖÎĞ§¹û±àÂë
 	left outer join AuSp120.tb_MrUser u on u.¹¤ºÅ=t.µ÷¶ÈÔ±±àÂë
 	left outer join AuSp120.tb_DEventType et on et.Code=e.ÊÂ¼şÀàĞÍ±àÂë	 
-	where e.ÊÂ¼şĞÔÖÊ±àÂë=1 and a.ÀàĞÍ±àÂë not in (2,4) and pc.³öÕïµØÖ· in ('ÈıÏ¿ÖĞĞÄÒ½Ôº¼±¾È·ÖÔº','°Ù°²·ÖÔº','½­ÄÏ·ÖÔº') 
+	where e.ÊÂ¼şĞÔÖÊ±àÂë=1 and a.ÀàĞÍ±àÂë not in (2,4) and pc.³öÕïµØÖ· in ('ÈıÏ¿ÖĞĞÄÒ½Ôº¼±¾È·ÖÔº','ÈıÏ¿ÖĞĞÄÒ½Ôº°Ù°²·ÖÔº','ÈıÏ¿ÖĞĞÄÒ½Ôº½­ÄÏ·ÖÔº') 
 	and e.ÊÜÀíÊ±¿Ì between  '2013-01-01 00:00:00' and '2015-11-01 00:00:00'
 --³µÁ¾¹¤×÷Çé¿öÍ³¼Æ
 select Êµ¼Ê±êÊ¶ carCode,count( p.³µÁ¾±àÂë) as pauseNumbers into #temp1 	
@@ -592,13 +603,21 @@ select carCode,AVG(DATEDIFF(Second,³ö³µÊ±¿Ì,µ½´ïÏÖ³¡Ê±¿Ì)) averageArriveSpotTime
 select t.carCode,sum(case when t.³ö³µÊ±¿Ì is not null then 1 else 0 end) outCarNumbers,
 	sum(case when t.µ½´ïÏÖ³¡Ê±¿Ì is not null then 1 else 0 end) arriveSpotNumbers into #temp5	
 	from #temp2 t group by t.carCode 
-select t5.carCode,outCarNumbers,averageOutCarTimes,arriveSpotNumbers,averageArriveSpotTimes,isnull(pauseNumbers,0) pauseNumbers	
+select distinct pc.ÈÎÎñ±àÂë,pc.ÈÎÎñĞòºÅ,pc.Àï³Ì,pc.³µÁ¾±êÊ¶ into #pc from AuSp120.tb_PatientCase pc 
+	left outer join AuSp120.tb_TaskV t on pc.ÈÎÎñĞòºÅ=t.ÈÎÎñĞòºÅ and pc.ÈÎÎñ±àÂë=t.ÈÎÎñ±àÂë
+	where t.Éú³ÉÈÎÎñÊ±¿Ì between '2013-01-01 00:00:00' and '2015-11-01 00:00:00'
+select pc.³µÁ¾±êÊ¶ carCode,sum(pc.Àï³Ì) outDistance into #dis1 from #pc pc group by pc.³µÁ¾±êÊ¶
+select gv.Êµ¼Ê±êÊ¶ carCode,(MAX(gv.Àï³Ì)-MIN(Àï³Ì)) distance into #dis2 from AuSp120.tb_GPSInfoV gv 
+	where gv.Ê±¼ä  between '2013-01-01 00:00:00' and '2015-11-01 00:00:00' and gv.Àï³Ì <>0  group by gv.Êµ¼Ê±êÊ¶
+select t5.carCode,outCarNumbers,averageOutCarTimes,arriveSpotNumbers,averageArriveSpotTimes,isnull(pauseNumbers,0) pauseNumbers,d1.outDistance,d2.distance
 	from  #temp5  t5  	
 	left outer join #temp1 t1 on  t1.carCode=t5.carCode	
 	left outer join #temp3 t3 on t3.carCode=t5.carCode	
 	left outer join #temp4 t4 on t5.carCode=t4.carCode	
+	left outer join #dis1 d1 on d1.carCode=t5.carCode
+	left outer join #dis2 d2 on d2.carCode=t5.carCode
 	where t5.carCode is not null	
-drop table #temp1,#temp2,#temp3,#temp4,#temp5
+drop table #temp1,#temp2,#temp3,#temp4,#temp5,#dis1,#dis2,#pc
 --·Å¿Õ³µÍ³¼Æ
 select convert(varchar(20),a.¿ªÊ¼ÊÜÀíÊ±¿Ì,120) acceptTime,a.ÏÖ³¡µØÖ· sickAddress, 
 	m.ĞÕÃû dispatcher,	isnull(DATEDIFF(Second,t.³ö³µÊ±¿Ì,t.Í¾ÖĞ´ıÃüÊ±¿Ì),0) emptyRunTimes,der.NameM emptyReason,et.NameM eventType	 
@@ -611,8 +630,9 @@ select convert(varchar(20),a.¿ªÊ¼ÊÜÀíÊ±¿Ì,120) acceptTime,a.ÏÖ³¡µØÖ· sickAddress
 	where e.ÊÂ¼şĞÔÖÊ±àÂë=1 and a.ÀàĞÍ±àÂë not in (2,4) and t.½á¹û±àÂë=3 and t.·Å¿Õ³µÔ­Òò±àÂë is not null 
 	and a.¿ªÊ¼ÊÜÀíÊ±¿Ì between '2013-01-01 00:00:00' and '2015-11-01 00:00:00' 
 --¹ÒÆğÊÂ¼şÁ÷Ë®Í³¼Æ
-select e.ÊÂ¼şÃû³Æ eventName,dat.NameM acceptType,CONVERT(varchar(20),a.¿ªÊ¼ÊÜÀíÊ±¿Ì,120) hungTime,da.NameM area,et.NameM eventType, 
-	dhr.NameM hungReason,m.ĞÕÃû dispatcher,CONVERT(varchar(20),a.½áÊøÊÜÀíÊ±¿Ì,120) endTime,ISNULL(DATEDIFF(Second,a.¿ªÊ¼ÊÜÀíÊ±¿Ì,a.½áÊøÊÜÀíÊ±¿Ì),0) hungtimes,a.·ÖÕïµ÷¶ÈÒ½Ôº station	 
+select a.ÊÂ¼ş±àÂë,a.ÊÜÀíĞòºÅ,e.ÊÂ¼şÃû³Æ eventName,dat.NameM acceptType,CONVERT(varchar(20),a.¿ªÊ¼ÊÜÀíÊ±¿Ì,120) hungTime,da.NameM area,et.NameM eventType, 
+	dhr.NameM hungReason,m.ĞÕÃû dispatcher,CONVERT(varchar(20),a.½áÊøÊÜÀíÊ±¿Ì,120) endTime,
+	ISNULL(DATEDIFF(Second,a.¿ªÊ¼ÊÜÀíÊ±¿Ì,a.½áÊøÊÜÀíÊ±¿Ì),0) hungtimes,a.·ÖÕïµ÷¶ÈÒ½Ôº station into #temp1	 
 	from AuSp120.tb_AcceptDescriptV a	left outer join AuSp120.tb_EventV e on a.ÊÂ¼ş±àÂë=e.ÊÂ¼ş±àÂë	 
 	left outer join AuSp120.tb_DHangReason dhr on dhr.Code=a.¹ÒÆğÔ­Òò±àÂë	 
 	left outer join AuSp120.tb_DAcceptDescriptType dat on dat.Code=a.ÀàĞÍ±àÂë	 
@@ -620,6 +640,15 @@ select e.ÊÂ¼şÃû³Æ eventName,dat.NameM acceptType,CONVERT(varchar(20),a.¿ªÊ¼ÊÜÀíÊ
 	left outer join AuSp120.tb_DEventType et on e.ÊÂ¼şÀàĞÍ±àÂë=et.Code
 	left outer join AuSp120.tb_MrUser m on m.¹¤ºÅ=e.µ÷¶ÈÔ±±àÂë	where e.ÊÂ¼şĞÔÖÊ±àÂë=1  
 	and a.¿ªÊ¼ÊÜÀíÊ±¿Ì between '2013-01-01 00:00:00' and '2015-11-01 00:00:00'  and a.¹ÒÆğÔ­Òò±àÂë is not null
+select a.ÊÂ¼ş±àÂë,a.ÊÜÀíĞòºÅ,er.NameM ÊÂ¼ş½á¹û into #temp2
+	from AuSp120.tb_AcceptDescriptV a	left outer join AuSp120.tb_EventV e on a.ÊÂ¼ş±àÂë=e.ÊÂ¼ş±àÂë
+	left outer join AuSp120.tb_DEventResult er on er.Code=e.ÊÂ¼ş½á¹û±àÂë
+	where e.ÊÂ¼şĞÔÖÊ±àÂë=1 and a.¹ÒÆğÔ­Òò±àÂë is null  and a.¿ªÊ¼ÊÜÀíÊ±¿Ì between '2013-01-01 00:00:00' and '2015-11-01 00:00:00'  
+	and a.ÊÂ¼ş±àÂë in (select a.ÊÂ¼ş±àÂë	from AuSp120.tb_AcceptDescriptV a	left outer join AuSp120.tb_EventV e on a.ÊÂ¼ş±àÂë=e.ÊÂ¼ş±àÂë where e.ÊÂ¼şĞÔÖÊ±àÂë=1 and a.¹ÒÆğÔ­Òò±àÂë is not null)
+select distinct t1.acceptType,t1.area,t1.dispatcher,t1.endTime,t1.eventName,t1.eventType,t1.hungReason,t1.hungTime,
+	t1.hungtimes,t1.station,t2.ÊÂ¼ş½á¹û result
+	from #temp1 t1 left outer join #temp2 t2 on t1.ÊÂ¼ş±àÂë=t2.ÊÂ¼ş±àÂë and t2.ÊÜÀíĞòºÅ>t1.ÊÜÀíĞòºÅ
+drop table #temp1,#temp2
 --¼±¾ÈÕ¾3·ÖÖÓÎ´³ö³µÇé¿öÍ³¼Æ±í
 select distinct pc.Ëæ³µÒ½Éú,pc.Ëæ³µ»¤Ê¿,pc.Ë¾»ú,pc.ÈÎÎñĞòºÅ,pc.ÈÎÎñ±àÂë into #pc from AuSp120.tb_PatientCase pc 
 select a.ÏÖ³¡µØÖ· siteAddress,det.NameM eventType,am.Êµ¼Ê±êÊ¶ carCode,CONVERT(varchar(20),a.¿ªÊ¼ÊÜÀíÊ±¿Ì,120) acceptTime, 
@@ -699,6 +728,31 @@ select dr.NameM reason,COUNT(*) times,'' rate from AuSp120.tb_EventV e
 	where e.ÊÂ¼şĞÔÖÊ±àÂë=1 and a.ÀàĞÍ±àÂë in (11,12,13) and a.¾Ü¾ø·ÖÕïµ÷¶ÈÔ­Òò±àÂë is not null
 	and  ÊÜÀíÊ±¿Ì between '2013-01-01 00:00:00' and '2015-11-01 00:00:00'
 	group by dr.NameM
+--Ò½Éú»¤Ê¿¼İÊ»Ô±³ö³µÊ±¼ä±í
+select pc.Ëæ³µÒ½Éú name,COUNT(*) helpNumbers,
+	SUM(case when DATEDIFF(SECOND,t.½ÓÊÕÃüÁîÊ±¿Ì,t.³ö³µÊ±¿Ì)<=180 then 1 else 0 end) helpNormalNumbers,
+	SUM(case when DATEDIFF(SECOND,t.½ÓÊÕÃüÁîÊ±¿Ì,t.³ö³µÊ±¿Ì)>180 then 1 else 0 end) helpLateNumbers	into #temp1
+	from AuSp120.tb_PatientCase pc 
+	left outer join AuSp120.tb_Task t on t.ÈÎÎñĞòºÅ=pc.ÈÎÎñĞòºÅ and t.ÈÎÎñ±àÂë=pc.ÈÎÎñ±àÂë
+	left outer join AuSp120.tb_AcceptDescript a on a.ÊÜÀíĞòºÅ=t.ÊÜÀíĞòºÅ and a.ÊÂ¼ş±àÂë=t.ÊÂ¼ş±àÂë
+	left outer join AuSp120.tb_EventV e on e.ÊÂ¼ş±àÂë=a.ÊÂ¼ş±àÂë
+	where e.ÊÂ¼şĞÔÖÊ±àÂë=1 and a.ÀàĞÍ±àÂë not in (2,4) and e.ÊÂ¼şÀàĞÍ±àÂë=1
+	and  ÊÜÀíÊ±¿Ì between '2013-01-01 00:00:00' and '2015-11-01 00:00:00' and pc.Ëæ³µÒ½Éú<>''
+	group by pc.Ëæ³µÒ½Éú
+select pc.Ëæ³µÒ½Éú name,COUNT(*) tranforNumbers,
+	SUM(case when DATEDIFF(SECOND,t.½ÓÊÕÃüÁîÊ±¿Ì,t.³ö³µÊ±¿Ì)<=180 then 1 else 0 end) tranforNormalNumbers,
+	SUM(case when DATEDIFF(SECOND,t.½ÓÊÕÃüÁîÊ±¿Ì,t.³ö³µÊ±¿Ì)>180 then 1 else 0 end) tranforLateNumbers	into #temp2
+	from AuSp120.tb_PatientCase pc 
+	left outer join AuSp120.tb_Task t on t.ÈÎÎñĞòºÅ=pc.ÈÎÎñĞòºÅ and t.ÈÎÎñ±àÂë=pc.ÈÎÎñ±àÂë
+	left outer join AuSp120.tb_AcceptDescript a on a.ÊÜÀíĞòºÅ=t.ÊÜÀíĞòºÅ and a.ÊÂ¼ş±àÂë=t.ÊÂ¼ş±àÂë
+	left outer join AuSp120.tb_EventV e on e.ÊÂ¼ş±àÂë=a.ÊÂ¼ş±àÂë
+	where e.ÊÂ¼şĞÔÖÊ±àÂë=1 and a.ÀàĞÍ±àÂë not in (2,4) and e.ÊÂ¼şÀàĞÍ±àÂë=2
+	and  ÊÜÀíÊ±¿Ì between '2013-01-01 00:00:00' and '2015-11-01 00:00:00' and pc.Ëæ³µÒ½Éú<>''
+	group by pc.Ëæ³µÒ½Éú
+select t1.name,t1.helpLateNumbers,t1.helpNormalNumbers,t1.helpNumbers,isnull(t2.tranforLateNumbers,0) tranforLateNumbers,
+	isnull(t2.tranforNormalNumbers,0) tranforNormalNumbers,isnull(t2.tranforNumbers,0) tranforNumbers
+	from #temp1 t1 left outer join #temp2 t2 on t1.name=t2.name
+drop table #temp1,#temp2
 
 
 select * from AuSp120.tb_DTeleRecordResult

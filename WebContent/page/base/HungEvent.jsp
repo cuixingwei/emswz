@@ -46,6 +46,7 @@
 					pagePosition : 'bottom',
 					pagination : true,
 					striped : true,
+					nowrap : false,
 					singleSelect : true,
 					rownumbers : true,
 					nowarp : false,
@@ -56,13 +57,13 @@
 						field : 'eventName',
 						title : '事件名称',
 						resizable : true,
-						width : "14%",
+						width : "12%",
 						align : 'center'
 					}, {
 						field : 'acceptType',
 						title : '受理类型',
 						resizable : true,
-						width : "8%",
+						width : "7%",
 						align : 'center',
 					}, {
 						field : 'hungReason',
@@ -80,19 +81,19 @@
 						field : 'hungTime',
 						title : '挂起时刻',
 						resizable : true,
-						width : "11%",
+						width : "9%",
 						align : 'center',
 					}, {
 						field : 'endTime',
 						title : '结束时刻',
 						resizable : true,
-						width : "12%",
+						width : "9%",
 						align : 'center',
 					}, {
 						field : 'hungtimes',
 						title : '时长',
 						resizable : true,
-						width : "10%",
+						width : "8%",
 						align : 'center'
 					}, {
 						field : 'station',
@@ -112,21 +113,27 @@
 						resizable : true,
 						width : "7%",
 						align : 'center'
+					}, {
+						field : 'result',
+						title : '后续结果',
+						resizable : true,
+						width : "9%",
+						align : 'center',
+						formatter : function(value, row, index) {
+							if (value) {
+								return value;
+							} else {
+								return '取消出诊';
+							}
+						}
 					} ] ],
 					toolbar : '#toolbar',
 					onBeforeLoad : function(param) {
 						var varify = cxw.checkStartTimeBeforeEndTime(
 								'#startTime', '#endTime');
-						if (varify) {
-							parent.$.messager.progress({
-								text : '数据加载中....'
-							});
-						} else {
+						if (!varify) {
 							$.messager.alert('警告', '结束时间要大于开始时间', 'warning');
 						}
-					},
-					onLoadSuccess : function(data) {
-						parent.$.messager.progress('close');
 					}
 				});
 	}

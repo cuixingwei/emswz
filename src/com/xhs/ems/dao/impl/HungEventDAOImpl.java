@@ -43,43 +43,57 @@ public class HungEventDAOImpl implements HungEventDAO {
 	 */
 	@Override
 	public Grid getData(Parameter parameter) {
-		String sql = "select e.事件名称 eventName,dat.NameM acceptType,CONVERT(varchar(20),a.开始受理时刻,120) hungTime,"
-				+ "da.NameM area,et.NameM eventType,	dhr.NameM hungReason,m.姓名 dispatcher,CONVERT(varchar(20),a.结束受理时刻,"
-				+ "120) endTime,ISNULL(DATEDIFF(Second,a.开始受理时刻,a.结束受理时刻),0) hungtimes,a.分诊调度医院 station	"
+		String sql1 = "select a.事件编码,a.受理序号,e.事件名称 eventName,dat.NameM acceptType,"
+				+ "CONVERT(varchar(20),a.开始受理时刻,120) hungTime,da.NameM area,et.NameM eventType,dhr.NameM hungReason,"
+				+ "m.姓名 dispatcher,CONVERT(varchar(20),a.结束受理时刻,120) endTime,"
+				+ "ISNULL(DATEDIFF(Second,a.开始受理时刻,a.结束受理时刻),0) hungtimes,a.分诊调度医院 station into #temp1	"
 				+ "from AuSp120.tb_AcceptDescriptV a	left outer join AuSp120.tb_EventV e on a.事件编码=e.事件编码	"
 				+ "left outer join AuSp120.tb_DHangReason dhr on dhr.Code=a.挂起原因编码	"
 				+ "left outer join AuSp120.tb_DAcceptDescriptType dat on dat.Code=a.类型编码	"
-				+ "left outer join AuSp120.tb_DArea da on da.Code=a.区域编码 "
+				+ "left outer join AuSp120.tb_DArea da on da.Code=a.区域编码	"
 				+ "left outer join AuSp120.tb_DEventType et on e.事件类型编码=et.Code	"
 				+ "left outer join AuSp120.tb_MrUser m on m.工号=e.调度员编码	"
-				+ "where e.事件性质编码=1	and a.开始受理时刻 between :startTime and :endTime  and a.挂起原因编码 is not null";
+				+ "where e.事件性质编码=1	and a.开始受理时刻 between :startTime and :endTime  and a.挂起原因编码 is not null ";
 		if (!CommonUtil.isNullOrEmpty(parameter.getDispatcher())) {
-			sql = sql + " and e.调度员编码= :dispatcher ";
+			sql1 = sql1 + " and e.调度员编码= :dispatcher ";
 		}
 		if (!CommonUtil.isNullOrEmpty(parameter.getHungReason())) {
-			sql = sql + " and a.挂起原因编码 = :hungReason ";
+			sql1 = sql1 + " and a.挂起原因编码 = :hungReason ";
 		}
+		String sql2 = "select a.事件编码,a.受理序号,er.NameM 事件结果 into #temp2 	from AuSp120.tb_AcceptDescriptV a	"
+				+ "left outer join AuSp120.tb_EventV e on a.事件编码=e.事件编码	"
+				+ "left outer join AuSp120.tb_DEventResult er on er.Code=e.事件结果编码	"
+				+ "where e.事件性质编码=1 and a.挂起原因编码 is null  and a.开始受理时刻 between :startTime and :endTime	"
+				+ "and a.事件编码 in (select a.事件编码	from AuSp120.tb_AcceptDescriptV a	left outer join AuSp120.tb_EventV e on a.事件编码=e.事件编码 where e.事件性质编码=1 and a.挂起原因编码 is not null)	"
+				+ "select distinct t1.acceptType,t1.area,t1.dispatcher,t1.endTime,t1.eventName,t1.eventType,t1.hungReason,"
+				+ "t1.hungTime,	t1.hungtimes,t1.station,t2.事件结果 result	from #temp1 t1 "
+				+ "left outer join #temp2 t2 on t1.事件编码=t2.事件编码 and t2.受理序号>t1.受理序号	"
+				+ "drop table #temp1,#temp2";
 		Map<String, String> paramMap = new HashMap<String, String>();
 		paramMap.put("dispatcher", parameter.getDispatcher());
 		paramMap.put("hungReason", parameter.getHungReason());
 		paramMap.put("endTime", parameter.getEndTime());
 		paramMap.put("startTime", parameter.getStartTime());
 
-		List<HungEvent> results = this.npJdbcTemplate.query(sql, paramMap,
-				new RowMapper<HungEvent>() {
+		List<HungEvent> results = this.npJdbcTemplate.query(sql1 + sql2,
+				paramMap, new RowMapper<HungEvent>() {
 					@Override
 					public HungEvent mapRow(ResultSet rs, int index)
 							throws SQLException {
+						HungEvent hungEvent = new HungEvent();
+						hungEvent.setAcceptType(rs.getString("acceptType"));
+						hungEvent.setArea(rs.getString("area"));
+						hungEvent.setDispatcher(rs.getString("dispatcher"));
+						hungEvent.setEndTime(rs.getString("endTime"));
+						hungEvent.setEventName(rs.getString("eventName"));
+						hungEvent.setEventType(rs.getString("eventType"));
+						hungEvent.setHungReason(rs.getString("hungReason"));
+						hungEvent.setHungTime(rs.getString("hungTime"));
+						hungEvent.setHungtimes(rs.getString("hungtimes"));
+						hungEvent.setResult(rs.getString("result"));
+						hungEvent.setStation(rs.getString("station"));
+						return hungEvent;
 
-						return new HungEvent(rs.getString("eventName"), rs
-								.getString("acceptType"), rs
-								.getString("hungTime"), rs
-								.getString("hungReason"), rs
-								.getString("dispatcher"), rs
-								.getString("endTime"), rs
-								.getString("hungtimes"), rs
-								.getString("station"), rs.getString("area"), rs
-								.getString("eventType"));
 					}
 				});
 		logger.info("一共有" + results.size() + "条数据");

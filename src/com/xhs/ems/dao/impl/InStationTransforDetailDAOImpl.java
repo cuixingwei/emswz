@@ -41,10 +41,10 @@ public class InStationTransforDetailDAOImpl implements
 	@Override
 	public Grid getData(Parameter parameter) {
 		String sql = "select CONVERT(varchar(20),e.受理时刻,120) date,pc.姓名 patientName,pc.年龄 age,pc.性别 gender,"
-				+ "pc.医生诊断 diagnose,pc.现场地点 outCallAddress,pc.科室 sendClass,a.现场地址 spot,pc.里程 distance,	DATEDIFF(Second,t.出车时刻,t.到达医院时刻) time	from AuSp120.tb_EventV e "
-				+ "left outer join AuSp120.tb_AcceptDescriptV a on a.事件编码=e.事件编码 left outer join AuSp120.tb_TaskV t on t.事件编码=a.事件编码 and t.受理序号=a.受理序号	left outer join AuSp120.tb_Station s on t.分站编码=s.分站编码	"
+				+ "pc.医生诊断 diagnose,pc.出诊地址 outCallAddress,pc.科室 sendClass,a.现场地址 spot,pc.里程 distance,	DATEDIFF(Second,t.出车时刻,t.到达医院时刻) time	from AuSp120.tb_EventV e "
+				+ "left outer join AuSp120.tb_AcceptDescriptV a on a.事件编码=e.事件编码 left outer join AuSp120.tb_TaskV t on t.事件编码=a.事件编码 and t.受理序号=a.受理序号	"
 				+ "left outer join AuSp120.tb_PatientCase pc  on t.任务序号=pc.任务序号 and pc.任务编码=t.任务编码 	"
-				+ "where e.事件性质编码=1 and a.类型编码 not in (2,4) and t.分站编码 is not null and pc.任务编码 is not null and e.事件类型编码=3 and e.受理时刻 between :startTime and :endTime ";
+				+ "where e.事件性质编码=1 and pc.任务编码 is not null and a.类型编码 not in (2,4)  and e.事件类型编码=3 and e.受理时刻 between :startTime and :endTime ";
 		Map<String, String> paramMap = new HashMap<String, String>();
 		paramMap.put("startTime", parameter.getStartTime());
 		paramMap.put("endTime", parameter.getEndTime());
