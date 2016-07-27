@@ -12,10 +12,9 @@
 <script type="text/javascript">
 	var grid;
 	var exportData = function() {
-		var url = "exportDocterNurseDriver?startTime="
+		var url = "exportHistoryEventDatas?startTime="
 				+ $('#startTime').datetimebox('getValue') + "&endTime="
-				+ $('#endTime').datetimebox('getValue')
-				+ "&doctorOrNurseOrDriver=3";
+				+ $('#endTime').datetimebox('getValue');
 		window.location.href = url;
 	};
 	/* 初始化页面标签 */
@@ -30,7 +29,7 @@
 
 		grid = $('#grid').datagrid(
 				{
-					url : 'getDocterNurseDriverDatas',
+					url : 'getHistoryEventDatas',
 					pagePosition : 'bottom',
 					pagination : true,
 					striped : true,
@@ -41,113 +40,65 @@
 					pageSize : 20,
 					pageList : [ 10, 20, 30, 40, 50, 100, 200, 300, 400, 500 ],
 					columns : [ [ {
-						field : 'station',
-						title : '站点',
+						field : 'eventName',
+						title : '事件名称',
 						resizable : true,
-						width : "6%",
+						width : "15%",
 						align : 'center'
 					}, {
-						field : 'name',
-						title : '姓名',
+						field : 'alarmPhone',
+						title : '呼救电话',
 						resizable : true,
-						width : "5%",
+						width : "13%",
 						align : 'center',
 					}, {
-						field : 'outCalls',
-						title : '出诊数',
+						field : 'acceptTime',
+						title : '受理时刻',
 						resizable : true,
-						width : "5%",
+						width : "10%",
 						align : 'center'
 					}, {
-						field : 'takeBacks',
-						title : '接回数',
+						field : 'eventType',
+						title : '事件类型',
 						resizable : true,
-						width : "5%",
+						width : "10%",
 						align : 'center'
 					}, {
-						field : 'emptyCars',
-						title : '空车',
+						field : 'eventSource',
+						title : '联动来源',
 						resizable : true,
-						width : "4%",
+						width : "10%",
 						align : 'center'
 					}, {
-						field : 'refuseHospitals',
-						title : '拒绝入院',
+						field : 'dispatcher',
+						title : '调度员',
 						resizable : true,
-						width : "6%",
-						align : 'center',
-					}, {
-						field : 'spotDeaths',
-						title : '现场死亡',
-						resizable : true,
-						width : "6%",
+						width : "10%",
 						align : 'center'
 					}, {
-						field : 'afterDeaths',
-						title : '救后死亡',
+						field : 'acceptNumbers',
+						title : '受理次数',
 						resizable : true,
-						width : "6%",
+						width : "10%",
 						align : 'center'
 					}, {
-						field : 'safeOut',
-						title : '安全送出',
+						field : 'taskNumbers',
+						title : '任务次数',
 						resizable : true,
-						width : "6%",
+						width : "10%",
 						align : 'center'
 					}, {
-						field : 'noAmbulance',
-						title : '非急救任<br />务完成',
+						field : 'caseNumbers',
+						title : '病历个数',
 						resizable : true,
-						width : "6%",
-						align : 'center'
-					}, {
-						field : 'others',
-						title : '其他',
-						resizable : true,
-						width : "4%",
-						align : 'center',
-					}, {
-						field : 'distanceTotal',
-						title : '里程合计',
-						resizable : true,
-						width : "6%",
-						align : 'center'
-					}, {
-						field : 'costToal',
-						title : '收费合计',
-						resizable : true,
-						width : "6%",
-						align : 'center'
-					}, {
-						field : 'averageResponseTime',
-						title : '平均反应时间',
-						resizable : true,
-						width : "7%",
-						align : 'center'
-					}, {
-						field : 'averageSendTime',
-						title : '平均出车时间',
-						resizable : true,
-						width : "7%",
-						align : 'center'
-					}, {
-						field : 'outCallTimeTotal',
-						title : '出诊用时合计',
-						resizable : true,
-						width : "7%",
-						align : 'center'
-					}, {
-						field : 'cureNumbers',
-						title : '治疗数统计',
-						resizable : true,
-						width : "8%",
+						width : "10%",
 						align : 'center'
 					} ] ],
 					toolbar : '#toolbar',
 					onBeforeLoad : function(param) {
 						var varify = cxw.checkStartTimeBeforeEndTime(
 								'#startTime', '#endTime');
-						if (!varify) {
+						if (!varify){
 							$.messager.alert('警告', '结束时间要大于开始时间', 'warning');
 						}
 					}
@@ -156,7 +107,7 @@
 
 	$(document).ready(function() {
 		init();
-		grid.datagrid('load', cxw.serializeObject($('#searchForm')));
+		grid.datagrid('load', cxw.serializeObject($('#searchForm')))
 	});
 </script>
 </head>
@@ -171,12 +122,12 @@
 								<td>查询时间:</td>
 								<td><input id="startTime" name="startTime"
 									style="width: 150em;" />至<input id="endTime" name="endTime"
-									style="width: 150em;" /><input type="hidden" value="3"
-									name="doctorOrNurseOrDriver" /></td>
+									style="width: 150em;" /></td>
 								<td colspan="2">&nbsp;<a href="javascript:void(0);"
 									class="easyui-linkbutton"
 									data-options="iconCls:'ext-icon-zoom',plain:true"
 									onclick="grid.datagrid('load',cxw.serializeObject($('#searchForm')));">查询</a></td>
+
 							</tr>
 						</table>
 					</form>

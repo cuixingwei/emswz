@@ -93,7 +93,7 @@ select t.ÊÂ¼ş±àÂë,t.ÊÜÀíĞòºÅ,dr.NameM outResult,pc.³öÕïµØÖ·,SUM(case when pc.×ª¹
 	from AuSp120.tb_PatientCase pc left outer join AuSp120.tb_Task t on pc.ÈÎÎñĞòºÅ=t.ÈÎÎñĞòºÅ and pc.ÈÎÎñ±àÂë=t.ÈÎÎñ±àÂë 
 	left outer join AuSp120.tb_DResult dr on pc.¾ÈÖÎ½á¹û±àÂë=dr.Code
 	group by t.ÊÂ¼ş±àÂë,dr.NameM,pc.³öÕïµØÖ·,t.ÊÜÀíĞòºÅ
-select convert(varchar(20),e.ÊÜÀíÊ±¿Ì,120) answerAlarmTime,m.ĞÕÃû dispatcher,a.ºô¾Èµç»° alarmPhone,a.ÁªÏµµç»° relatedPhone,
+select convert(varchar(20),e.ÊÜÀíÊ±¿Ì,120) answerAlarmTime,m.ĞÕÃû dispatcher,a.ºô¾Èµç»° alarmPhone,a.ÁªÏµµç»° relatedPhone,a.·ÖÕïµ÷¶ÈÒ½Ôº triageStation,
 	a.ÏÖ³¡µØÖ· siteAddress,	a.³õ²½ÅĞ¶Ï judgementOnPhone,t1.³öÕïµØÖ· station,t1.outResult,t1.takeBacks,convert(varchar(20),a.ÅÉ³µÊ±¿Ì,120) sendCarTime
 	from AuSp120.tb_EventV e left outer join AuSp120.tb_AcceptDescriptV a on e.ÊÂ¼ş±àÂë=a.ÊÂ¼ş±àÂë
 	left outer join #temp1 t1 on t1.ÊÂ¼ş±àÂë=a.ÊÂ¼ş±àÂë and t1.ÊÜÀíĞòºÅ=a.ÊÜÀíĞòºÅ

@@ -800,5 +800,18 @@
     	"pid":"3",
     	"state":"open",
     	"text":"转归结果统计"
+    },
+    {
+    	"attributes":
+    		{
+    			"target":"",
+    			"url":"HistoryEvent.jsp"
+    		},
+    	"checked":false,
+    	"iconCls":"ext-icon-world",
+    	"id":"316",
+    	"pid":"3",
+    	"state":"open",
+    	"text":"历史事件"
     }
 ]
