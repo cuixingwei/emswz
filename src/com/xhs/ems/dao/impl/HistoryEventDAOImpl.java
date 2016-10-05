@@ -40,7 +40,7 @@ public class HistoryEventDAOImpl implements HistoryEventDAO {
 	public Grid getData(Parameter parameter) {
 		String sql = "select e.事件编码,COUNT(*) 受理次数 into #accepts from AuSp120.tb_Eventv e 	"
 				+ "left outer join AuSp120.tb_AcceptDescriptV a on e.事件编码=a.事件编码	where e.事件性质编码=1  group by e.事件编码 "
-				+ "select e.事件编码,COUNT(*) 任务次数 into #tasks from AuSp120.tb_EventV e	"
+				+ "select e.事件编码,sum(case when t.任务编码 is not null then 1 else 0 end) 任务次数 into #tasks from AuSp120.tb_EventV e	"
 				+ "left outer join AuSp120.tb_AcceptDescriptV a on e.事件编码=a.事件编码	"
 				+ "left outer join AuSp120.tb_TaskV t on a.事件编码=t.事件编码 and a.受理序号=t.受理序号	"
 				+ "where e.事件性质编码=1  group by e.事件编码 "
