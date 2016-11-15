@@ -100,7 +100,7 @@
 						align : 'center'
 					}, {
 						field : 'treatmentEffet',
-						title : '救治<br />效果',
+						title : '出车<br />结果',
 						resizable : true,
 						width : "4%",
 						align : 'center'
