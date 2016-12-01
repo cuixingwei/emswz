@@ -124,7 +124,7 @@
 						align : 'center'
 					}, {
 						field : 'outResult',
-						title : '出诊<br />结果',
+						title : '救治<br />结果',
 						resizable : true,
 						width : "4%",
 						align : 'center',
