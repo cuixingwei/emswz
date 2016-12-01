@@ -6,5 +6,4 @@ build/
 .classpath
 bin
 /doc
-.settings/
 /src/jdbc.properties
